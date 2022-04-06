@@ -33,7 +33,5 @@ public class StageInitializer implements ApplicationListener<ByzantineGeneralsAp
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Inzynierka");
-        primaryStage.minWidthProperty().bind(root.widthProperty());
-        primaryStage.minHeightProperty().bind(root.heightProperty());
     }
 }
