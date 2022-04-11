@@ -4,17 +4,46 @@
 <?import javafx.scene.layout.*?>
 
 
-<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.controller.AppController"
             minHeight="400.0" minWidth="600.0"
             fx:id="root">
-    <top>
-        <Label BorderPane.alignment="TOP_CENTER">Menu</Label>
-    </top>
 
     <center>
         <fx:include source="graphView.fxml" fx:id="graph"/>
     </center>
+
+    <top>
+        <MenuBar>
+            <menus>
+                <Menu text="File">
+                    <items>
+                        <MenuItem text="Save"></MenuItem>
+                        <MenuItem text="Save as"></MenuItem>
+                        <MenuItem text="Import"></MenuItem>
+                        <MenuItem text="Export"></MenuItem>
+                    </items>
+                </Menu>
+                <Menu text="Edit">
+                    <items>
+                        <MenuItem text="Undo"></MenuItem>
+                        <MenuItem text="Redo"></MenuItem>
+                        <MenuItem text="Delete"></MenuItem>
+                    </items>
+                </Menu>
+                <Menu text="Draw">
+                    <items>
+                        <MenuItem text="Vertex"></MenuItem>
+                        <MenuItem text="Edge"></MenuItem>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+
 </BorderPane>

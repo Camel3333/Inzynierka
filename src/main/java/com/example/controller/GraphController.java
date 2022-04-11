@@ -1,13 +1,16 @@
 package com.example.controller;
 
+import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graph.GraphEdgeList;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.layout.Pane;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,6 +20,7 @@ public class GraphController {
     @FXML
     private Pane graphRoot;
 
+    private SmartGraphDemoContainer container;
     private SmartGraphPanel graphView;
 
     private void buildGraph() {
@@ -55,6 +59,7 @@ public class GraphController {
 
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
         graphView = new SmartGraphPanel<>(graph, strategy);
+        container = new SmartGraphDemoContainer(graphView);
     }
 
     public void initGraph() {
@@ -64,8 +69,8 @@ public class GraphController {
     @FXML
     public void initialize() {
         buildGraph();
-        graphView.prefWidthProperty().bind(graphRoot.widthProperty());
-        graphView.prefHeightProperty().bind(graphRoot.heightProperty());
-        graphRoot.getChildren().add(graphView);
+        container.prefWidthProperty().bind(graphRoot.widthProperty());
+        container.prefHeightProperty().bind(graphRoot.heightProperty());
+        graphRoot.getChildren().add(container);
     }
 }
