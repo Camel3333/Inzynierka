@@ -10,6 +10,7 @@ import java.util.Map;
 
 @EqualsAndHashCode
 public class AgentVertex {
+    @Getter
     private final int id;
     @Getter
     private ObservableList<AgentVertex> neighbours = FXCollections.observableArrayList();
@@ -21,10 +22,16 @@ public class AgentVertex {
     }
 
     public void addNeighbour(AgentVertex v){
-        neighbours.add(v);
+        if (!neighbours.contains(v)) {
+            neighbours.add(v);
+            v.addNeighbour(this);
+        }
     }
 
     public void removeNeighbour(AgentVertex v){
-        neighbours.remove(v);
+        if (neighbours.contains(v)) {
+            neighbours.remove(v);
+            v.removeNeighbour(this);
+        }
     }
 }

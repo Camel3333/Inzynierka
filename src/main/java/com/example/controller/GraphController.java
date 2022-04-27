@@ -31,23 +31,23 @@ public class GraphController {
 
     private SmartGraphDemoContainer container;
     private SmartGraphPanel graphView;
-    private Graph<AgentVertex, Integer> graph = new GraphEdgeList();
+    private Graph<Integer, Integer> graph = new GraphEdgeList();
     private AgentGraph agentGraph = new AgentGraph();
-    private HashMap<AgentVertex, Vertex<AgentVertex>> vertexMap = new HashMap<>();
+    private HashMap<Integer, Vertex<Integer>> vertexMap = new HashMap<>();
 
     public GraphController() {
         agentGraph.getVertices().addListener((ListChangeListener.Change<? extends AgentVertex> change) -> {
             while (change.next()) {
                 if (change.wasRemoved()) {
                     for(AgentVertex agentVertex : change.getRemoved()) {
-                        graph.removeVertex(vertexMap.get(agentVertex));
-                        vertexMap.remove(agentVertex);
+                        graph.removeVertex(vertexMap.get(agentVertex.getId()));
+                        vertexMap.remove(agentVertex.getId());
                     }
                 }
                 else if(change.wasAdded()){
                     for(AgentVertex agentVertex : change.getAddedSubList()) {
-                        Vertex<AgentVertex> vertex = graph.insertVertex(agentVertex);
-                        vertexMap.put(agentVertex, vertex);
+                        Vertex<Integer> vertex = graph.insertVertex(agentVertex.getId());
+                        vertexMap.put(agentVertex.getId(), vertex);
                         bindEdges(agentVertex);
                     }
                 }
@@ -61,7 +61,14 @@ public class GraphController {
 
         agentVertex2.addNeighbour(agentVertex1);
 
-//        agentGraph.removeVertex(agentVertex);
+        agentGraph.removeVertex(agentVertex1);
+
+//        agentVertex2.removeNeighbour(agentVertex1);
+
+//        graph.insertEdge(agentVertex1.getId(), agentVertex2.getId(), 1);
+
+
+//        agentGraph.removeVertex(agentVertex2);
     }
 
     private void bindEdges(AgentVertex agent){
@@ -69,14 +76,15 @@ public class GraphController {
             while (change.next()) {
                 if (change.wasRemoved()) {
                     for(AgentVertex neighbour : change.getRemoved()) {
-                        List<Edge<Integer, AgentVertex>> edgesToRemove = graph.edges()
+                        List<Edge<Integer, Integer>> edgesToRemove = graph.edges()
                                 .stream()
                                 .filter(edge -> {
-                                    if (Arrays.stream(edge.vertices()).toList().containsAll(Arrays.asList(vertexMap.get(agent), vertexMap.get(neighbour))))
+                                    if (Arrays.stream(edge.vertices()).toList()
+                                            .containsAll(Arrays.asList(vertexMap.get(agent.getId())
+                                                    , vertexMap.get(neighbour.getId()))))
                                         return true;
                                     return false;
-                                })
-                                .collect(Collectors.toList());
+                                }).toList();
                         edgesToRemove.forEach(edge -> {
                             graph.removeEdge(edge);
                         });
@@ -84,7 +92,8 @@ public class GraphController {
                 }
                 else if(change.wasAdded()){
                     for(AgentVertex neighbour : change.getAddedSubList()) {
-                        graph.insertEdge(agent, neighbour, 1);
+                        if (!graph.areAdjacent(vertexMap.get(agent.getId()), vertexMap.get(neighbour.getId())))
+                            graph.insertEdge(vertexMap.get(agent.getId()), vertexMap.get(neighbour.getId()), 1);
                     }
                 }
             }

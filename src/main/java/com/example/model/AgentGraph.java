@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @EqualsAndHashCode
 public class AgentGraph {
@@ -18,6 +20,8 @@ public class AgentGraph {
 
     public void removeVertex(AgentVertex v){
         vertices.remove(v);
+        List<AgentVertex> neighboursToRemove = List.copyOf(v.getNeighbours());
+        neighboursToRemove.forEach(v::removeNeighbour);
     }
 
 }
