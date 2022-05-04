@@ -22,7 +22,6 @@ public class MyGraph<V,E> implements Graph<V,E> {
 
     @Override
     public Collection<Vertex<V>> vertices() {
-        // looks bad but is necessary because we hold MyVertex instead of Vertex - generics issue
         return adjacency.keySet();
     }
 
@@ -51,7 +50,22 @@ public class MyGraph<V,E> implements Graph<V,E> {
 
     @Override
     public boolean areAdjacent(Vertex<V> vertex, Vertex<V> vertex1) throws InvalidVertexException {
+        checkVertex(vertex);
+        checkVertex(vertex1);
         return adjacency.get(vertex).contains(vertex1);
+    }
+
+    public Collection<Edge<E,V>> edgesBetween(Vertex<V> v1, Vertex<V> v2){
+        checkVertex(v1);
+        checkVertex(v2);
+        return edges.stream()
+                .filter(e -> ((MyEdge) e).contains(v1) && ((MyEdge) e).contains(v2))
+                .collect(Collectors.toList());
+    }
+
+    public Collection<Vertex<V>> vertexNeighbours(Vertex<V> v){
+        checkVertex(v);
+        return adjacency.get(v);
     }
 
     @Override
@@ -148,17 +162,6 @@ public class MyGraph<V,E> implements Graph<V,E> {
         E oldElement = edge.element();
         ((MyEdge)edge).element = e;
         return oldElement;
-    }
-
-    public Collection<Edge<E,V>> edgesBetween(Vertex<V> v1, Vertex<V> v2){
-        return edges.stream()
-                .filter(e -> ((MyEdge) e).contains(v1) && ((MyEdge) e).contains(v2))
-                .collect(Collectors.toList());
-    }
-
-    public Collection<Vertex<V>> vertexNeighbours(Vertex<V> v){
-        checkVertex(v);
-        return adjacency.get(v);
     }
 
     private boolean existsVertexWith(V vElement) {
