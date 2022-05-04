@@ -1,19 +1,14 @@
 package com.example.controller;
 
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
-import com.brunomnsilva.smartgraph.graph.Edge;
 import com.brunomnsilva.smartgraph.graph.Graph;
-import com.brunomnsilva.smartgraph.graph.GraphEdgeList;
-import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
-import com.example.model.AgentGraph;
-import com.example.model.AgentVertex;
 import com.example.model.MyGraph;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
+import lombok.Getter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 
@@ -26,15 +21,9 @@ public class GraphController {
 
     private int counter = 0;
     private SmartGraphDemoContainer container;
-    private SmartGraphPanel graphView;
+    private SmartGraphPanel<Integer, Integer> graphView;
+    @Getter
     private Graph<Integer, Integer> graph = new MyGraph<>();
-
-    public GraphController() {
-//        Vertex<Integer> v1 = graph.insertVertex(1);
-//        Vertex<Integer> v2 = graph.insertVertex(2);
-//
-//        graph.insertEdge(v1, v2, 1);
-    }
 
     private void buildGraph() {
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
@@ -54,6 +43,7 @@ public class GraphController {
     // only for test purposes
     public void addExampleVertex(){
         graph.insertVertex(counter++);
+        update();
     }
 
     // only for test purposes
@@ -61,6 +51,7 @@ public class GraphController {
         var vertex = graph.vertices().stream().filter(v -> v.element().equals(counter-1)).findFirst();
         graph.removeVertex(vertex.get());
         counter--;
+        update();
     }
 
     @FXML
