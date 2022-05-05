@@ -6,6 +6,7 @@ import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrateg
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import com.example.model.MyGraph;
+import com.example.model.MyVertex;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
@@ -28,6 +29,15 @@ public class GraphController {
     private void buildGraph() {
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
         graphView = new SmartGraphPanel<>(graph, strategy);
+        graphView.setVertexDoubleClickAction(graphVertex -> {
+            MyVertex<Integer> vertex = (MyVertex<Integer>)graphVertex.getUnderlyingVertex();
+            vertex.setTraitor(!vertex.isTraitor());
+            if (vertex.isTraitor()) {
+                graphView.getStylableVertex(vertex).setStyleClass("traitor");
+            } else {
+                graphView.getStylableVertex(vertex).setStyleClass("vertex");
+            }
+        });
         container = new SmartGraphDemoContainer(graphView);
     }
 

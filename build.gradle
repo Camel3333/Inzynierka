@@ -31,6 +31,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation files('libraries/JavaFXSmartGraph-0.9.4.jar')
+    implementation 'org.controlsfx:controlsfx:8.0.5'
 }
 
 tasks.named('test') {
