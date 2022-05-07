@@ -2,15 +2,14 @@ package com.example.controller;
 
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graph.Graph;
-import com.brunomnsilva.smartgraph.graph.GraphEdgeList;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
+import com.example.model.MyGraph;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.layout.Pane;
+import lombok.Getter;
 import net.rgielen.fxweaver.core.FxmlView;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,43 +19,13 @@ public class GraphController {
     @FXML
     private Pane graphRoot;
 
+    private int counter = 0;
     private SmartGraphDemoContainer container;
-    private SmartGraphPanel graphView;
+    private SmartGraphPanel<Integer, Integer> graphView;
+    @Getter
+    private Graph<Integer, Integer> graph = new MyGraph<>();
 
     private void buildGraph() {
-        Graph graph = new GraphEdgeList();
-        graph.insertVertex("A");
-        graph.insertVertex("B");
-        graph.insertVertex("C");
-        graph.insertVertex("D");
-        graph.insertVertex("E");
-        graph.insertVertex("F");
-        graph.insertVertex("G");
-
-        graph.insertEdge("A", "B", "1");
-        graph.insertEdge("A", "C", "2");
-        graph.insertEdge("A", "D", "3");
-        graph.insertEdge("A", "E", "4");
-        graph.insertEdge("A", "F", "5");
-        graph.insertEdge("A", "G", "6");
-
-        graph.insertVertex("H");
-        graph.insertVertex("I");
-        graph.insertVertex("J");
-        graph.insertVertex("K");
-        graph.insertVertex("L");
-        graph.insertVertex("M");
-        graph.insertVertex("N");
-
-        graph.insertEdge("H", "I", "7");
-        graph.insertEdge("H", "J", "8");
-        graph.insertEdge("H", "K", "9");
-        graph.insertEdge("H", "L", "10");
-        graph.insertEdge("H", "M", "11");
-        graph.insertEdge("H", "N", "12");
-
-        graph.insertEdge("A", "H", "0");
-
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
         graphView = new SmartGraphPanel<>(graph, strategy);
         container = new SmartGraphDemoContainer(graphView);
@@ -64,6 +33,25 @@ public class GraphController {
 
     public void initGraph() {
         graphView.init();
+    }
+
+    // TODO: implement update as listener to graph changes
+    public void update(){
+        graphView.update();
+    }
+
+    // only for test purposes
+    public void addExampleVertex(){
+        graph.insertVertex(counter++);
+        update();
+    }
+
+    // only for test purposes
+    public void removeLastVertex(){
+        var vertex = graph.vertices().stream().filter(v -> v.element().equals(counter-1)).findFirst();
+        graph.removeVertex(vertex.get());
+        counter--;
+        update();
     }
 
     @FXML

@@ -3,8 +3,15 @@
 
 <?import javafx.scene.layout.*?>
 
-<Pane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.controller.GraphController"
-            fx:id="graphRoot">
-</Pane>
+<?import javafx.scene.control.Button?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.controller.GraphController"
+      fx:id="graphRoot">
+
+    <HBox>
+        <Button text="Add vertex" onAction="#addExampleVertex"/>
+        <Button text="Remove vertex" onAction="#removeLastVertex"/>
+        <Button text="Update" onAction="#update"/>
+    </HBox>
+</VBox>
