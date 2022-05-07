@@ -17,8 +17,8 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     @Setter
     private BooleanProperty supportsOpinion = new SimpleBooleanProperty();
     @Getter
-    private Opinions opinions;
-    private Map<MyVertex<V>, Opinions> knowledge = new HashMap<>();
+    private AgentOpinions opinions;
+    private Map<MyVertex<V>, AgentOpinions> knowledge = new HashMap<>();
 
     public MyVertex(V id){
         this.id = id;

@@ -1,7 +1,7 @@
 package com.example.controller;
 
 import com.example.model.Agent;
-import com.example.model.Opinion;
+import com.example.model.AgentOpinion;
 import javafx.fxml.FXML;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.controlsfx.control.CheckComboBox;
@@ -14,7 +14,7 @@ public class VertexSettingsController {
     @FXML
     private ToggleSwitch traitorSwitch;
     @FXML
-    private CheckComboBox<Opinion> opinionsBox;
+    private CheckComboBox<AgentOpinion> opinionsBox;
 
     public void bindVertex(Agent agent){
         traitorSwitch.selectedProperty().bindBidirectional(agent.isTraitor());
