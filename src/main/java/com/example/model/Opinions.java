@@ -1,4 +1,6 @@
 package com.example.model;
 
-public class Opinions {
+public interface Opinions {
+    void addOpinion(Opinion opinion);
+    void removeOpinion(Opinion opinion);
 }

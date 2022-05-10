@@ -1,15 +1,24 @@
 package com.example.model;
 
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MyVertex<V> implements Vertex<V> {
+public class MyVertex<V> implements Vertex<V>, Agent {
     private V id;
-    private boolean isTraitor;
-    private Opinions opinions;
-    private Map<MyVertex<V>, Opinions> knowledge = new HashMap<>();
+    @Getter
+    private BooleanProperty isTraitor = new SimpleBooleanProperty();
+    @Getter
+    @Setter
+    private BooleanProperty supportsOpinion = new SimpleBooleanProperty();
+    @Getter
+    private AgentOpinions opinions;
+    private Map<MyVertex<V>, AgentOpinions> knowledge = new HashMap<>();
 
     public MyVertex(V id){
         this.id = id;
@@ -22,5 +31,15 @@ public class MyVertex<V> implements Vertex<V> {
     @Override
     public V element() {
         return id;
+    }
+
+    @Override
+    public BooleanProperty isTraitor() {
+        return isTraitor;
+    }
+
+    @Override
+    public void setIsTraitor(boolean isTraitor) {
+        this.isTraitor.setValue(isTraitor);
     }
 }
