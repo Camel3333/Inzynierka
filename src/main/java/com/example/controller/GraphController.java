@@ -70,13 +70,14 @@ public class GraphController {
 
     // TODO: implement update as listener to graph changes
     public void update(){
-        graphView.update();
+        graphView.updateAndWait();
     }
 
     // only for test purposes
     public void addExampleVertex(){
-        graph.insertVertex(counter++);
+        var vertex = graph.insertVertex(counter++);
         update();
+        graphView.setVertexPosition(vertex, 100, 100);
     }
 
     // only for test purposes
