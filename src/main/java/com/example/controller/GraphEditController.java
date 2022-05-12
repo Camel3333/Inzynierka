@@ -1,10 +1,8 @@
 package com.example.controller;
 
-import com.example.draw.CreationHelper;
 import com.example.draw.DrawMode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 
@@ -16,19 +14,15 @@ public class GraphEditController {
     @FXML
     Button edgeButton;
 
-    private DrawMode selectedMode = DrawMode.NONE;
-
-    @Setter
-    private CreationHelper helper;
+    private DrawMenuController toolsController;
 
     @FXML
     public void initialize(){
-        vertexButton.setOnAction(e -> selectMode(DrawMode.VERTEX));
-        edgeButton.setOnAction(e -> selectMode(DrawMode.EDGE));
+        vertexButton.setOnAction(e -> toolsController.selectMode(DrawMode.VERTEX));
+        edgeButton.setOnAction(e -> toolsController.selectMode(DrawMode.EDGE));
     }
 
-    private void selectMode(DrawMode mode){
-        selectedMode = mode;
-        System.out.println("Selected mode: "+mode);
+    public void setToolsController(DrawMenuController controller){
+        toolsController = controller;
     }
 }

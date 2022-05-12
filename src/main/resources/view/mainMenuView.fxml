@@ -2,16 +2,16 @@
 
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.MenuBar?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.controller.MainMenuController">
 
     <MenuBar>
         <menus>
-            <Menu text="File">
+            <Menu text="File" fx:id="fileMenu">
                 <items>
                     <MenuItem text="Save"></MenuItem>
                     <MenuItem text="Save as"></MenuItem>
@@ -19,19 +19,14 @@
                     <MenuItem text="Export"></MenuItem>
                 </items>
             </Menu>
-            <Menu text="Edit">
+            <Menu text="Edit" fx:id="editMenu">
                 <items>
                     <MenuItem text="Undo"></MenuItem>
                     <MenuItem text="Redo"></MenuItem>
                     <MenuItem text="Delete"></MenuItem>
                 </items>
             </Menu>
-            <Menu text="Draw">
-                <items>
-                    <MenuItem text="Vertex"></MenuItem>
-                    <MenuItem text="Edge"></MenuItem>
-                </items>
-            </Menu>
+            <fx:include source="drawMenuView.fxml" fx:id="drawMenu"/>
         </menus>
     </MenuBar>
     <fx:include source="graphEditView.fxml" fx:id="graphTools"/>

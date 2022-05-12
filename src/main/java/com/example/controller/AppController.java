@@ -1,6 +1,9 @@
 package com.example.controller;
 
 
+import com.brunomnsilva.smartgraph.graph.Graph;
+import com.example.draw.CreationHelper;
+import com.example.model.MyGraph;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -15,6 +18,12 @@ public class AppController {
 
     @FXML
     private GraphController graphController;
+
+    @FXML
+    private MainMenuController menuController;
+
+//    private CreationHelper drawingHelper = new CreationHelper();
+//    private Graph<Integer, Integer> graph = new MyGraph<>();
 
     public BorderPane getRoot() {
         return root;

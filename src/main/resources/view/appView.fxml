@@ -14,7 +14,7 @@
     </center>
 
     <top>
-        <fx:include source="mainMenuView.fxml"/>
+        <fx:include source="mainMenuView.fxml" fx:id="menu"/>
     </top>
 
 </BorderPane>
