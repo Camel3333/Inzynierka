@@ -25,8 +25,9 @@ public class StageInitializer implements ApplicationListener<ByzantineGeneralsAp
         Stage stage = event.getStage();
         AppController appController = fxWeaver.loadController(AppController.class);
         configureStage(stage, appController.getRoot());
-        stage.show();
         appController.initGraph();
+        stage.show();
+        appController.initGraph1();
     }
 
     private void configureStage(Stage primaryStage, BorderPane root) {

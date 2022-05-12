@@ -22,18 +22,19 @@ public class AppController {
     @FXML
     private MainMenuController menuController;
 
-//    private CreationHelper drawingHelper = new CreationHelper();
-//    private Graph<Integer, Integer> graph = new MyGraph<>();
+    private CreationHelper drawingHelper = new CreationHelper();
+    private Graph<Integer, Integer> graph = new MyGraph<>();
 
     public BorderPane getRoot() {
         return root;
     }
 
     public void initGraph() {
+        graphController.setModelGraph(graph);
+    }
+
+    public void initGraph1(){
         graphController.initGraph();
     }
 
-    @FXML
-    public void initialize(){
-    }
 }

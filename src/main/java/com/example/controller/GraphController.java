@@ -32,7 +32,14 @@ public class GraphController {
     private SmartGraphDemoContainer container;
     private SmartGraphPanel<Integer, Integer> graphView;
     @Getter
-    private Graph<Integer, Integer> graph = new MyGraph<>();
+    private Graph<Integer, Integer> graph;
+
+    public void setModelGraph(Graph<Integer, Integer> graph){
+        this.graph = graph;
+        //remove old graph
+        graphRoot.getChildren().remove(container);
+        init();
+    }
 
     private void buildGraph() {
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
@@ -88,8 +95,7 @@ public class GraphController {
         update();
     }
 
-    @FXML
-    public void initialize() {
+    private void init() {
         buildGraph();
         container.prefWidthProperty().bind(graphRoot.widthProperty());
         container.prefHeightProperty().bind(graphRoot.heightProperty());
