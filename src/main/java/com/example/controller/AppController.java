@@ -4,6 +4,7 @@ package com.example.controller;
 import com.brunomnsilva.smartgraph.graph.Graph;
 import com.example.draw.CreationHelper;
 import com.example.model.MyGraph;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -32,9 +33,4 @@ public class AppController {
     public void initGraph() {
         graphController.setModelGraph(graph);
     }
-
-    public void initGraph1(){
-        graphController.initGraph();
-    }
-
 }
