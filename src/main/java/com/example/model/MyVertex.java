@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class MyVertex<V> implements Vertex<V>, Agent {
@@ -28,6 +29,43 @@ public class MyVertex<V> implements Vertex<V>, Agent {
         id = element;
     }
 
+    public void sendOpinions(MyVertex<V> vertex){
+        Opinions opinions = new AgentOpinions();
+        for(Opinion opinion : this.opinions.getOpinions()){
+            if(isTraitor.getValue()){
+                opinions.addOpinion(new AgentOpinion(opinion.getName(), !opinion.isSupporting().getValue())); //%2?
+            }
+            else{
+                opinions.addOpinion(new AgentOpinion(opinion.getName(), opinion.isSupporting().getValue()));
+            }
+        }
+        vertex.receiveOpinions(this, opinions);
+    }
+
+    public void receiveOpinions(MyVertex<V> vertex, Opinions agentOpinions){
+        knowledge.put(vertex, (AgentOpinions) agentOpinions);
+    }
+
+    public void chooseMajority(){
+        for(Opinion opinion : this.opinions.getOpinions()){
+            int against = 0;
+            int supports = 0;
+            Iterator<Map.Entry<MyVertex<V>, AgentOpinions>> iterator = knowledge.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<MyVertex<V>, AgentOpinions> entry = iterator.next();
+                if(entry.getValue().getOpinionByName(opinion.getName()) != null){ //else?
+                    if(entry.getValue().getOpinionByName(opinion.getName()).isSupporting().getValue()){
+                        supports += 1;
+                    }
+                    else{
+                        against += 1;
+                    }
+                }
+            }
+            opinion.setIsSupporting(supports > against);
+        }
+    }
+
     @Override
     public V element() {
         return id;
@@ -41,5 +79,13 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     @Override
     public void setIsTraitor(boolean isTraitor) {
         this.isTraitor.setValue(isTraitor);
+    }
+
+    public void setOpinions(AgentOpinions opinions) {
+        this.opinions = opinions;
+    }
+
+    public Map<MyVertex<V>, AgentOpinions> getKnowledge() {
+        return knowledge;
     }
 }
