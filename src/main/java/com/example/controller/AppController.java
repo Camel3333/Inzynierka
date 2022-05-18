@@ -31,6 +31,17 @@ public class AppController {
     }
 
     public void initGraph() {
+        initDrawingHelper();
+        initMenu();
         graphController.setModelGraph(graph);
+        graphController.setDrawingHelper(drawingHelper);
+    }
+
+    public void initDrawingHelper() {
+        drawingHelper.setGraph(graph);
+    }
+
+    public void initMenu() {
+        menuController.setDrawingHelper(drawingHelper);
     }
 }

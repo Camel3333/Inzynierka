@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.draw.CreationHelper;
 import javafx.fxml.FXML;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
@@ -22,5 +23,9 @@ public class MainMenuController {
     @FXML
     public void initialize(){
         bindToolbars();
+    }
+
+    public void setDrawingHelper(CreationHelper drawingHelper) {
+        drawMenuController.setDrawHelper(drawingHelper);
     }
 }

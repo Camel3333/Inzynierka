@@ -17,7 +17,7 @@ public class DrawMenuController {
     MenuItem edgeItem;
 
     @Setter
-    private CreationHelper drawHelper = new CreationHelper();
+    private CreationHelper drawHelper;
 
     public void selectMode(DrawMode mode){
         drawHelper.setDrawMode(mode);

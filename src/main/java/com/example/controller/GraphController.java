@@ -5,13 +5,17 @@ import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
+import com.example.draw.CreationHelper;
 import com.example.draw.MySmartGraphPanel;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
+import com.example.util.DrawMouseEventHandler;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 import net.rgielen.fxweaver.core.FxControllerAndView;
@@ -36,6 +40,7 @@ public class GraphController {
     private MySmartGraphPanel<Integer, Integer> graphView;
     @Getter
     private Graph<Integer, Integer> graph;
+    private CreationHelper drawingHelper;
 
     public void setModelGraph(Graph<Integer, Integer> graph){
         this.graph = graph;
@@ -43,6 +48,10 @@ public class GraphController {
         graphRoot.getChildren().remove(container);
         init();
         initGraphView();
+    }
+
+    public void setDrawingHelper(CreationHelper drawingHelper) {
+        this.drawingHelper = drawingHelper;
     }
 
     public Graph<Integer,Integer> getModelGraph(){
@@ -57,6 +66,12 @@ public class GraphController {
     }
 
     private void setGraphViewBindings(){
+        graphView.setVertexSingleClickAction(graphVertex -> {
+            if(drawingHelper != null) {
+                drawingHelper.selectVertex(graphVertex.getUnderlyingVertex());
+            }
+        });
+
         graphView.setVertexDoubleClickAction(graphVertex -> {
             // load popUp view
             FxControllerAndView<VertexSettingsController, Node> controllerAndView = fxWeaver.load(VertexSettingsController.class);
