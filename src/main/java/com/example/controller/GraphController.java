@@ -6,6 +6,7 @@ import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrateg
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import com.example.draw.CreationHelper;
+import com.example.draw.DrawMode;
 import com.example.draw.MySmartGraphPanel;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
@@ -91,6 +92,22 @@ public class GraphController {
                 }
             });
         });
+
+        //adding vertex
+        DrawMouseEventHandler drawMouseEventHandler = new DrawMouseEventHandler();
+        drawMouseEventHandler.setOnClickedEventHandler((mouseEvent) -> {
+            if (drawingHelper.getCurrentDrawMode() == DrawMode.VERTEX){
+                // add vertex at clicked position
+                System.out.println("X = "+mouseEvent.getX());
+                System.out.println("Y = "+mouseEvent.getY());
+                var x = mouseEvent.getX();
+                var y = mouseEvent.getY();
+                var vertex = graph.insertVertex(counter++);
+                graphView.updateAndWait();
+                graphView.setVertexPosition(vertex, x, y);
+            }
+        });
+        graphView.addEventHandler(MouseEvent.ANY, drawMouseEventHandler);
     }
 
     public void initGraphView() {

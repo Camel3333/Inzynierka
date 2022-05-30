@@ -2,11 +2,13 @@ package com.example.draw;
 
 import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import lombok.Getter;
 import lombok.Setter;
 
 public class CreationHelper {
     @Setter
     private Graph<Integer, Integer> graph;
+    @Getter
     private DrawMode currentDrawMode = DrawMode.EDGE;
     private Vertex<Integer> selectedToEdge;
 
@@ -23,7 +25,6 @@ public class CreationHelper {
             selectedToEdge = null;
         }
     }
-
 
     public void setDrawMode(DrawMode mode){
         if (currentDrawMode != mode){

@@ -24,7 +24,6 @@ public class DrawMouseEventHandler implements EventHandler<MouseEvent> {
 
         }
         else if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
-            System.out.println("CLICKED");
             if (!dragging && onClickedEventHandler != null) {
                 System.out.println("CLICKED EVEN BETTER");
                 onClickedEventHandler.handle(event);
