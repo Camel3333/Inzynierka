@@ -10,8 +10,6 @@
       fx:id="graphRoot">
 
     <HBox>
-        <Button text="Add vertex" onAction="#addExampleVertex"/>
-        <Button text="Remove vertex" onAction="#removeLastVertex"/>
         <Button text="Update" onAction="#update"/>
     </HBox>
 </VBox>
