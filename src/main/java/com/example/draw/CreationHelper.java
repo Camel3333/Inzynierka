@@ -1,5 +1,6 @@
 package com.example.draw;
 
+import com.brunomnsilva.smartgraph.graph.Edge;
 import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import lombok.Getter;
@@ -14,15 +15,28 @@ public class CreationHelper {
 
     public void selectVertex(Vertex<Integer> vertex){
         System.out.println("SELECT VERTEX WAS CALLED");
-        if (!checkCreationCondition(DrawMode.EDGE)) {
-            return;
+        switch (currentDrawMode){
+            case EDGE -> {
+                if (selectedToEdge == null) {
+                    selectedToEdge = vertex;
+                }
+                else {
+                    graph.insertEdge(selectedToEdge, vertex, 1);
+                    selectedToEdge = null;
+                }
+            }
+            case DELETE -> {
+                graph.removeVertex(vertex);
+            }
         }
-        if (selectedToEdge == null) {
-            selectedToEdge = vertex;
-        }
-        else {
-            graph.insertEdge(selectedToEdge, vertex, 1);
-            selectedToEdge = null;
+    }
+
+    public void selectEdge(Edge<Integer,Integer> edge){
+        System.out.println("SELECT EDGE WAS CALLED");
+        switch (currentDrawMode){
+            case DELETE -> {
+                graph.removeEdge(edge);
+            }
         }
     }
 

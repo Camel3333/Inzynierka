@@ -3,19 +3,15 @@ package com.example.controller;
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import com.example.draw.CreationHelper;
 import com.example.draw.DrawMode;
 import com.example.draw.MySmartGraphPanel;
-import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
@@ -61,7 +57,9 @@ public class GraphController {
 
     private void buildGraphContainers() {
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
-        graphView = new MySmartGraphPanel<>(graph, strategy);
+        // TODO: Load properties from file
+        SmartGraphProperties properties = new SmartGraphProperties("edge.arrow = false");
+        graphView = new MySmartGraphPanel<>(graph, properties, strategy);
         setGraphViewBindings();
         container = new SmartGraphDemoContainer(graphView);
     }
@@ -70,6 +68,12 @@ public class GraphController {
         graphView.setVertexSingleClickAction(graphVertex -> {
             if(drawingHelper != null) {
                 drawingHelper.selectVertex(graphVertex.getUnderlyingVertex());
+            }
+        });
+
+        graphView.setEdgeSingleClickAction(graphEdge -> {
+            if(drawingHelper != null) {
+                drawingHelper.selectEdge(graphEdge.getUnderlyingEdge());
             }
         });
 
@@ -127,21 +131,6 @@ public class GraphController {
 
     // TODO: implement update as listener to graph changes
     public void update(){
-        graphView.updateAndWait();
-    }
-
-    // only for test purposes
-    public void addExampleVertex(){
-        var vertex = graph.insertVertex(counter++);
-        graphView.updateAndWait();
-        graphView.setVertexPosition(vertex, 100, 100);
-    }
-
-    // only for test purposes
-    public void removeLastVertex(){
-        var vertex = graph.vertices().stream().filter(v -> v.element().equals(counter-1)).findFirst();
-        graph.removeVertex(vertex.get());
-        counter--;
         graphView.updateAndWait();
     }
 

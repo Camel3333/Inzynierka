@@ -81,4 +81,20 @@ public class MySmartGraphPanel<V,E> extends SmartGraphPanel<V,E> {
         this.addEventHandler(MouseEvent.ANY, drawMouseEventHandler);
 
     }
+
+    public void setEdgeSingleClickAction(Consumer<SmartGraphEdge<E,V>> action){
+        DrawMouseEventHandler drawMouseEventHandler = new DrawMouseEventHandler();
+        drawMouseEventHandler.setOnClickedEventHandler((mouseEvent) -> {
+            Node node = UtilitiesJavaFX.pick(this, mouseEvent.getSceneX(), mouseEvent.getSceneY());
+            if (node == null) {
+                return;
+            }
+
+            if (node instanceof SmartGraphEdge) {
+                SmartGraphEdge e = (SmartGraphEdge)node;
+                action.accept(e);
+            }
+        });
+        this.addEventHandler(MouseEvent.ANY, drawMouseEventHandler);
+    }
 }

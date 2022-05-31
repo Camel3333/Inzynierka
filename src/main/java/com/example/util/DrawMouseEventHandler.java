@@ -3,6 +3,8 @@ package com.example.util;
 
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 import lombok.Setter;
 
 public class DrawMouseEventHandler implements EventHandler<MouseEvent> {
@@ -25,9 +27,9 @@ public class DrawMouseEventHandler implements EventHandler<MouseEvent> {
         }
         else if (event.getEventType() == MouseEvent.MOUSE_CLICKED) {
             if (!dragging && onClickedEventHandler != null) {
-                System.out.println("CLICKED EVEN BETTER");
                 onClickedEventHandler.handle(event);
             }
+            dragging = false;
         }
 
     }

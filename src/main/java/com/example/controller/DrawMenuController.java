@@ -15,6 +15,10 @@ public class DrawMenuController {
     MenuItem vertexItem;
     @FXML
     MenuItem edgeItem;
+    @FXML
+    MenuItem deleteItem;
+    @FXML
+    MenuItem noneItem;
 
     @Setter
     private CreationHelper drawHelper;
@@ -29,5 +33,7 @@ public class DrawMenuController {
 //        graphToolsController.setToolsController(this);
         vertexItem.setOnAction(e -> selectMode(DrawMode.VERTEX));
         edgeItem.setOnAction(e -> selectMode(DrawMode.EDGE));
+        deleteItem.setOnAction(e -> selectMode(DrawMode.DELETE));
+        noneItem.setOnAction(e -> selectMode(DrawMode.NONE));
     }
 }

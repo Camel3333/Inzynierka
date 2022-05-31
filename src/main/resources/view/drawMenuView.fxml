@@ -10,5 +10,7 @@
     <items>
         <MenuItem text="Vertex" fx:id = "vertexItem"/>
         <MenuItem text="Edge" fx:id = "edgeItem"/>
+        <MenuItem text="Delete" fx:id = "deleteItem"/>
+        <MenuItem text="None" fx:id = "noneItem"/>
     </items>
 </Menu>

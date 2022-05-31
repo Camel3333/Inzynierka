@@ -13,6 +13,10 @@ public class GraphEditController {
     Button vertexButton;
     @FXML
     Button edgeButton;
+    @FXML
+    Button deleteButton;
+    @FXML
+    Button noneButton;
 
     private DrawMenuController toolsController;
 
@@ -20,6 +24,8 @@ public class GraphEditController {
     public void initialize(){
         vertexButton.setOnAction(e -> toolsController.selectMode(DrawMode.VERTEX));
         edgeButton.setOnAction(e -> toolsController.selectMode(DrawMode.EDGE));
+        deleteButton.setOnAction(e -> toolsController.selectMode(DrawMode.DELETE));
+        noneButton.setOnAction(e -> toolsController.selectMode(DrawMode.NONE));
     }
 
     public void setToolsController(DrawMenuController controller){

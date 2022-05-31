@@ -23,7 +23,6 @@
                 <items>
                     <MenuItem text="Undo"></MenuItem>
                     <MenuItem text="Redo"></MenuItem>
-                    <MenuItem text="Delete"></MenuItem>
                 </items>
             </Menu>
             <fx:include source="drawMenuView.fxml" fx:id="drawMenu"/>
