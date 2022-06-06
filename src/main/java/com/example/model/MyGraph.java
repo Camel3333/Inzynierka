@@ -25,6 +25,19 @@ public class MyGraph<V,E> implements Graph<V,E> {
         return adjacency.keySet();
     }
 
+    public boolean checkConsensus(){
+        if(numVertices() == 0){
+            return true;
+        }
+        Opinions expectedOpinions = ((MyVertex<V>) vertices().stream().findFirst().get()).getOpinions();
+        for(Vertex<V> v : vertices()){
+            if(!((MyVertex<V>) v).getOpinions().compareOpinions(expectedOpinions)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public Collection<Edge<E, V>> edges() {
         return edges;
