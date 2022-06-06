@@ -19,10 +19,6 @@ public class AgentOpinions implements Opinions {
         opinions.remove(opinion);
     }
 
-    public ObservableList<Opinion> getOpinions() {
-        return opinions;
-    }
-
     public Opinion getOpinionByName(String name){
         for(Opinion opinion : this.opinions){
             if(opinion.getName().equals(name)){
