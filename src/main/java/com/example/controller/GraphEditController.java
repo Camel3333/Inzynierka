@@ -27,7 +27,7 @@ public class GraphEditController {
     @FXML
     Button noneButton;
     @FXML
-    Button startButton;
+    Button simulateButton;
 
 
     private DrawMenuController drawMenuController;
@@ -43,7 +43,7 @@ public class GraphEditController {
     }
 
     private void initializeSimulationButtons() {
-        startButton.setOnAction(e -> simulationMenuController.changeApplicationState(ApplicationState.SIMULATING));
+        simulateButton.setOnAction(e -> simulationMenuController.changeApplicationState(ApplicationState.SIMULATING));
         buttons.put(ApplicationState.SIMULATING,
                 new ArrayList<>(List.of(vertexButton, edgeButton, deleteButton, noneButton)));
     }

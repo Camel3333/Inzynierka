@@ -62,10 +62,6 @@ public class GraphController {
         initGraphView();
     }
 
-    public void setDrawingHelper(CreationHelper drawingHelper) {
-        this.drawingHelper = drawingHelper;
-    }
-
     public Graph<Integer,Integer> getModelGraph(){
         return graph;
     }

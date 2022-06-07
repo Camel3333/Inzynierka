@@ -2,18 +2,23 @@ package com.example.simulation;
 
 import com.example.algorithm.Algorithm;
 import com.example.algorithm.AlgorithmSettings;
+import com.example.controller.GraphController;
 import com.example.model.MyGraph;
+import lombok.Setter;
 
 public class SimpleSimulation implements Simulation {
 
-    private MyGraph graph;
+    @Setter
+    private GraphController graphController;
 
-    public SimpleSimulation(MyGraph graph) {
-        this.graph = graph;
+    public SimpleSimulation(GraphController graphController) {
+        this.graphController = graphController;
     }
 
     @Override
     public void start(Algorithm algorithm, AlgorithmSettings settings) {
-        algorithm.execute(graph, (int)settings.getSettings().get("depth"));
+        algorithm.execute((MyGraph<Integer, Integer>) graphController.getGraph(),
+                (int) settings.getSettings().get("depth"));
+        graphController.update();
     }
 }

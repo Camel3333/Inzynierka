@@ -10,6 +10,11 @@ import java.util.stream.Collectors;
 
 public class LamportAlgorithm implements Algorithm{
 
+    @Override
+    public AlgorithmType getType() {
+        return AlgorithmType.LAMPORT;
+    }
+
     public void execute(MyGraph<Integer, Integer> myGraph, int depth){
         if(myGraph.numVertices() == 0){ //?
             return;

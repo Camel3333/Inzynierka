@@ -14,7 +14,7 @@ public class SimulationMenuController {
     private int i = 0;
 
     @FXML
-    MenuItem startItem;
+    MenuItem simulateItem;
 
     private final AppController appController;
 
@@ -26,7 +26,7 @@ public class SimulationMenuController {
 
     @FXML
     public void initialize(){
-        startItem.setOnAction(e -> {
+        simulateItem.setOnAction(e -> {
             if(i % 2 == 0) {
                 changeApplicationState(ApplicationState.SIMULATING);
             }
