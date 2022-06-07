@@ -6,8 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MyVertex<V> implements Vertex<V>, Agent {
     private V id;
@@ -19,6 +18,7 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     @Getter
     private AgentOpinions opinions;
     private Map<MyVertex<V>, AgentOpinions> knowledge = new HashMap<>();
+    private List<Opinions> receivedOpinions = new ArrayList<>();
 
     public MyVertex(V id){
         this.id = id;
@@ -26,6 +26,37 @@ public class MyVertex<V> implements Vertex<V>, Agent {
 
     public void setElement(V element){
         id = element;
+    }
+
+    public void sendOpinions(MyVertex<V> vertex){
+        Opinions opinions = new AgentOpinions();
+        for(Opinion opinion : this.opinions.getOpinions()){
+            if(isTraitor.getValue() && (int) element() % 2 == 0){
+                opinions.addOpinion(new AgentOpinion(opinion.getName(), !opinion.isSupporting().getValue()));
+            }
+            else{
+                opinions.addOpinion(new AgentOpinion(opinion.getName(), opinion.isSupporting().getValue()));
+            }
+        }
+        vertex.receiveOpinions(this, opinions);
+    }
+
+    public void receiveOpinions(MyVertex<V> vertex, Opinions agentOpinions){
+        if(opinions == null){
+            opinions = (AgentOpinions) agentOpinions;
+        }
+        receivedOpinions.add(agentOpinions);
+        System.out.println("#" + element() + " received " + agentOpinions.getOpinions().get(0).isSupporting().getValue() + " from #" + vertex.element());
+    }
+
+    public void chooseMajority(){
+        for(Opinion opinion : this.opinions.getOpinions()){
+            long supports = receivedOpinions.stream()
+                    .filter(o -> o.getOpinionByName(opinion.getName()).isSupporting().getValue())
+                    .count();
+            opinion.setIsSupporting(supports > receivedOpinions.size() - supports);
+        }
+        System.out.println("#" + element() + " decision " + opinions.getOpinions().get(0).isSupporting().getValue());
     }
 
     @Override
@@ -41,5 +72,17 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     @Override
     public void setIsTraitor(boolean isTraitor) {
         this.isTraitor.setValue(isTraitor);
+    }
+
+    public void setOpinions(AgentOpinions opinions) {
+        this.opinions = opinions;
+    }
+
+    public Map<MyVertex<V>, AgentOpinions> getKnowledge() {
+        return knowledge;
+    }
+
+    public List<Opinions> getReceivedOpinions() {
+        return receivedOpinions;
     }
 }

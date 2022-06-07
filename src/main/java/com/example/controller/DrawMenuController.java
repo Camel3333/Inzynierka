@@ -30,10 +30,16 @@ public class DrawMenuController {
 
     @FXML
     public void initialize(){
-//        graphToolsController.setToolsController(this);
         vertexItem.setOnAction(e -> selectMode(DrawMode.VERTEX));
         edgeItem.setOnAction(e -> selectMode(DrawMode.EDGE));
         deleteItem.setOnAction(e -> selectMode(DrawMode.DELETE));
         noneItem.setOnAction(e -> selectMode(DrawMode.NONE));
+    }
+
+    public void setEnabled(boolean enabled) {
+        vertexItem.setDisable(!enabled);
+        edgeItem.setDisable(!enabled);
+        deleteItem.setDisable(!enabled);
+        noneItem.setDisable(!enabled);
     }
 }

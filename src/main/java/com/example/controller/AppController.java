@@ -2,13 +2,23 @@ package com.example.controller;
 
 
 import com.brunomnsilva.smartgraph.graph.Graph;
+import com.example.ApplicationState;
+import com.example.algorithm.AlgorithmType;
 import com.example.draw.CreationHelper;
 import com.example.model.MyGraph;
+import com.example.simulation.SimpleSimulation;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
+import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @FxmlView("/view/appView.fxml")
@@ -23,7 +33,15 @@ public class AppController {
     @FXML
     private MainMenuController menuController;
 
+    @FXML
+    private SimulationController simulationController;
+
+    @Setter
+    private ObjectProperty<ApplicationState> applicationStateProperty =
+            new SimpleObjectProperty<>();
+
     private CreationHelper drawingHelper = new CreationHelper();
+
     private Graph<Integer, Integer> graph = new MyGraph<>();
 
     public BorderPane getRoot() {
@@ -31,17 +49,37 @@ public class AppController {
     }
 
     public void initGraph() {
-        initDrawingHelper();
-        initMenu();
         graphController.setModelGraph(graph);
-        graphController.setDrawingHelper(drawingHelper);
+//        initDrawingHelper();
+        applicationStateProperty.addListener(menuController);
+        setApplicationState(ApplicationState.DRAWING);
     }
 
     public void initDrawingHelper() {
-        drawingHelper.setGraph(graph);
+        graphController.removeObserver(drawingHelper);
+        drawingHelper = new CreationHelper();
+        drawingHelper.setGraphController(graphController);
+        graphController.addObserver(drawingHelper);
+        menuController.setDrawingHelper(drawingHelper);
     }
 
-    public void initMenu() {
-        menuController.setDrawingHelper(drawingHelper);
+    public void initSimulationController() {
+        simulationController.setAvailableAlgorithms(FXCollections.observableArrayList(AlgorithmType.LAMPORT));
+        simulationController.setSimulation(new SimpleSimulation(graphController));
+    }
+
+    public void setApplicationState(ApplicationState applicationState) {
+        this.applicationStateProperty.set(applicationState);
+        switch (applicationState) {
+            case DRAWING -> {
+                initDrawingHelper();
+                simulationController.hide();
+            }
+            case SIMULATING -> {
+                initSimulationController();
+                graphController.removeObserver(drawingHelper);
+                simulationController.show();
+            }
+        }
     }
 }

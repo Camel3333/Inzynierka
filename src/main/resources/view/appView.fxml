@@ -3,6 +3,7 @@
 
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.control.Button?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.controller.AppController"
@@ -12,6 +13,10 @@
     <center>
         <fx:include source="graphView.fxml" fx:id ="graph"/>
     </center>
+
+    <right>
+        <fx:include source="simulationOptionsView.fxml" fx:id ="simulation"/>
+    </right>
 
     <top>
         <fx:include source="mainMenuView.fxml" fx:id="menu"/>
