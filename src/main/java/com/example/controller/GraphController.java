@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graph.Graph;
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
@@ -10,6 +11,7 @@ import com.example.draw.DrawMode;
 import com.example.draw.MySmartGraphPanel;
 import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;
+import com.example.util.GraphObserver;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -22,6 +24,9 @@ import org.controlsfx.control.PopOver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 @FxmlView("/view/graphView.fxml")
 public class GraphController {
@@ -32,15 +37,25 @@ public class GraphController {
     @Autowired
     private FxWeaver fxWeaver;
 
-    private int counter = 0;
+    private int vertexIdCounter = 0;
     private SmartGraphDemoContainer container;
     private MySmartGraphPanel<Integer, Integer> graphView;
     @Getter
     private Graph<Integer, Integer> graph;
     private CreationHelper drawingHelper;
+    private List<GraphObserver<Integer, Integer>> observers = new ArrayList<>();
+
+    public void addObserver(GraphObserver<Integer, Integer> observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(GraphObserver<Integer, Integer> observer) {
+        observers.remove(observer);
+    }
 
     public void setModelGraph(Graph<Integer, Integer> graph){
         this.graph = graph;
+        vertexIdCounter = graph.numVertices();
         //remove old graph
         graphRoot.getChildren().remove(container);
         init();
@@ -66,18 +81,15 @@ public class GraphController {
 
     private void setGraphViewBindings(){
         graphView.setVertexSingleClickAction(graphVertex -> {
-            if(drawingHelper != null) {
-                drawingHelper.selectVertex(graphVertex.getUnderlyingVertex());
-            }
+            observers.forEach(observer -> observer.vertexClicked(graphVertex.getUnderlyingVertex()));
         });
 
         graphView.setEdgeSingleClickAction(graphEdge -> {
-            if(drawingHelper != null) {
-                drawingHelper.selectEdge(graphEdge.getUnderlyingEdge());
-            }
+            observers.forEach(observer -> observer.edgeClicked(graphEdge.getUnderlyingEdge()));
         });
 
         graphView.setVertexDoubleClickAction(graphVertex -> {
+            observers.forEach(observer -> observer.vertexDoubleClicked(graphVertex.getUnderlyingVertex()));
             // load popUp view
             FxControllerAndView<VertexSettingsController, Node> controllerAndView = fxWeaver.load(VertexSettingsController.class);
             // bind controller with selected vertex
@@ -97,21 +109,23 @@ public class GraphController {
             });
         });
 
-        //adding vertex
+        graphView.setEdgeDoubleClickAction(graphEdge -> {
+            observers.forEach(observer -> observer.edgeDoubleClicked(graphEdge.getUnderlyingEdge()));
+        });
+
         DrawMouseEventHandler drawMouseEventHandler = new DrawMouseEventHandler();
         drawMouseEventHandler.setOnClickedEventHandler((mouseEvent) -> {
-            if (drawingHelper.getCurrentDrawMode() == DrawMode.VERTEX){
-                // add vertex at clicked position
-                System.out.println("X = "+mouseEvent.getX());
-                System.out.println("Y = "+mouseEvent.getY());
-                var x = mouseEvent.getX();
-                var y = mouseEvent.getY();
-                var vertex = graph.insertVertex(counter++);
-                graphView.updateAndWait();
-                graphView.setVertexPosition(vertex, x, y);
-            }
+            System.out.println("X = "+mouseEvent.getX());
+            System.out.println("Y = "+mouseEvent.getY());
+            var x = mouseEvent.getX();
+            var y = mouseEvent.getY();
+            observers.forEach(observer -> observer.clickedAt(x,y));
         });
         graphView.addEventHandler(MouseEvent.ANY, drawMouseEventHandler);
+    }
+
+    public void setVertexPosition(Vertex vertex, double x, double y) {
+        graphView.setVertexPosition(vertex, x, y);
     }
 
     public void initGraphView() {
@@ -139,5 +153,9 @@ public class GraphController {
         container.prefWidthProperty().bind(graphRoot.widthProperty());
         container.prefHeightProperty().bind(graphRoot.heightProperty());
         graphRoot.getChildren().add(container);
+    }
+
+    public int getNextVertexId() {
+        return vertexIdCounter++;
     }
 }

@@ -49,7 +49,8 @@ public class AppController {
     }
 
     public void initDrawingHelper() {
-        drawingHelper.setGraph(graph);
+        drawingHelper.setGraphController(graphController);
+        graphController.addObserver(drawingHelper);
     }
 
     public void initMenu() {

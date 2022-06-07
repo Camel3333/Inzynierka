@@ -3,13 +3,8 @@
 
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Button?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.controller.GraphController"
       fx:id="graphRoot">
-
-    <HBox>
-        <Button text="Update" onAction="#update"/>
-    </HBox>
 </VBox>
