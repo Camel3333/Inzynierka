@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.ApplicationState;
 import com.example.algorithm.AlgorithmSettings;
 import com.example.algorithm.AlgorithmType;
+import com.example.simulation.Simulation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,6 +13,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +35,12 @@ public class SimulationController {
 
     private final Map<AlgorithmType, List<Node>> options = new HashMap<>();
 
+    private final Map<String, Object> defaultSettings = new HashMap<>();
+
     private ObservableList<AlgorithmType> availableAlgorithms = FXCollections.emptyObservableList();
+
+    @Setter
+    private Simulation simulation;
 
     public void show() {
         parent.setVisible(true);
@@ -45,8 +52,13 @@ public class SimulationController {
         parent.setManaged(false);
     }
 
+    private void setDefaultSettings(){
+        defaultSettings.put((String)depth.getUserData(), 1);
+    }
+
     @FXML
     public void initialize() {
+        setDefaultSettings();
         options.put(AlgorithmType.LAMPORT, new ArrayList<>(List.of(depth)));
         hideAlgorithmSettings();
         algorithmsBox.setCellFactory(param -> new ListCell<>() {
@@ -72,11 +84,13 @@ public class SimulationController {
 
     private void showAlgorithmSettings(AlgorithmType algorithmType) {
         hideAlgorithmSettings();
+        algorithmSettings = new AlgorithmSettings();
         options.get(algorithmType).forEach(node -> {
                     node.setVisible(true);
                     node.setManaged(true);
+                    algorithmSettings.getSettings()
+                            .put((String) node.getUserData(), defaultSettings.get((String) node.getUserData()));
                 });
-        algorithmSettings = new AlgorithmSettings();
     }
 
     private void hideAlgorithmSettings() {
@@ -92,6 +106,11 @@ public class SimulationController {
         availableAlgorithms = algorithmTypes;
         algorithmsBox.setItems(availableAlgorithms);
         algorithmsBox.getSelectionModel().select(0);
+    }
+
+    public void startAlgorithm() {
+        // TODO: Walidacja opcji
+        simulation.start(algorithmsBox.getValue().getAlgorithm(), algorithmSettings);
     }
 
 }

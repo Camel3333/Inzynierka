@@ -6,6 +6,7 @@ import com.example.ApplicationState;
 import com.example.algorithm.AlgorithmType;
 import com.example.draw.CreationHelper;
 import com.example.model.MyGraph;
+import com.example.simulation.SimpleSimulation;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -64,6 +65,7 @@ public class AppController {
 
     public void initSimulationController() {
         simulationController.setAvailableAlgorithms(FXCollections.observableArrayList(AlgorithmType.LAMPORT));
+        simulationController.setSimulation(new SimpleSimulation(graphController));
     }
 
     public void setApplicationState(ApplicationState applicationState) {

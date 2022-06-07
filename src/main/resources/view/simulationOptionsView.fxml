@@ -12,6 +12,9 @@
             fx:id="parent">
 
     <ComboBox fx:id = "algorithmsBox"/>
-    <TextField fx:id = "depth"/>
-    <Button fx:id="startButton" text="Start"/>
+    <GridPane>
+        <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Depth"/>
+        <TextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id = "depth" userData="depth"/>
+    </GridPane>
+    <Button fx:id="startButton" text="Start" onAction="#startAlgorithm"/>
 </VBox>
