@@ -12,30 +12,11 @@ public class MyVertexTest {
         var v1 = new MyVertex<>(1);
         var v2 = new MyVertex<>(2);
 
-        var opinions = new AgentOpinions();
-
-        var o1 = new AgentOpinion("name", true);
-
-        // When
-        opinions.addOpinion(o1);
-
-        v2.receiveOpinions(v1, opinions);
-
-        // Then
-        assertEquals(v2.getKnowledge().get(v1), opinions);
-    }
-
-    @Test
-    public void receiveOpinionsTwiceFromSameVertexTest(){
-        // Given
-        var v1 = new MyVertex<>(1);
-        var v2 = new MyVertex<>(2);
-
         var opinions1 = new AgentOpinions();
         var opinions2 = new AgentOpinions();
 
-        var o1 = new AgentOpinion("opinion1", true);
-        var o2 = new AgentOpinion("opinion2", false);
+        var o1 = new AgentOpinion("name1", true);
+        var o2 = new AgentOpinion("name2", false);
 
         // When
         opinions1.addOpinion(o1);
@@ -45,7 +26,8 @@ public class MyVertexTest {
         v2.receiveOpinions(v1, opinions2);
 
         // Then
-        assertEquals(v2.getKnowledge().get(v1), opinions2);
+        assertEquals(v2.getReceivedOpinions().get(0), opinions1);
+        assertEquals(v2.getReceivedOpinions().get(1), opinions2);
     }
 
     @Test
@@ -56,17 +38,17 @@ public class MyVertexTest {
 
         var opinions = new AgentOpinions();
 
-        var o1 = new AgentOpinion("opinion", false);
+        var o = new AgentOpinion("opinion", false);
 
         // When
-        opinions.addOpinion(o1);
+        opinions.addOpinion(o);
 
         v1.setOpinions(opinions);
         v1.setIsTraitor(false);
         v1.sendOpinions(v2);
 
         // Then
-        assertTrue(v2.getKnowledge().get(v1).compareOpinions(opinions));
+        assertTrue(v2.getReceivedOpinions().get(0).compareOpinions(opinions));
     }
 
     @Test
@@ -85,12 +67,12 @@ public class MyVertexTest {
         opinions.addOpinion(o1);
         expectedOpinions.addOpinion(o2);
 
-        v1.setOpinions(opinions);
-        v1.setIsTraitor(true);
-        v1.sendOpinions(v2);
+        v2.setOpinions(opinions);
+        v2.setIsTraitor(true);
+        v2.sendOpinions(v1);
 
         // Then
-        assertTrue(v2.getKnowledge().get(v1).compareOpinions(expectedOpinions));
+        assertTrue(v1.getReceivedOpinions().get(0).compareOpinions(expectedOpinions));
     }
 
     @Test
