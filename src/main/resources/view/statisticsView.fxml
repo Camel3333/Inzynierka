@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+
+
+<LineChart xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:id="opinionChart"
+           fx:controller="com.example.controller.StatisticsController"
+           prefHeight="300.0" prefWidth="600.0" title="Dominujące opinie">
+    <xAxis>
+        <NumberAxis side="BOTTOM"/>
+    </xAxis>
+    <yAxis>
+        <NumberAxis side="LEFT"/>
+    </yAxis>
+</LineChart>
