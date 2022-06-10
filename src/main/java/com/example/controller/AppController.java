@@ -36,6 +36,9 @@ public class AppController {
     @FXML
     private SimulationController simulationController;
 
+    @FXML
+    private StatisticsController statisticsController;
+
     @Setter
     private ObjectProperty<ApplicationState> applicationStateProperty =
             new SimpleObjectProperty<>();
