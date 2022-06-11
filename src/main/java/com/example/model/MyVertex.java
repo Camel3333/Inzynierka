@@ -49,12 +49,36 @@ public class MyVertex<V> implements Vertex<V>, Agent {
         System.out.println("#" + element() + " received " + agentOpinions.getOpinions().get(0).isSupporting().getValue() + " from #" + vertex.element());
     }
 
-    public void chooseMajority(){
+    public boolean getMajorityVote(Opinion opinion){
+        return receivedOpinions.stream()
+                .filter(o -> o.getOpinionByName(opinion.getName()).isSupporting().getValue())
+                .count() > receivedOpinions.size() / 2;
+    }
+
+    public int getMajorityVotesCount(Opinion opinion){
+        return (int) receivedOpinions.stream()
+                .filter(o -> o.getOpinionByName(opinion.getName()).isSupporting().getValue() == getMajorityVote(opinion))
+                .count();
+    }
+
+    public void decide(Opinions kingOpinions, int condition){ //ale king opinion moze byc zieniona jak traitor
         for(Opinion opinion : this.opinions.getOpinions()){
-            long supports = receivedOpinions.stream()
+            if(getMajorityVotesCount(opinion) > condition){
+                opinion.setIsSupporting(getMajorityVote(opinion));
+            }
+            else{
+                opinion.setIsSupporting(kingOpinions.getOpinionByName(opinion.getName()).isSupporting().getValue());
+            }
+        }
+    }
+
+    public void chooseMajority(){ //change
+        for(Opinion opinion : this.opinions.getOpinions()){
+            /*long supports = receivedOpinions.stream()
                     .filter(o -> o.getOpinionByName(opinion.getName()).isSupporting().getValue())
                     .count();
-            opinion.setIsSupporting(supports > receivedOpinions.size() - supports);
+            opinion.setIsSupporting(supports > receivedOpinions.size() - supports);*/
+            opinion.setIsSupporting(getMajorityVote(opinion));
         }
         System.out.println("#" + element() + " decision " + opinions.getOpinions().get(0).isSupporting().getValue());
     }
