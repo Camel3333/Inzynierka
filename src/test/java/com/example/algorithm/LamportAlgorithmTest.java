@@ -31,8 +31,6 @@ public class LamportAlgorithmTest {
         var e5 = graph.insertEdge(v1, v3, 5);
         var e6 = graph.insertEdge(v2, v4, 6);
 
-        var opinions1 = new AgentOpinions();
-
         var o1 = new AgentOpinion("name", true);
 
         // When
@@ -41,11 +39,9 @@ public class LamportAlgorithmTest {
         v3.setIsTraitor(false);
         v4.setIsTraitor(false);
 
-        opinions1.addOpinion(o1);
+        v1.setOpinion(o1);
 
-        v1.setOpinions(opinions1);
-
-        algorithm.execute(graph, 1);
+        algorithm.execute(graph, 2);
 
         // Then
         assertTrue(graph.checkConsensus());
@@ -56,6 +52,7 @@ public class LamportAlgorithmTest {
         // Given
 
         // When
+        algorithm.execute(graph, 0);
 
         // Then
         assertTrue(graph.checkConsensus());

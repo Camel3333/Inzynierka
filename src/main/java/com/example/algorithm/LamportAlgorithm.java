@@ -13,19 +13,18 @@ public class LamportAlgorithm implements Algorithm{
         if(myGraph.numVertices() == 0){ //?
             return;
         }
-        MyVertex<Integer> commander = (MyVertex<Integer>) myGraph.vertices().stream().findFirst().get(); // rand/chosen?
+        MyVertex<Integer> commander = (MyVertex<Integer>) myGraph.vertices().stream().toList().get(0); //rand/chosen?
         om(commander, (List<Vertex<Integer>>) myGraph.vertexNeighbours(commander), depth);
     }
 
     private void om(MyVertex<Integer> commander, List<Vertex<Integer>> lieutenants, int m){
-        System.out.println("#" + commander.element() + ", m = " + m);
         for(Vertex<Integer> vertex : lieutenants){
-            commander.sendOpinions((MyVertex<Integer>) vertex);
+            ((MyVertex<Integer>) vertex).receiveOpinion(commander.getNextOpinion((MyVertex<Integer>) vertex));
         }
         if(m > 0){
             for(Vertex<Integer> vertex : lieutenants){
                 List<Vertex<Integer>> new_lieutenants = lieutenants.stream()
-                        .filter(general -> !general.equals(commander) && !general.equals(vertex))
+                        .filter(general -> !general.equals(vertex))
                         .collect(Collectors.toList());
                 om((MyVertex<Integer>) vertex, new_lieutenants, m - 1);
             }

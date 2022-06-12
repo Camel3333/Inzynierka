@@ -8,7 +8,10 @@ public class KingAlgorithm implements Algorithm{
     private int phase = 0;
 
     @Override
-    public void execute(MyGraph<Integer, Integer> graph, int f) { // depth == phase ???
+    public void execute(MyGraph<Integer, Integer> graph, int f) { //?
+        if(graph.numVertices() == 0){ //?
+            return;
+        }
         for(int i = 0; i <= f; i++){
             step(graph);
         }
@@ -23,17 +26,16 @@ public class KingAlgorithm implements Algorithm{
     public void firstRound(MyGraph<Integer, Integer> graph){
         for(Vertex<Integer> v : graph.vertices()){
             for(Vertex<Integer> u : graph.vertices()){
-                ((MyVertex<Integer>) v).sendOpinions((MyVertex<Integer>) u);
+                ((MyVertex<Integer>) u).receiveOpinion(((MyVertex<Integer>) v).getNextOpinion((MyVertex<Integer>) u));
             }
         }
     }
 
-    public void secondRound(MyGraph<Integer, Integer> graph){ // king == phase
+    public void secondRound(MyGraph<Integer, Integer> graph){
         MyVertex<Integer> king = (MyVertex<Integer>) graph.vertices().stream().toList().get(phase % graph.numVertices());
-        //add geNumOfTraitors?
-        int condition = graph.numVertices() / 2 + (int) graph.vertices().stream().filter(v -> ((MyVertex<Integer>) v).isTraitor().getValue()).count();
+        int condition = graph.numVertices() / 2 + graph.getTraitorsCount();
         for(Vertex<Integer> v : graph.vertices()){
-            ((MyVertex<Integer>) v).decide(king.getOpinions(), condition);
+            ((MyVertex<Integer>) v).chooseMajorityWithTieBreaker(king.getNextOpinion((MyVertex<Integer>) v), condition);
         }
     }
 
