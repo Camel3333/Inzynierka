@@ -11,7 +11,7 @@ public class MyGraph<V,E> implements Graph<V,E> {
     private List<Edge<E, V>> edges = new ArrayList<>();
 
     public boolean checkConsensus(){
-        if(numVertices() == 0){ // ?
+        if(numVertices() == 0){
             return true;
         }
         AgentOpinion expectedOpinion = ((MyVertex<V>) vertices().stream().toList().get(0)).getOpinion();

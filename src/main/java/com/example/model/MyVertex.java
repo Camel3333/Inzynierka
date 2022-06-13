@@ -53,7 +53,7 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     }
 
     public void receiveOpinion(AgentOpinion agentOpinion){
-        if(opinion == null){ // ?
+        if(opinion == null){
             opinion = agentOpinion;
         }
         knowledge.add(agentOpinion);

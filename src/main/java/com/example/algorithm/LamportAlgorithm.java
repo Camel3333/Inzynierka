@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 public class LamportAlgorithm implements Algorithm{
     public void execute(MyGraph<Integer, Integer> myGraph, int depth){
-        if(myGraph.numVertices() == 0){ //?
+        if(myGraph.numVertices() == 0){
             return;
         }
-        MyVertex<Integer> commander = (MyVertex<Integer>) myGraph.vertices().stream().toList().get(0); //rand/chosen?
+        MyVertex<Integer> commander = (MyVertex<Integer>) myGraph.vertices().stream().toList().get(0);
         om(commander, (List<Vertex<Integer>>) myGraph.vertexNeighbours(commander), depth);
     }
 
