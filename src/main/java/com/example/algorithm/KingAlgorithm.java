@@ -8,7 +8,8 @@ public class KingAlgorithm implements Algorithm{
     private int phase = 0;
 
     @Override
-    public void execute(MyGraph<Integer, Integer> graph, int f) {
+    public void execute(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
+        int f = (int)settings.getSettings().get("phase");
         if(graph.numVertices() == 0){
             return;
         }
