@@ -89,5 +89,4 @@ public class MyVertex<V> implements Vertex<V>, Agent {
             opinion.setIsSupporting(kingOpinion.isSupporting().getValue());
         }
     }
-
 }
