@@ -1,15 +1,16 @@
 package com.example.algorithm;
 
-import com.example.model.*;
+import com.example.model.AgentOpinion;
+import com.example.model.MyGraph;
+import com.example.model.MyVertex;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
-public class LamportAlgorithmTest {
+public class KingAlgorithmTest {
     private MyGraph<Integer, Integer> graph;
-    private final Algorithm algorithm = new LamportAlgorithm();
+    private final Algorithm algorithm = new KingAlgorithm();
 
     @BeforeEach
     public void resetGraph(){
@@ -32,6 +33,9 @@ public class LamportAlgorithmTest {
         var e6 = graph.insertEdge(v2, v4, 6);
 
         var o1 = new AgentOpinion("name", true);
+        var o2 = new AgentOpinion("name", false);
+        var o3 = new AgentOpinion("name", true);
+        var o4 = new AgentOpinion("name", false);
 
         // When
         v1.setIsTraitor(false);
@@ -40,6 +44,9 @@ public class LamportAlgorithmTest {
         v4.setIsTraitor(false);
 
         v1.setOpinion(o1);
+        v2.setOpinion(o2);
+        v3.setOpinion(o3);
+        v4.setOpinion(o4);
 
         algorithm.execute(graph, 2);
 

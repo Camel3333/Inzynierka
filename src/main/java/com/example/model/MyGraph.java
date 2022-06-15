@@ -10,6 +10,20 @@ public class MyGraph<V,E> implements Graph<V,E> {
     private Map<Vertex<V>, List<Vertex<V>>> adjacency = new HashMap<>();
     private List<Edge<E, V>> edges = new ArrayList<>();
 
+    public boolean checkConsensus(){
+        if(numVertices() == 0){
+            return true;
+        }
+        AgentOpinion expectedOpinion = ((MyVertex<V>) vertices().stream().toList().get(0)).getOpinion();
+        return vertices().stream().allMatch(v -> ((MyVertex<V>) v).getOpinion().compareOpinion(expectedOpinion));
+    }
+
+    public int getTraitorsCount(){
+        return (int) vertices().stream()
+                .filter(v -> ((MyVertex<Integer>) v).isTraitor().getValue())
+                .count();
+    }
+
     @Override
     public int numVertices() {
         return adjacency.keySet().size();
@@ -23,19 +37,6 @@ public class MyGraph<V,E> implements Graph<V,E> {
     @Override
     public Collection<Vertex<V>> vertices() {
         return adjacency.keySet();
-    }
-
-    public boolean checkConsensus(){
-        if(numVertices() == 0){
-            return true;
-        }
-        Opinions expectedOpinions = ((MyVertex<V>) vertices().stream().findFirst().get()).getOpinions();
-        for(Vertex<V> v : vertices()){
-            if(!((MyVertex<V>) v).getOpinions().compareOpinions(expectedOpinions)){
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override

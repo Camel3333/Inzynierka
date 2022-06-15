@@ -10,22 +10,21 @@ import java.util.stream.Collectors;
 
 public class LamportAlgorithm implements Algorithm{
     public void execute(MyGraph<Integer, Integer> myGraph, int depth){
-        if(myGraph.numVertices() == 0){ //?
+        if(myGraph.numVertices() == 0){
             return;
         }
-        MyVertex<Integer> commander = (MyVertex<Integer>) myGraph.vertices().stream().findFirst().get(); // rand/chosen?
+        MyVertex<Integer> commander = (MyVertex<Integer>) myGraph.vertices().stream().toList().get(0);
         om(commander, (List<Vertex<Integer>>) myGraph.vertexNeighbours(commander), depth);
     }
 
     private void om(MyVertex<Integer> commander, List<Vertex<Integer>> lieutenants, int m){
-        System.out.println("#" + commander.element() + ", m = " + m);
         for(Vertex<Integer> vertex : lieutenants){
-            commander.sendOpinions((MyVertex<Integer>) vertex);
+            ((MyVertex<Integer>) vertex).receiveOpinion(commander.getNextOpinion((MyVertex<Integer>) vertex));
         }
         if(m > 0){
             for(Vertex<Integer> vertex : lieutenants){
                 List<Vertex<Integer>> new_lieutenants = lieutenants.stream()
-                        .filter(general -> !general.equals(commander) && !general.equals(vertex))
+                        .filter(general -> !general.equals(vertex))
                         .collect(Collectors.toList());
                 om((MyVertex<Integer>) vertex, new_lieutenants, m - 1);
             }

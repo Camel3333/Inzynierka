@@ -16,9 +16,10 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     @Setter
     private BooleanProperty supportsOpinion = new SimpleBooleanProperty();
     @Getter
-    private AgentOpinions opinions;
-    private Map<MyVertex<V>, AgentOpinions> knowledge = new HashMap<>();
-    private List<Opinions> receivedOpinions = new ArrayList<>();
+    @Setter
+    private AgentOpinion opinion;
+    @Getter
+    private List<AgentOpinion> knowledge = new ArrayList<>();
 
     public MyVertex(V id){
         this.id = id;
@@ -26,37 +27,6 @@ public class MyVertex<V> implements Vertex<V>, Agent {
 
     public void setElement(V element){
         id = element;
-    }
-
-    public void sendOpinions(MyVertex<V> vertex){
-        Opinions opinions = new AgentOpinions();
-        for(Opinion opinion : this.opinions.getOpinions()){
-            if(isTraitor.getValue() && (int) element() % 2 == 0){
-                opinions.addOpinion(new AgentOpinion(opinion.getName(), !opinion.isSupporting().getValue()));
-            }
-            else{
-                opinions.addOpinion(new AgentOpinion(opinion.getName(), opinion.isSupporting().getValue()));
-            }
-        }
-        vertex.receiveOpinions(this, opinions);
-    }
-
-    public void receiveOpinions(MyVertex<V> vertex, Opinions agentOpinions){
-        if(opinions == null){
-            opinions = (AgentOpinions) agentOpinions;
-        }
-        receivedOpinions.add(agentOpinions);
-        System.out.println("#" + element() + " received " + agentOpinions.getOpinions().get(0).isSupporting().getValue() + " from #" + vertex.element());
-    }
-
-    public void chooseMajority(){
-        for(Opinion opinion : this.opinions.getOpinions()){
-            long supports = receivedOpinions.stream()
-                    .filter(o -> o.getOpinionByName(opinion.getName()).isSupporting().getValue())
-                    .count();
-            opinion.setIsSupporting(supports > receivedOpinions.size() - supports);
-        }
-        System.out.println("#" + element() + " decision " + opinions.getOpinions().get(0).isSupporting().getValue());
     }
 
     @Override
@@ -69,20 +39,49 @@ public class MyVertex<V> implements Vertex<V>, Agent {
         return isTraitor;
     }
 
-    @Override
     public void setIsTraitor(boolean isTraitor) {
-        this.isTraitor.setValue(isTraitor);
+        this.isTraitor = new SimpleBooleanProperty(isTraitor);
     }
 
-    public void setOpinions(AgentOpinions opinions) {
-        this.opinions = opinions;
+    public AgentOpinion getNextOpinion(MyVertex<V> vertex){
+        if(isTraitor.getValue() && (int) vertex.element() % 2 == 0){
+            return new AgentOpinion(opinion.getName(), !opinion.isSupporting().getValue());
+        }
+        else{
+            return new AgentOpinion(opinion.getName(), opinion.isSupporting().getValue());
+        }
     }
 
-    public Map<MyVertex<V>, AgentOpinions> getKnowledge() {
-        return knowledge;
+    public void receiveOpinion(AgentOpinion agentOpinion){
+        if(opinion == null){
+            opinion = agentOpinion;
+        }
+        knowledge.add(agentOpinion);
     }
 
-    public List<Opinions> getReceivedOpinions() {
-        return receivedOpinions;
+    public boolean getMajorityVote(){
+        return knowledge.stream()
+                .filter(o -> o.isSupporting().getValue())
+                .count() > knowledge.size() / 2;
     }
+
+    public int getMajorityVoteCount(){
+        return (int) knowledge.stream()
+                .filter(o -> o.isSupporting().getValue() == getMajorityVote())
+                .count();
+    }
+
+    public void chooseMajority(){
+        opinion.setIsSupporting(getMajorityVote());
+    }
+
+    public void chooseMajorityWithTieBreaker(AgentOpinion kingOpinion, int condition){
+        if(getMajorityVoteCount() > condition){
+            opinion.setIsSupporting(getMajorityVote());
+        }
+        else{
+            opinion.setIsSupporting(kingOpinion.isSupporting().getValue());
+        }
+    }
+
 }
