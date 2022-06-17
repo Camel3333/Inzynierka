@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.ApplicationState;
+import com.example.algorithm.Algorithm;
 import com.example.algorithm.AlgorithmSettings;
 import com.example.algorithm.AlgorithmType;
 import com.example.simulation.Simulation;
@@ -8,10 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -23,9 +21,15 @@ import java.util.*;
 @FxmlView("/view/simulationOptionsView.fxml")
 public class SimulationController {
     @FXML
+    public Label depthLabel;
+    @FXML
+    public Label phaseLabel;
+    @FXML
     private VBox parent;
     @FXML
     private TextField depth;
+    @FXML
+    private TextField phase;
     @FXML
     private Button startButton;
     @FXML
@@ -54,12 +58,14 @@ public class SimulationController {
 
     private void setDefaultSettings(){
         defaultSettings.put((String)depth.getUserData(), 1);
+        defaultSettings.put((String)phase.getUserData(), 1);
     }
 
     @FXML
     public void initialize() {
         setDefaultSettings();
-        options.put(AlgorithmType.LAMPORT, new ArrayList<>(List.of(depth)));
+        options.put(AlgorithmType.LAMPORT, new ArrayList<>(List.of(depth, depthLabel)));
+        options.put(AlgorithmType.KING, new ArrayList<>(List.of(phase, phaseLabel)));
         hideAlgorithmSettings();
         algorithmsBox.setCellFactory(param -> new ListCell<>() {
             @Override
@@ -86,11 +92,15 @@ public class SimulationController {
         hideAlgorithmSettings();
         algorithmSettings = new AlgorithmSettings();
         options.get(algorithmType).forEach(node -> {
-                    node.setVisible(true);
-                    node.setManaged(true);
-                    algorithmSettings.getSettings()
-                            .put((String) node.getUserData(), defaultSettings.get((String) node.getUserData()));
-                });
+            node.setVisible(true);
+            node.setManaged(true);
+            String optionName = (String) node.getUserData();
+            algorithmSettings.getSettings()
+                    .put(optionName, defaultSettings.get(optionName));
+            if (node instanceof TextField) {
+                ((TextField) node).setText(defaultSettings.get(optionName).toString());
+            }
+        });
     }
 
     private void hideAlgorithmSettings() {
@@ -108,9 +118,25 @@ public class SimulationController {
         algorithmsBox.getSelectionModel().select(0);
     }
 
+    private void fillSelectedAlgorithmSettings(AlgorithmType algorithmType){
+        options.get(algorithmType).forEach(node -> {
+            String optionName = (String) node.getUserData();
+            if (node instanceof TextField) {
+                String selectedOption = ((TextField) node).getText();
+                int optionValue = Integer.parseInt(selectedOption);
+                algorithmSettings.getSettings().put(selectedOption, optionValue);
+            }
+        });
+    }
+
     public void startAlgorithm() {
-        // TODO: Walidacja opcji
-        simulation.start(algorithmsBox.getValue().getAlgorithm(), algorithmSettings);
+        AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
+        try{
+            fillSelectedAlgorithmSettings(selectedAlgorithm);
+            simulation.start(selectedAlgorithm.getAlgorithm(), algorithmSettings);
+        } catch (NumberFormatException e){
+            System.out.println("Can't run algorithm because some options have invalid type");
+        }
     }
 
 }

@@ -12,9 +12,9 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     private V id;
     @Getter
     private BooleanProperty isTraitor = new SimpleBooleanProperty();
-    @Getter
-    @Setter
-    private BooleanProperty supportsOpinion = new SimpleBooleanProperty();
+//    @Getter
+//    @Setter
+//    private BooleanProperty supportsOpinion = new SimpleBooleanProperty();
     @Getter
     @Setter
     private AgentOpinion opinion;
@@ -22,6 +22,7 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     private List<AgentOpinion> knowledge = new ArrayList<>();
 
     public MyVertex(V id){
+        opinion = new AgentOpinion("attack", true);
         this.id = id;
     }
 
@@ -37,6 +38,11 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     @Override
     public BooleanProperty isTraitor() {
         return isTraitor;
+    }
+
+    @Override
+    public BooleanProperty isSupportingOpinion() {
+        return opinion.getSupports();
     }
 
     public void setIsTraitor(boolean isTraitor) {
@@ -83,5 +89,4 @@ public class MyVertex<V> implements Vertex<V>, Agent {
             opinion.setIsSupporting(kingOpinion.isSupporting().getValue());
         }
     }
-
 }

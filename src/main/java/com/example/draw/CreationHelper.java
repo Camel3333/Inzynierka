@@ -12,7 +12,7 @@ public class CreationHelper implements GraphObserver<Integer, Integer> {
     @Setter
     private GraphController graphController;
     @Getter
-    private DrawMode currentDrawMode = DrawMode.EDGE;
+    private DrawMode currentDrawMode = DrawMode.NONE;
     private Vertex<Integer> selectedToEdge;
 
     public void setDrawMode(DrawMode mode){

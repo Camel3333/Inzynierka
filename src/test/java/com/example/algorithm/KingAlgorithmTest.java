@@ -37,6 +37,8 @@ public class KingAlgorithmTest {
         var o3 = new AgentOpinion("name", true);
         var o4 = new AgentOpinion("name", false);
 
+        var settings = new AlgorithmSettings();
+
         // When
         v1.setIsTraitor(false);
         v2.setIsTraitor(true);
@@ -48,7 +50,9 @@ public class KingAlgorithmTest {
         v3.setOpinion(o3);
         v4.setOpinion(o4);
 
-        algorithm.execute(graph, 2);
+        settings.getSettings().put("phase", 1);
+
+        algorithm.execute(graph, settings);
 
         // Then
         assertTrue(graph.checkConsensus());
@@ -57,9 +61,11 @@ public class KingAlgorithmTest {
     @Test
     public void emptyGraphTest(){
         // Given
+        var settings = new AlgorithmSettings();
 
         // When
-        algorithm.execute(graph, 0);
+        settings.getSettings().put("phase", 1);
+        algorithm.execute(graph, settings);
 
         // Then
         assertTrue(graph.checkConsensus());

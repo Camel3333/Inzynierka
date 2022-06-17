@@ -3,7 +3,8 @@ package com.example.algorithm;
 import com.example.util.NotImplementedException;
 
 public enum AlgorithmType {
-    LAMPORT;
+    LAMPORT,
+    KING;
 
     @Override
     public String toString() {
@@ -12,9 +13,8 @@ public enum AlgorithmType {
 
     public Algorithm getAlgorithm() {
         switch (this) {
-            case LAMPORT -> {
-                return new LamportAlgorithm();
-            }
+            case LAMPORT -> {return new LamportAlgorithm();}
+            case KING -> {return new KingAlgorithm();}
             default -> throw new NotImplementedException(this.toString() + " algorithm not implemented");
         }
     }

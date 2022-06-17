@@ -13,8 +13,10 @@
 
     <ComboBox fx:id = "algorithmsBox"/>
     <GridPane>
-        <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Depth"/>
+        <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Depth" fx:id="depthLabel"/>
         <TextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id = "depth" userData="depth"/>
+        <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Phase" fx:id="phaseLabel"/>
+        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id = "phase" userData="phase"/>
     </GridPane>
     <Button fx:id="startButton" text="Start" onAction="#startAlgorithm"/>
 </VBox>

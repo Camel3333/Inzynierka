@@ -17,8 +17,7 @@ public class SimpleSimulation implements Simulation {
 
     @Override
     public void start(Algorithm algorithm, AlgorithmSettings settings) {
-        algorithm.execute((MyGraph<Integer, Integer>) graphController.getGraph(),
-                (int) settings.getSettings().get("depth"));
+        algorithm.execute((MyGraph<Integer, Integer>) graphController.getGraph(), settings);
         graphController.update();
     }
 }

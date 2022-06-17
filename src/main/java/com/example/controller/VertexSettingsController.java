@@ -13,11 +13,16 @@ import org.springframework.stereotype.Component;
 public class VertexSettingsController {
     @FXML
     private ToggleSwitch traitorSwitch;
+
     @FXML
-    private CheckComboBox<AgentOpinion> opinionsBox;
+    private ToggleSwitch opinionSwitch;
+
+//    @FXML
+//    private CheckComboBox<AgentOpinion> opinionsBox;
 
     public void bindVertex(Agent agent){
         traitorSwitch.selectedProperty().bindBidirectional(agent.isTraitor());
+        opinionSwitch.selectedProperty().bindBidirectional(agent.isSupportingOpinion());
         // TODO: bind opinionsBox with agent opinions
 //        opinionsBox.getItems().addAll(vertex.getOpinions().getOpinions());
 //        opinionsBox. .bindBidirectional(vertex.getSupportsOpinion());

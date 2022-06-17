@@ -13,6 +13,7 @@
     <Label text = "Wybierz ustawienia agenta"/>
 
     <ToggleSwitch fx:id = "traitorSwitch" text="Zdrajca"/>
-    <CheckComboBox fx:id = "opinionsBox" title="Opinie"/>
+    <ToggleSwitch fx:id = "opinionSwitch" text="Opinia"/>
+<!--    <CheckComboBox fx:id = "opinionsBox" title="Opinie"/>-->
 
 </VBox>
