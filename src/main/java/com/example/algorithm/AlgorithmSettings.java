@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AlgorithmSettings {
-    Map<String, Object> settings = new HashMap<>();
+    Map<String, AlgorithmSetting> settings = new HashMap<>();
 
-    public Map<String, Object> getSettings() {
+    public Map<String, AlgorithmSetting> getSettings() {
         return settings;
     }
 }

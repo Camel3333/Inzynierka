@@ -9,7 +9,7 @@ public class KingAlgorithm implements Algorithm{
 
     @Override
     public void execute(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
-        int f = (int)settings.getSettings().get("phase");
+        int f = (int)settings.getSettings().get("phase").getValue();
         if(graph.numVertices() == 0){
             return;
         }

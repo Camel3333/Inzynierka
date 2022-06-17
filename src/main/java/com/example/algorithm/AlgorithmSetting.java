@@ -10,9 +10,11 @@ public class AlgorithmSetting implements Setting{
     @Setter
     private String additionalErrorMessage = "";
     private Object value;
+    private Object defaultValue;
 
-    public AlgorithmSetting(String name, Function<Object, Boolean> validateArgument) {
+    public AlgorithmSetting(String name, Object defaultValue, Function<Object, Boolean> validateArgument) {
         this.name = name;
+        this.defaultValue = defaultValue;
         this.validateArgument = validateArgument;
     }
 
@@ -32,5 +34,10 @@ public class AlgorithmSetting implements Setting{
             this.value = value;
         else
             throw new IllegalArgumentException("Given value doesn't match setting requirements. "+additionalErrorMessage);
+    }
+
+    @Override
+    public Object getValue(){
+        return value == null ? defaultValue : value;
     }
 }

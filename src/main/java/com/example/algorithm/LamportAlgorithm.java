@@ -13,7 +13,7 @@ public class LamportAlgorithm implements Algorithm{
     public void execute(MyGraph<Integer, Integer> myGraph, AlgorithmSettings settings){
         System.out.println("Entering laport algorithm");
 //        int depth = (int)settings.getSettings().get("depth");
-        depth = (int)settings.getSettings().get("depth");
+        depth = (int)settings.getSettings().get("depth").getValue();
         if(myGraph.numVertices() == 0){
             return;
         }
