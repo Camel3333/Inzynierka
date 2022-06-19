@@ -36,11 +36,9 @@ public class SimulationController {
     @FXML
     private ComboBox<AlgorithmType> algorithmsBox;
 
-    private AlgorithmSettings algorithmSettings;
+    private AlgorithmSettings algorithmSettings = new AlgorithmSettings();
 
     private final Map<AlgorithmType, List<Node>> options = new HashMap<>();
-
-//    private final Map<String, Object> defaultSettings = new HashMap<>();
 
     private ObservableList<AlgorithmType> availableAlgorithms = FXCollections.emptyObservableList();
 
@@ -58,18 +56,10 @@ public class SimulationController {
     }
 
     private void setDefaultSettings() {
-        algorithmSettings.getSettings().put((String) depth.getUserData(), new AlgorithmSetting((String) depth.getUserData(), 1, object -> {
-            if (!(object instanceof Integer))
-                return false;
-            int value = (int) object;
-            return value >= 0;
-        }));
-        algorithmSettings.getSettings().put((String) phase.getUserData(), new AlgorithmSetting((String) phase.getUserData(), 1, object -> {
-            if (!(object instanceof Integer))
-                return false;
-            int value = (int) object;
-            return value >= 0;
-        }));
+        algorithmSettings.getSettings().put((String) depth.getUserData(),
+                new AlgorithmSetting<>((String) depth.getUserData(), 1, Integer.class, (value) -> value >= 0));
+        algorithmSettings.getSettings().put((String) phase.getUserData(),
+                new AlgorithmSetting<>((String) phase.getUserData(), 1, Integer.class, (value) -> value >= 0));
     }
 
     @FXML
@@ -96,11 +86,49 @@ public class SimulationController {
                         showAlgorithmSettings(newValue);
                     }
                 }));
+
+        depth.textProperty().addListener((observable, oldValue, newValue) -> {
+            int intValue;
+            try {
+                intValue = Integer.parseInt(newValue);
+            }catch(NumberFormatException e){
+                depth.setStyle("-fx-text-box-border: red ;-fx-focus-color: red ;");
+                return;
+            }
+            var setting = algorithmSettings.getSettings().get((String) depth.getUserData());
+            if (setting.isProperValue(intValue)){
+                setting.setValue(intValue);
+                depth.setStyle("");
+            }
+            else{
+                depth.setStyle("-fx-text-box-border: red ;-fx-focus-color: red ;");
+                return;
+            }
+        });
+
+        phase.textProperty().addListener((observable, oldValue, newValue) -> {
+            int intValue;
+            try {
+                intValue = Integer.parseInt(newValue);
+            }catch(NumberFormatException e){
+                phase.setStyle("-fx-text-box-border: red ;-fx-focus-color: red ;");
+                return;
+            }
+            var setting = algorithmSettings.getSettings().get((String) phase.getUserData());
+            if (setting.isProperValue(intValue)){
+                setting.setValue(intValue);
+                phase.setStyle("");
+            }
+            else{
+                phase.setStyle("-fx-text-box-border: red ;-fx-focus-color: red ;");
+                return;
+            }
+        });
+
     }
 
     private void showAlgorithmSettings(AlgorithmType algorithmType) {
         hideAlgorithmSettings();
-        algorithmSettings = new AlgorithmSettings();
         options.get(algorithmType).forEach(node -> {
             node.setVisible(true);
             node.setManaged(true);
@@ -133,30 +161,45 @@ public class SimulationController {
         algorithmsBox.getSelectionModel().select(0);
     }
 
-    private boolean fillSelectedAlgorithmSettings(AlgorithmType algorithmType) {
-        boolean valueFailed = false;
-        for (Node node : options.get(algorithmType)){
-//        options.get(algorithmType).forEach(node -> {
-            String optionName = (String) node.getUserData();
-            if (node instanceof TextField) {
-                String selectedOption = ((TextField) node).getText();
-                if (algorithmSettings.getSettings().get(optionName).isProperValue(selectedOption))
-                    algorithmSettings.getSettings().get(optionName).setValue(selectedOption);
-                else{
-                    valueFailed = true;
-                    System.out.println("Invalid input for "+optionName);
-                }
-            }
-        }
-        return !valueFailed;
-    }
+//    private boolean fillSelectedAlgorithmSettings(AlgorithmType algorithmType) {
+//        boolean valueFailed = false;
+//        for (Node node : options.get(algorithmType)){
+//            String optionName = (String) node.getUserData();
+//            if (node instanceof TextField) {
+//                String selectedOption = ((TextField) node).getText();
+//                if (algorithmSettings.getSettings().get(optionName).isProperValue(selectedOption))
+//                    algorithmSettings.getSettings().get(optionName).setValue(selectedOption);
+//                else{
+//                    valueFailed = true;
+//                    System.out.println("Invalid input for "+optionName);
+//                }
+//            }
+//        }
+//        return !valueFailed;
+//    }
+//
+//    private boolean verifySettings(AlgorithmType algorithmType){
+//        options.get(algorithmType).forEach(node ->{
+//            String optionName = (String) node.getUserData();
+//            if (node instanceof TextField) {
+//                String selectedOption = ((TextField) node).getText();
+//                if (algorithmSettings.getSettings().get(optionName).isProperValue(selectedOption))
+//                    algorithmSettings.getSettings().get(optionName).setValue(selectedOption);
+//                else{
+//                    valueFailed = true;
+//                    System.out.println("Invalid input for "+optionName);
+//                }
+//            }
+//        });
+//    }
 
     public void startAlgorithm() {
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
-        if(fillSelectedAlgorithmSettings(selectedAlgorithm))
-            simulation.start(selectedAlgorithm.getAlgorithm(), algorithmSettings);
-        else
-            System.out.println("Can't run algorithm because some options have invalid type");
+        simulation.start(selectedAlgorithm.getAlgorithm(), algorithmSettings);
+//        if(fillSelectedAlgorithmSettings(selectedAlgorithm))
+//            simulation.start(selectedAlgorithm.getAlgorithm(), algorithmSettings);
+//        else
+//            System.out.println("Can't run algorithm because some options have invalid type");
     }
 
 }

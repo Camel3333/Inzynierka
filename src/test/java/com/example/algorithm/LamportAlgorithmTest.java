@@ -49,7 +49,7 @@ public class LamportAlgorithmTest {
         v3.setOpinion(o3);
         v4.setOpinion(o4);
 
-        settings.getSettings().put("depth", new AlgorithmSetting("depth", 1, object -> true));
+        settings.getSettings().put("depth", new AlgorithmSetting("depth", 1, Integer.class,object -> true));
 
         algorithm.execute(graph, settings);
 
@@ -63,7 +63,7 @@ public class LamportAlgorithmTest {
         var settings = new AlgorithmSettings();
 
         // When
-        settings.getSettings().put("depth", new AlgorithmSetting("depth", 0, object -> true));
+        settings.getSettings().put("depth", new AlgorithmSetting("depth", 0, Integer.class,object -> true));
         algorithm.execute(graph, settings);
 
         // Then

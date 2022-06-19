@@ -4,17 +4,19 @@ import lombok.Setter;
 
 import java.util.function.Function;
 
-public class AlgorithmSetting implements Setting{
+public class AlgorithmSetting<T> implements Setting<T>{
     private final String name;
-    private final Function<Object, Boolean> validateArgument;
+    private final Function<T, Boolean> validateArgument;
+    private final Class<T> valueType;
+    private final T defaultValue;
     @Setter
     private String additionalErrorMessage = "";
-    private Object value;
-    private Object defaultValue;
+    private T value;
 
-    public AlgorithmSetting(String name, Object defaultValue, Function<Object, Boolean> validateArgument) {
+    public AlgorithmSetting(String name, T defaultValue, Class<T> valueType, Function<T, Boolean> validateArgument) {
         this.name = name;
         this.defaultValue = defaultValue;
+        this.valueType = valueType;
         this.validateArgument = validateArgument;
     }
 
@@ -25,19 +27,26 @@ public class AlgorithmSetting implements Setting{
 
     @Override
     public Boolean isProperValue(Object value) {
-        return validateArgument.apply(value);
+        if (valueType.isInstance(value))
+            return validateArgument.apply(valueType.cast(value));
+        return false;
     }
 
     @Override
     public void setValue(Object value) {
         if (isProperValue(value))
-            this.value = value;
+            this.value = valueType.cast(value);
         else
             throw new IllegalArgumentException("Given value doesn't match setting requirements. "+additionalErrorMessage);
     }
 
     @Override
-    public Object getValue(){
+    public Class<T> getContainedClass() {
+        return valueType;
+    }
+
+    @Override
+    public T getValue(){
         return value == null ? defaultValue : value;
     }
 }
