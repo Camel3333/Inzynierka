@@ -1,9 +1,9 @@
-package com.example.algorithm;
+package com.example.settings;
 
 public interface Setting<T> {
     String getName();
-    Boolean isProperValue(Object value);
-    void setValue(Object value);
+    Boolean isProperValue(T value);
+    void setValue(T value);
     Class<T> getContainedClass();
     T getValue();
 }

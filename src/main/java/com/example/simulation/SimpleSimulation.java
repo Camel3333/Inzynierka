@@ -1,7 +1,7 @@
 package com.example.simulation;
 
 import com.example.algorithm.Algorithm;
-import com.example.algorithm.AlgorithmSettings;
+import com.example.settings.AlgorithmSettings;
 import com.example.controller.GraphController;
 import com.example.model.MyGraph;
 import lombok.Setter;

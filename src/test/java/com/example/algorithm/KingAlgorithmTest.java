@@ -3,6 +3,8 @@ package com.example.algorithm;
 import com.example.model.AgentOpinion;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
+import com.example.settings.AlgorithmSetting;
+import com.example.settings.AlgorithmSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

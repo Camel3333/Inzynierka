@@ -1,4 +1,4 @@
-package com.example.algorithm;
+package com.example.settings;
 
 import lombok.Setter;
 

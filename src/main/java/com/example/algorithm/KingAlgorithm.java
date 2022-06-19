@@ -3,6 +3,7 @@ package com.example.algorithm;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
+import com.example.settings.AlgorithmSettings;
 
 public class KingAlgorithm implements Algorithm{
     private int phase = 0;
