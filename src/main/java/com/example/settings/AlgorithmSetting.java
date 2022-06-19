@@ -26,14 +26,12 @@ public class AlgorithmSetting<T> implements Setting<T>{
     }
 
     @Override
-    public Boolean isProperValue(Object value) {
-        if (valueType.isInstance(value))
-            return validateArgument.apply(valueType.cast(value));
-        return false;
+    public Boolean isProperValue(T value) {
+        return validateArgument.apply(valueType.cast(value));
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(T value) {
         if (isProperValue(value))
             this.value = valueType.cast(value);
         else
