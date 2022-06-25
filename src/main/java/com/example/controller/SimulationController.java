@@ -1,10 +1,11 @@
 package com.example.controller;
 
-import com.example.ApplicationState;
-import com.example.algorithm.Algorithm;
-import com.example.algorithm.AlgorithmSettings;
-import com.example.algorithm.AlgorithmType;
+import com.example.algorithm.*;
+import com.example.settings.*;
 import com.example.simulation.Simulation;
+import javafx.beans.Observable;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @FxmlView("/view/simulationOptionsView.fxml")
@@ -27,19 +29,17 @@ public class SimulationController {
     @FXML
     private VBox parent;
     @FXML
-    private TextField depth;
+    private IntegerSettingTextField depth;
     @FXML
-    private TextField phase;
+    private IntegerSettingTextField phase;
     @FXML
     private Button startButton;
     @FXML
     private ComboBox<AlgorithmType> algorithmsBox;
 
-    private AlgorithmSettings algorithmSettings;
+    private AlgorithmSettings algorithmSettings = new AlgorithmSettings();
 
     private final Map<AlgorithmType, List<Node>> options = new HashMap<>();
-
-    private final Map<String, Object> defaultSettings = new HashMap<>();
 
     private ObservableList<AlgorithmType> availableAlgorithms = FXCollections.emptyObservableList();
 
@@ -56,9 +56,11 @@ public class SimulationController {
         parent.setManaged(false);
     }
 
-    private void setDefaultSettings(){
-        defaultSettings.put((String)depth.getUserData(), 1);
-        defaultSettings.put((String)phase.getUserData(), 1);
+    private void setDefaultSettings() {
+        algorithmSettings.getSettings().put("depth",
+                new AlgorithmSetting<>("depth", 1, Integer.class, (value) -> value >= 0));
+        algorithmSettings.getSettings().put("phase",
+                new AlgorithmSetting<>("phase", 1, Integer.class, (value) -> value >= 0));
     }
 
     @FXML
@@ -71,10 +73,9 @@ public class SimulationController {
             @Override
             protected void updateItem(AlgorithmType algorithmType, boolean empty) {
                 super.updateItem(algorithmType, empty);
-                if(empty) {
+                if (empty) {
                     setText(null);
-                }
-                else {
+                } else {
                     setText(algorithmType.toString());
                 }
             }
@@ -82,24 +83,21 @@ public class SimulationController {
 
         algorithmsBox.getSelectionModel().selectedItemProperty()
                 .addListener(((observable, oldValue, newValue) -> {
-                    if(newValue != null) {
+                    if (newValue != null) {
                         showAlgorithmSettings(newValue);
                     }
                 }));
+
+        depth.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("depth"));
+        phase.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("phase"));
+
     }
 
     private void showAlgorithmSettings(AlgorithmType algorithmType) {
         hideAlgorithmSettings();
-        algorithmSettings = new AlgorithmSettings();
         options.get(algorithmType).forEach(node -> {
             node.setVisible(true);
             node.setManaged(true);
-            String optionName = (String) node.getUserData();
-            algorithmSettings.getSettings()
-                    .put(optionName, defaultSettings.get(optionName));
-            if (node instanceof TextField) {
-                ((TextField) node).setText(defaultSettings.get(optionName).toString());
-            }
         });
     }
 
@@ -116,27 +114,59 @@ public class SimulationController {
         availableAlgorithms = algorithmTypes;
         algorithmsBox.setItems(availableAlgorithms);
         algorithmsBox.getSelectionModel().select(0);
+
+        List<Observable> inputDependencies = options.values()
+                .stream()
+                .flatMap(List::stream)
+                .filter(node -> node instanceof SettingNode<?>)
+                .map(node -> (SettingNode<?>)node)
+                .map(settingNode -> (BooleanProperty) (settingNode.getIsValidProperty()))
+                .collect(Collectors.toList());
+
+        inputDependencies.add(algorithmsBox.getSelectionModel().selectedItemProperty());
+
+        Observable[] dependencies = inputDependencies.toArray(new Observable[0]);
+
+        List<Node> algorithmNodes = options.get(algorithmsBox.getSelectionModel().selectedItemProperty().get());
+
+        startButton.disableProperty().unbind();
+        startButton.disableProperty().bind(Bindings.createBooleanBinding(()->{
+                List<SettingNode<?>> settingNodes = (algorithmNodes
+                        .stream()
+                        .filter(node -> node instanceof SettingNode<?>)
+                        .map(node -> (SettingNode<?>)node)
+                        .collect(Collectors.toList()));
+                for (SettingNode<?> settingNode : settingNodes){
+                    if (!settingNode.getIsValidProperty().get()){
+                        return true;
+                    }
+                }
+                return false;
+            }, dependencies
+        ));
     }
 
-    private void fillSelectedAlgorithmSettings(AlgorithmType algorithmType){
-        options.get(algorithmType).forEach(node -> {
-            String optionName = (String) node.getUserData();
-            if (node instanceof TextField) {
-                String selectedOption = ((TextField) node).getText();
-                int optionValue = Integer.parseInt(selectedOption);
-                algorithmSettings.getSettings().put(selectedOption, optionValue);
+    private boolean verifySettings(AlgorithmType algorithmType){
+        List<SettingNode<?>> settingNodes = (options.get(algorithmType)
+                .stream()
+                .filter(node -> node instanceof SettingNode<?>)
+                .map(node -> (SettingNode<?>)node)
+                .collect(Collectors.toList()));
+        for (SettingNode<?> settingNode : settingNodes){
+            if (!settingNode.getIsValidProperty().get()){
+                return false;
             }
-        });
+        }
+        return true;
     }
 
     public void startAlgorithm() {
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
-        try{
-            fillSelectedAlgorithmSettings(selectedAlgorithm);
-            simulation.start(selectedAlgorithm.getAlgorithm(), algorithmSettings);
-        } catch (NumberFormatException e){
-            System.out.println("Can't run algorithm because some options have invalid type");
-        }
+        simulation.start(selectedAlgorithm.getAlgorithm(), algorithmSettings);
+//        if (verifySettings(selectedAlgorithm))
+//            simulation.start(selectedAlgorithm.getAlgorithm(), algorithmSettings);
+//        else
+//            System.out.println("Can't run algorithm because some options have invalid type");
     }
 
 }

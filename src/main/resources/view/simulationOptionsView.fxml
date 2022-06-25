@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
+<?import com.example.settings.IntegerSettingTextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.*?>
-
 <VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.controller.SimulationController"
-            fx:id="parent">
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.controller.SimulationController"
+      fx:id="parent">
 
     <ComboBox fx:id = "algorithmsBox"/>
     <GridPane>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Depth" fx:id="depthLabel"/>
-        <TextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id = "depth" userData="depth"/>
+        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id = "depth"/>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Phase" fx:id="phaseLabel"/>
-        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id = "phase" userData="phase"/>
+        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id = "phase"/>
     </GridPane>
     <Button fx:id="startButton" text="Start" onAction="#startAlgorithm"/>
 </VBox>

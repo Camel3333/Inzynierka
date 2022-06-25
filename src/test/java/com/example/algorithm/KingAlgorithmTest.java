@@ -3,6 +3,8 @@ package com.example.algorithm;
 import com.example.model.AgentOpinion;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
+import com.example.settings.AlgorithmSetting;
+import com.example.settings.AlgorithmSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +52,7 @@ public class KingAlgorithmTest {
         v3.setOpinion(o3);
         v4.setOpinion(o4);
 
-        settings.getSettings().put("phase", 1);
+        settings.getSettings().put("phase", new AlgorithmSetting("phase", 1, Integer.class, object -> true));
 
         algorithm.execute(graph, settings);
 
@@ -64,7 +66,7 @@ public class KingAlgorithmTest {
         var settings = new AlgorithmSettings();
 
         // When
-        settings.getSettings().put("phase", 1);
+        settings.getSettings().put("phase", new AlgorithmSetting("phase", 1, Integer.class, object -> true));
         algorithm.execute(graph, settings);
 
         // Then

@@ -9,7 +9,7 @@ package com.example.simulation;
 //}
 
 import com.example.algorithm.Algorithm;
-import com.example.algorithm.AlgorithmSettings;
+import com.example.settings.AlgorithmSettings;
 
 public interface Simulation {
     void start(Algorithm algorithm, AlgorithmSettings settings);

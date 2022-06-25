@@ -3,6 +3,7 @@ package com.example.algorithm;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
+import com.example.settings.AlgorithmSettings;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,8 +13,7 @@ public class LamportAlgorithm implements Algorithm{
     private int depth;
     public void execute(MyGraph<Integer, Integer> myGraph, AlgorithmSettings settings){
         System.out.println("Entering laport algorithm");
-//        int depth = (int)settings.getSettings().get("depth");
-        depth = (int)settings.getSettings().get("depth");
+        depth = (int)settings.getSettings().get("depth").getValue();
         if(myGraph.numVertices() == 0){
             return;
         }
