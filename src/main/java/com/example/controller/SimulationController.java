@@ -127,8 +127,11 @@ public class SimulationController {
 
         Observable[] dependencies = inputDependencies.toArray(new Observable[0]);
 
+        List<Node> algorithmNodes = options.get(algorithmsBox.getSelectionModel().selectedItemProperty().get());
+
+        startButton.disableProperty().unbind();
         startButton.disableProperty().bind(Bindings.createBooleanBinding(()->{
-                List<SettingNode<?>> settingNodes = (options.get(algorithmsBox.getSelectionModel().selectedItemProperty().get())
+                List<SettingNode<?>> settingNodes = (algorithmNodes
                         .stream()
                         .filter(node -> node instanceof SettingNode<?>)
                         .map(node -> (SettingNode<?>)node)
