@@ -25,12 +25,15 @@ public class LamportAlgorithm implements Algorithm{
     }
 
     private void om(MyVertex<Integer> commander, List<Vertex<Integer>> lieutenants, int m){
+        // highlight commander
         for(Vertex<Integer> vertex : lieutenants){
             if (m == depth){
                 ((MyVertex<Integer>) vertex).getOpinion().setIsSupporting(commander.isSupportingOpinion().get());
             }
             ((MyVertex<Integer>) vertex).receiveOpinion(commander.getNextOpinion((MyVertex<Integer>) vertex));
         }
+        // show for all
+        // suspend -> next
         if(m > 0){
             for(Vertex<Integer> vertex : lieutenants){
                 List<Vertex<Integer>> new_lieutenants = lieutenants.stream()

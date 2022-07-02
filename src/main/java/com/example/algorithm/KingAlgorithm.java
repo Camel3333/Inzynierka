@@ -30,15 +30,18 @@ public class KingAlgorithm implements Algorithm{
             for(Vertex<Integer> u : graph.vertices()){
                 ((MyVertex<Integer>) u).receiveOpinion(((MyVertex<Integer>) v).getNextOpinion((MyVertex<Integer>) u));
             }
+            // send all
         }
     }
 
     public void secondRound(MyGraph<Integer, Integer> graph){
         MyVertex<Integer> king = (MyVertex<Integer>) graph.vertices().stream().toList().get(phase % graph.numVertices());
+        // suspend -> show king
         int condition = graph.numVertices() / 2 + graph.getTraitorsCount();
         for(Vertex<Integer> v : graph.vertices()){
             ((MyVertex<Integer>) v).chooseMajorityWithTieBreaker(king.getNextOpinion((MyVertex<Integer>) v), condition);
         }
+        // king sent
     }
 
 }
