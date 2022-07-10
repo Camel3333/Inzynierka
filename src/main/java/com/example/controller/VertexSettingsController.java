@@ -1,10 +1,8 @@
 package com.example.controller;
 
 import com.example.model.Agent;
-import com.example.model.AgentOpinion;
 import javafx.fxml.FXML;
 import net.rgielen.fxweaver.core.FxmlView;
-import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.ToggleSwitch;
 import org.springframework.stereotype.Component;
 

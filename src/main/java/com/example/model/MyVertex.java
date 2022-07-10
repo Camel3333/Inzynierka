@@ -1,6 +1,7 @@
 package com.example.model;
 
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import javafx.beans.binding.BooleanExpression;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
@@ -17,12 +18,12 @@ public class MyVertex<V> implements Vertex<V>, Agent {
 //    private BooleanProperty supportsOpinion = new SimpleBooleanProperty();
     @Getter
     @Setter
-    private AgentOpinion opinion;
+    private BooleanProperty forAttack;
     @Getter
-    private List<AgentOpinion> knowledge = new ArrayList<>();
+    private List<BooleanProperty> knowledge = new ArrayList<>();
 
     public MyVertex(V id){
-        opinion = new AgentOpinion("attack", true);
+        forAttack = new SimpleBooleanProperty(true);
         this.id = id;
     }
 
@@ -42,51 +43,51 @@ public class MyVertex<V> implements Vertex<V>, Agent {
 
     @Override
     public BooleanProperty isSupportingOpinion() {
-        return opinion.getSupports();
+        return forAttack;
     }
 
     public void setIsTraitor(boolean isTraitor) {
         this.isTraitor = new SimpleBooleanProperty(isTraitor);
     }
 
-    public AgentOpinion getNextOpinion(MyVertex<V> vertex){
+    public BooleanProperty getNextOpinion(MyVertex<V> vertex){
         if(isTraitor.getValue() && (int) vertex.element() % 2 == 0){
-            return new AgentOpinion(opinion.getName(), !opinion.isSupporting().getValue());
+            return new SimpleBooleanProperty(!forAttack.getValue());
         }
         else{
-            return new AgentOpinion(opinion.getName(), opinion.isSupporting().getValue());
+            return new SimpleBooleanProperty(forAttack.getValue());
         }
     }
 
-    public void receiveOpinion(AgentOpinion agentOpinion){
-        if(opinion == null){
-            opinion = agentOpinion;
+    public void receiveOpinion(BooleanProperty agentOpinion){
+        if(forAttack == null){
+            forAttack = agentOpinion;
         }
         knowledge.add(agentOpinion);
     }
 
     public boolean getMajorityVote(){
         return knowledge.stream()
-                .filter(o -> o.isSupporting().getValue())
+                .filter(BooleanExpression::getValue)
                 .count() > knowledge.size() / 2;
     }
 
     public int getMajorityVoteCount(){
         return (int) knowledge.stream()
-                .filter(o -> o.isSupporting().getValue() == getMajorityVote())
+                .filter(o -> o.getValue() == getMajorityVote())
                 .count();
     }
 
     public void chooseMajority(){
-        opinion.setIsSupporting(getMajorityVote());
+        forAttack.set(getMajorityVote());
     }
 
-    public void chooseMajorityWithTieBreaker(AgentOpinion kingOpinion, int condition){
+    public void chooseMajorityWithTieBreaker(BooleanProperty kingOpinion, int condition){
         if(getMajorityVoteCount() > condition){
-            opinion.setIsSupporting(getMajorityVote());
+            forAttack.set(getMajorityVote());
         }
         else{
-            opinion.setIsSupporting(kingOpinion.isSupporting().getValue());
+            forAttack.set(kingOpinion.getValue());
         }
     }
 }
