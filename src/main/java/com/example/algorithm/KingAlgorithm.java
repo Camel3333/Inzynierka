@@ -9,6 +9,9 @@ import java.util.List;
 
 public class KingAlgorithm implements Algorithm{
     private int phase = 0;
+    private int numberOfPhases;
+    private MyGraph<Integer, Integer> graph;
+    private AlgorithmPhase round = AlgorithmPhase.SEND;
 
 //    @Override
 //    public void execute(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
@@ -21,10 +24,31 @@ public class KingAlgorithm implements Algorithm{
 //        }
 //    }
 
-    public void step(MyGraph<Integer, Integer> graph){
-        firstRound(graph);
-        secondRound(graph);
-        phase ++;
+    @Override
+    public void loadEnvironment(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
+        this.graph = graph;
+        numberOfPhases =  (int)settings.getSettings().get("phase").getValue();
+    }
+
+    @Override
+    public List<Operation> step() {
+        switch (round){
+            case SEND -> {
+                firstRound(graph);
+                round = AlgorithmPhase.CHOOSE;
+            }
+            case CHOOSE -> {
+                secondRound(graph);
+                phase ++;
+                round = AlgorithmPhase.SEND;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return phase > numberOfPhases;
     }
 
     public void firstRound(MyGraph<Integer, Integer> graph){
@@ -46,18 +70,9 @@ public class KingAlgorithm implements Algorithm{
         // king sent
     }
 
-    @Override
-    public void loadEnvironment(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
-
+    private enum AlgorithmPhase{
+        SEND,
+        CHOOSE
     }
 
-    @Override
-    public List<Operation> step() {
-        return null;
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
 }
