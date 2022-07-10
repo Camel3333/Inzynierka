@@ -5,19 +5,21 @@ import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.settings.AlgorithmSettings;
 
+import java.util.List;
+
 public class KingAlgorithm implements Algorithm{
     private int phase = 0;
 
-    @Override
-    public void execute(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
-        int f = (int)settings.getSettings().get("phase").getValue();
-        if(graph.numVertices() == 0){
-            return;
-        }
-        for(int i = 0; i <= f; i++){
-            step(graph);
-        }
-    }
+//    @Override
+//    public void execute(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
+//        int f = (int)settings.getSettings().get("phase").getValue();
+//        if(graph.numVertices() == 0){
+//            return;
+//        }
+//        for(int i = 0; i <= f; i++){
+//            step(graph);
+//        }
+//    }
 
     public void step(MyGraph<Integer, Integer> graph){
         firstRound(graph);
@@ -44,4 +46,18 @@ public class KingAlgorithm implements Algorithm{
         // king sent
     }
 
+    @Override
+    public void loadEnvironment(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
+
+    }
+
+    @Override
+    public List<Operation> step() {
+        return null;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }
