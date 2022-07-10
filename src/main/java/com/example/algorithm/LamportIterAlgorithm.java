@@ -15,46 +15,6 @@ public class LamportIterAlgorithm implements Algorithm{
     private Map<String, String> algorithmState = new HashMap<>();
     private Stack<StackRecord> stack = new Stack<>();
 
-//    public void execute(MyGraph<Integer, Integer> myGraph, AlgorithmSettings settings){
-//        System.out.println("Entering laport algorithm");
-//        stack = new Stack<>();
-//        depth = (int)settings.getSettings().get("depth").getValue();
-//        if(myGraph.numVertices() == 0){
-//            return;
-//        }
-//        MyVertex<Integer> commander = (MyVertex<Integer>) myGraph.vertices().stream().toList().get(0);
-//        System.out.println("Commander opinion before: "+commander.isSupportingOpinion().get()+", his id = "+commander.element());
-//        stack.push(new StackRecord(commander, myGraph.vertexNeighbours(commander).stream().map(vertex -> (MyVertex<Integer>)vertex).toList(), depth, AlgorithmPhase.SEND));
-//        while (!stack.empty()){
-//            step();
-//        }
-//        System.out.println("Consensus state after algorithm: "+myGraph.checkConsensus());
-//        System.out.println("Commander opinion after: "+commander.isSupportingOpinion().get());
-//    }
-
-//    private void om(MyVertex<Integer> commander, List<Vertex<Integer>> lieutenants, int m){
-//        // highlight commander
-//        for(Vertex<Integer> vertex : lieutenants){
-//            if (m == depth){
-//                ((MyVertex<Integer>) vertex).getOpinion().setIsSupporting(commander.isSupportingOpinion().get());
-//            }
-//            ((MyVertex<Integer>) vertex).receiveOpinion(commander.getNextOpinion((MyVertex<Integer>) vertex));
-//        }
-//        // show for all
-//        // suspend -> next
-//        if(m > 0){
-//            for(Vertex<Integer> vertex : lieutenants){
-//                List<Vertex<Integer>> new_lieutenants = lieutenants.stream()
-//                        .filter(general -> !general.equals(vertex))
-//                        .collect(Collectors.toList());
-//                om((MyVertex<Integer>) vertex, new_lieutenants, m - 1);
-//            }
-//            for(Vertex<Integer> vertex : lieutenants){
-//                ((MyVertex<Integer>) vertex).chooseMajority();
-//            }
-//        }
-//    }
-
     private void om_iter(){
         var record = stack.pop();
 
@@ -102,6 +62,7 @@ public class LamportIterAlgorithm implements Algorithm{
         if (!stack.empty()){
             om_iter();
         }
+        return null;
     }
 
     @Override
