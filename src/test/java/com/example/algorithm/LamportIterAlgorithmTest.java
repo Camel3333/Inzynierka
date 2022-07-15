@@ -1,6 +1,8 @@
 package com.example.algorithm;
 
-import com.example.model.*;
+import com.example.model.AgentOpinion;
+import com.example.model.MyGraph;
+import com.example.model.MyVertex;
 import com.example.settings.AlgorithmSetting;
 import com.example.settings.AlgorithmSettings;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,10 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
-public class LamportAlgorithmTest {
+public class LamportIterAlgorithmTest {
     private MyGraph<Integer, Integer> graph;
-    private final Algorithm algorithm = new LamportAlgorithm();
+    private final Algorithm algorithm = new LamportIterAlgorithm();
 
     @BeforeEach
     public void resetGraph(){
@@ -61,21 +62,5 @@ public class LamportAlgorithmTest {
         // Then
         assertTrue(graph.checkConsensus());
     }
-
-//    @Test
-//    public void emptyGraphTest(){
-//        // Given
-//        var settings = new AlgorithmSettings();
-//
-//        // When
-//        settings.getSettings().put("depth", new AlgorithmSetting("depth", 0, Integer.class,object -> true));
-//        algorithm.loadEnvironment(graph, settings);
-//        while(!algorithm.isFinished()){
-//            algorithm.step();
-//        }
-//
-//        // Then
-//        assertTrue(graph.checkConsensus());
-//    }
 
 }
