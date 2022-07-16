@@ -169,4 +169,8 @@ public class SimulationController {
 //            System.out.println("Can't run algorithm because some options have invalid type");
     }
 
+    public void doStep() {
+        ;
+    }
+
 }

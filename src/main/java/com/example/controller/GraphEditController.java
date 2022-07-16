@@ -4,6 +4,7 @@ import com.example.ApplicationState;
 import com.example.draw.DrawMode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.layout.BackgroundImage;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,8 @@ public class GraphEditController {
     Button noneButton;
     @FXML
     Button simulateButton;
+    @FXML
+    Button nextStepButton;
 
 
     private DrawMenuController drawMenuController;
@@ -44,8 +47,9 @@ public class GraphEditController {
 
     private void initializeSimulationButtons() {
         simulateButton.setOnAction(e -> simulationMenuController.changeApplicationState(ApplicationState.SIMULATING));
+        nextStepButton.setOnAction(e -> simulationMenuController.doNextStep());
         buttons.put(ApplicationState.SIMULATING,
-                new ArrayList<>(List.of(vertexButton, edgeButton, deleteButton, noneButton)));
+                new ArrayList<>(List.of(nextStepButton)));
     }
 
     @FXML
@@ -67,5 +71,10 @@ public class GraphEditController {
             button.setManaged(enabled);
             button.setVisible(enabled);
         });
+    }
+
+    public void setChaneStateToSimulationEnabled(boolean enabled) {
+        simulateButton.setManaged(enabled);
+        simulateButton.setVisible(enabled);
     }
 }

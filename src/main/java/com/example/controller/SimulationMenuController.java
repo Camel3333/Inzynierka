@@ -14,7 +14,9 @@ public class SimulationMenuController {
     private int i = 0;
 
     @FXML
-    MenuItem simulateItem;
+    private MenuItem simulateItem;
+    @FXML
+    private MenuItem nextStepItem;
 
     private final AppController appController;
 
@@ -35,9 +37,25 @@ public class SimulationMenuController {
             }
             i++;
         });
+        nextStepItem.setOnAction(e -> {
+            doNextStep();
+        });
     }
 
     public void changeApplicationState(ApplicationState applicationState) {
         appController.setApplicationState(applicationState);
+    }
+
+    public void doNextStep() {
+        appController.getSimulationController().doStep();
+    }
+
+    public void setEnabled(boolean enabled) {
+//        simulateItem.setDisable(!enabled);
+        nextStepItem.setDisable(!enabled);
+    }
+
+    public void setChaneStateToSimulationEnabled(boolean enabled) {
+        simulateItem.setDisable(!enabled);
     }
 }

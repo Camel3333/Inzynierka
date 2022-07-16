@@ -7,7 +7,6 @@ import com.example.algorithm.AlgorithmType;
 import com.example.draw.CreationHelper;
 import com.example.model.MyGraph;
 import com.example.simulation.SimpleSimulation;
-import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -15,10 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @FxmlView("/view/appView.fxml")
@@ -81,5 +77,9 @@ public class AppController {
                 simulationController.show();
             }
         }
+    }
+
+    public SimulationController getSimulationController() {
+        return simulationController;
     }
 }
