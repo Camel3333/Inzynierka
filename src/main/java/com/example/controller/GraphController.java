@@ -12,10 +12,21 @@ import com.example.draw.MySmartGraphPanel;
 import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;
 import com.example.util.GraphObserver;
+import javafx.animation.PathTransition;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.util.Duration;
+import javafx.util.Pair;
 import lombok.Getter;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -24,7 +35,10 @@ import org.controlsfx.control.PopOver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 @Component
@@ -40,6 +54,10 @@ public class GraphController {
     private int vertexIdCounter = 0;
     private SmartGraphDemoContainer container;
     private MySmartGraphPanel<Integer, Integer> graphView;
+
+    private int general;
+    private List<Pair<Integer, Integer>> communicators;
+
     @Getter
     private Graph<Integer, Integer> graph;
     private CreationHelper drawingHelper;
@@ -56,6 +74,7 @@ public class GraphController {
     public void setModelGraph(Graph<Integer, Integer> graph){
         this.graph = graph;
         vertexIdCounter = graph.numVertices();
+
         //remove old graph
         graphRoot.getChildren().remove(container);
         init();
@@ -73,6 +92,10 @@ public class GraphController {
         graphView = new MySmartGraphPanel<>(graph, properties, strategy);
         setGraphViewBindings();
         container = new SmartGraphDemoContainer(graphView);
+    }
+
+    public void setGeneral(int id) {
+        graphView.getStylableVertex(id).setStyleClass("general");
     }
 
     private void setGraphViewBindings(){
@@ -101,6 +124,14 @@ public class GraphController {
                     graphView.getStylableVertex(vertex).setStyleClass("traitor");
                 } else {
                     graphView.getStylableVertex(vertex).setStyleClass("vertex");
+                }
+            });
+
+            vertex.isSupportingOpinion().addListener(changed -> {
+                if (vertex.isSupportingOpinion().get()) {
+                    graphView.getStylableVertex(vertex).addStyleClass("attack");
+                } else {
+                    graphView.getStylableVertex(vertex).addStyleClass("defense");
                 }
             });
         });
@@ -139,8 +170,52 @@ public class GraphController {
         }
     }
 
+    public void sendMessage(int[] v1, int[] v2) {
+        //asert v1 v2 equal length
+        List<ImageView> circles = new LinkedList<ImageView>();
+        List<PathTransition> paths = new LinkedList<PathTransition>();
+
+        for (int i = 0; i < v1.length; i++) {
+            MyVertex<Integer> commander = (MyVertex<Integer>) graph.vertices().stream().toList().get(v1[i]);
+            MyVertex<Integer> commander1 = (MyVertex<Integer>) graph.vertices().stream().toList().get(v2[i]);
+
+            double pos1 = graphView.getVertexPositionX(commander);
+            double pos2 = graphView.getVertexPositionY(commander);
+            double pos2_1 = graphView.getVertexPositionX(commander1);
+            double pos2_2 = graphView.getVertexPositionY(commander1);
+            ImageView ball = new ImageView(new Image("file:src/main/resources/ms.jpg", 20, 20, false, false));
+            ball.setX(pos1);
+            ball.setY(pos2);
+            circles.add(ball);
+
+            ((Pane)(this.graphRoot.getChildren().stream().toList().get(0))).getChildren().add(ball);
+
+            System.out.println(Arrays.toString(new double[]{pos1, pos2, pos2_1, pos2_2}));
+
+            Path path = new Path();
+            path.getElements().add(new MoveTo(pos1,pos2));
+            path.getElements().add(new LineTo(pos2_1, pos2_2));
+
+            PathTransition pathTransition = new PathTransition();
+            pathTransition.setDuration(Duration.millis(1000));
+            pathTransition.setNode(ball);
+            pathTransition.setPath(path);
+            paths.add(pathTransition);
+        }
+        for (PathTransition path : paths) {
+            path.play();
+            path.setOnFinished(
+                    e -> ((Pane)(this.graphRoot.getChildren().stream().toList().get(0))).getChildren().remove(path.getNode())
+            );
+        }
+
+    }
+
     // TODO: implement update as listener to graph changes
     public void update(){
+        if (this.graph.vertices().size() > 4) {
+            this.sendMessage(new int[]{0, 1}, new int[]{1, 2});
+        }
         graphView.updateAndWait();
     }
 
