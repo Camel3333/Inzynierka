@@ -5,24 +5,50 @@ import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.settings.AlgorithmSettings;
 
+import java.util.List;
+
 public class KingAlgorithm implements Algorithm{
     private int phase = 0;
+    private int numberOfPhases;
+    private MyGraph<Integer, Integer> graph;
+    private AlgorithmPhase round = AlgorithmPhase.SEND;
+
+//    @Override
+//    public void execute(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
+//        int f = (int)settings.getSettings().get("phase").getValue();
+//        if(graph.numVertices() == 0){
+//            return;
+//        }
+//        for(int i = 0; i <= f; i++){
+//            step(graph);
+//        }
+//    }
 
     @Override
-    public void execute(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
-        int f = (int)settings.getSettings().get("phase").getValue();
-        if(graph.numVertices() == 0){
-            return;
-        }
-        for(int i = 0; i <= f; i++){
-            step(graph);
-        }
+    public void loadEnvironment(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
+        this.graph = graph;
+        numberOfPhases =  (int)settings.getSettings().get("phase").getValue();
     }
 
-    public void step(MyGraph<Integer, Integer> graph){
-        firstRound(graph);
-        secondRound(graph);
-        phase ++;
+    @Override
+    public List<Operation> step() {
+        switch (round){
+            case SEND -> {
+                firstRound(graph);
+                round = AlgorithmPhase.CHOOSE;
+            }
+            case CHOOSE -> {
+                secondRound(graph);
+                phase ++;
+                round = AlgorithmPhase.SEND;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return phase > numberOfPhases;
     }
 
     public void firstRound(MyGraph<Integer, Integer> graph){
@@ -42,6 +68,11 @@ public class KingAlgorithm implements Algorithm{
             ((MyVertex<Integer>) v).chooseMajorityWithTieBreaker(king.getNextOpinion((MyVertex<Integer>) v), condition);
         }
         // king sent
+    }
+
+    private enum AlgorithmPhase{
+        SEND,
+        CHOOSE
     }
 
 }

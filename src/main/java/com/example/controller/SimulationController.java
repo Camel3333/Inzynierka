@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.algorithm.*;
 import com.example.settings.*;
+import com.example.simulation.SimpleSimulation;
 import com.example.simulation.Simulation;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
@@ -162,7 +163,9 @@ public class SimulationController {
 
     public void startAlgorithm() {
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
-        simulation.start(selectedAlgorithm.getAlgorithm(), algorithmSettings);
+//        simulation.start(selectedAlgorithm.getAlgorithm(), algorithmSettings);
+        simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), algorithmSettings);
+        ((SimpleSimulation)simulation).start();
 //        if (verifySettings(selectedAlgorithm))
 //            simulation.start(selectedAlgorithm.getAlgorithm(), algorithmSettings);
 //        else
