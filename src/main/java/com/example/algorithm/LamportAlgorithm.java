@@ -1,6 +1,8 @@
 package com.example.algorithm;
 
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import com.example.algorithm.operations.Operation;
+import com.example.algorithm.report.StepReport;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.settings.AlgorithmSettings;
@@ -12,6 +14,11 @@ import java.util.stream.Collectors;
 public class LamportAlgorithm implements Algorithm{
     private int depth;
     private boolean isFinished = false;
+
+    @Override
+    public AlgorithmType getType() {
+        return AlgorithmType.LAMPORT;
+    }
 
     @Override
     public void loadEnvironment(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
@@ -55,7 +62,7 @@ public class LamportAlgorithm implements Algorithm{
 //    }
 
     @Override
-    public synchronized List<Operation> step(){
+    public synchronized StepReport step(){
         notify();
         return null;
     }

@@ -1,6 +1,11 @@
 package com.example.algorithm;
 
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import com.example.algorithm.operations.ChooseOperation;
+import com.example.algorithm.operations.Operation;
+import com.example.algorithm.operations.SendOperation;
+import com.example.algorithm.report.StepReport;
+import com.example.model.AgentOpinion;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.settings.AlgorithmSettings;
@@ -15,8 +20,16 @@ public class LamportIterAlgorithm implements Algorithm{
     private Map<String, String> algorithmState = new HashMap<>();
     private Stack<StackRecord> stack = new Stack<>();
 
-    private void om_iter(){
+    @Override
+    public AlgorithmType getType() {
+        return AlgorithmType.LAMPORT;
+    }
+
+    private StepReport om_iter(){
         var record = stack.pop();
+        LamportIterStepReport stepReport = new LamportIterStepReport();
+
+        stepReport.fillRoles(record);
 
         switch (record.phase){
             case SEND -> {
@@ -24,7 +37,9 @@ public class LamportIterAlgorithm implements Algorithm{
                     if (record.m == depth){
                         ((MyVertex<Integer>) vertex).getOpinion().setIsSupporting(record.commander.isSupportingOpinion().get());
                     }
-                    ((MyVertex<Integer>) vertex).receiveOpinion(record.commander.getNextOpinion((MyVertex<Integer>) vertex));
+                    AgentOpinion commanderOpinion = record.commander.getNextOpinion((MyVertex<Integer>) vertex);
+                    ((MyVertex<Integer>) vertex).receiveOpinion(commanderOpinion);
+                    stepReport.getOperations().add(new SendOperation(record.commander.element(), vertex.element(), commanderOpinion));
                 }
 
                 if(record.m > 0) {
@@ -40,9 +55,12 @@ public class LamportIterAlgorithm implements Algorithm{
             case CHOOSE -> {
                 for(Vertex<Integer> vertex : record.lieutenants){
                     ((MyVertex<Integer>) vertex).chooseMajority();
+                    stepReport.getOperations().add(new ChooseOperation(vertex.element(), ((MyVertex<Integer>) vertex).getOpinion()));
                 }
             }
         }
+
+        return stepReport;
     }
 
     @Override
@@ -58,9 +76,9 @@ public class LamportIterAlgorithm implements Algorithm{
     }
 
     @Override
-    public List<Operation> step() {
+    public StepReport step() {
         if (!stack.empty()){
-            om_iter();
+            return om_iter();
         }
         return null;
     }
@@ -68,6 +86,39 @@ public class LamportIterAlgorithm implements Algorithm{
     @Override
     public boolean isFinished() {
         return stack.empty();
+    }
+
+//    private StepReport buildReport(StackRecord record){
+//        StepReport report = new StepReport();
+//
+//        // set roles
+//        report.getRoles().put(record.commander, VertexRole.COMMANDER);
+//        for (Vertex<Integer> vertex : record.lieutenants){
+//            report.getRoles().put(vertex, VertexRole.LIEUTENANT);
+//        }
+//
+//        // fill operations
+//        switch (record.phase){
+//            case CHOOSE -> {
+//                for(Vertex<Integer> vertex : record.lieutenants){
+//                    report.getOperations().add(vertex.element(), new ChooseOperation(vertex.element(), ((MyVertex<Integer>)vertex).getOpinion()));
+//                }
+//            }
+//            case SEND -> {
+//                for (Vertex<Integer> vertex : record.lieutenants){
+//                    report.getOperations().add(vertex.element(), new SendOperation(record.commander.element(), vertex.element(), ));
+//                }
+//            }
+//        }
+//    }
+
+    private class LamportIterStepReport extends StepReport{
+        public void fillRoles(StackRecord record){
+            getRoles().put(record.commander, VertexRole.COMMANDER);
+            for (Vertex<Integer> vertex : record.lieutenants){
+                getRoles().put(vertex, VertexRole.LIEUTENANT);
+            }
+        }
     }
 
     private record StackRecord(MyVertex<Integer> commander,

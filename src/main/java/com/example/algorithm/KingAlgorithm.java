@@ -1,6 +1,8 @@
 package com.example.algorithm;
 
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import com.example.algorithm.operations.Operation;
+import com.example.algorithm.report.StepReport;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.settings.AlgorithmSettings;
@@ -25,13 +27,18 @@ public class KingAlgorithm implements Algorithm{
 //    }
 
     @Override
+    public AlgorithmType getType() {
+        return AlgorithmType.KING;
+    }
+
+    @Override
     public void loadEnvironment(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
         this.graph = graph;
         numberOfPhases =  (int)settings.getSettings().get("phase").getValue();
     }
 
     @Override
-    public List<Operation> step() {
+    public StepReport step() {
         switch (round){
             case SEND -> {
                 firstRound(graph);
