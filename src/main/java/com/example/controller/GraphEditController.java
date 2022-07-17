@@ -20,17 +20,17 @@ public class GraphEditController {
     Map<ApplicationState, List<Button>> buttons = new HashMap<>();
 
     @FXML
-    Button vertexButton;
+    private Button vertexButton;
     @FXML
-    Button edgeButton;
+    private Button edgeButton;
     @FXML
-    Button deleteButton;
+    private Button deleteButton;
     @FXML
-    Button noneButton;
+    private Button noneButton;
     @FXML
-    Button simulateButton;
+    private Button simulateButton;
     @FXML
-    Button nextStepButton;
+    private Button drawButton;
 
 
     private DrawMenuController drawMenuController;
@@ -47,9 +47,9 @@ public class GraphEditController {
 
     private void initializeSimulationButtons() {
         simulateButton.setOnAction(e -> simulationMenuController.changeApplicationState(ApplicationState.SIMULATING));
-        nextStepButton.setOnAction(e -> simulationMenuController.doNextStep());
+        drawButton.setOnAction(e -> simulationMenuController.changeApplicationState(ApplicationState.DRAWING));
         buttons.put(ApplicationState.SIMULATING,
-                new ArrayList<>(List.of(nextStepButton)));
+                new ArrayList<>(List.of(drawButton)));
     }
 
     @FXML

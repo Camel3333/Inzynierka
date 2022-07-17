@@ -12,5 +12,5 @@
     <Button text = "Delete" fx:id = "deleteButton"/>
     <Button text = "None" fx:id = "noneButton"/>
     <Button text = "Simulate" fx:id = "simulateButton"/>
-    <Button text = "Next Step" fx:id = "nextStepButton"/>
+    <Button text = "Draw" fx:id = "drawButton"/>
 </HBox>

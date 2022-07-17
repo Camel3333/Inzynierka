@@ -16,7 +16,7 @@ public class SimulationMenuController {
     @FXML
     private MenuItem simulateItem;
     @FXML
-    private MenuItem nextStepItem;
+    private MenuItem drawItem;
 
     private final AppController appController;
 
@@ -37,8 +37,8 @@ public class SimulationMenuController {
             }
             i++;
         });
-        nextStepItem.setOnAction(e -> {
-            doNextStep();
+        drawItem.setOnAction(e -> {
+            changeApplicationState(ApplicationState.DRAWING);
         });
     }
 
@@ -46,13 +46,9 @@ public class SimulationMenuController {
         appController.setApplicationState(applicationState);
     }
 
-    public void doNextStep() {
-        appController.getSimulationController().doStep();
-    }
-
     public void setEnabled(boolean enabled) {
 //        simulateItem.setDisable(!enabled);
-        nextStepItem.setDisable(!enabled);
+        drawItem.setDisable(!enabled);
     }
 
     public void setChaneStateToSimulationEnabled(boolean enabled) {
