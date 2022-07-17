@@ -91,6 +91,9 @@ public class SimpleSimulation extends Service<Boolean> implements Simulation{
 
     public StepReport step() {
         StepReport report = algorithm.step();
+        if (allowAnimations.get()){
+            animationEngine.animate(report);
+        }
         graphController.update();
         return report;
     }
