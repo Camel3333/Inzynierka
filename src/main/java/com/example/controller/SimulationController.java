@@ -7,8 +7,11 @@ import com.example.simulation.Simulation;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -36,6 +39,12 @@ public class SimulationController {
     @FXML
     private Button startButton;
     @FXML
+    private Button nextStepButton;
+    @FXML
+    private Button liveButton;
+    @FXML
+    private Button pauseButton;
+    @FXML
     private ComboBox<AlgorithmType> algorithmsBox;
 
     private AlgorithmSettings algorithmSettings = new AlgorithmSettings();
@@ -46,6 +55,9 @@ public class SimulationController {
 
     @Setter
     private Simulation simulation;
+
+    private BooleanProperty paused =  new SimpleBooleanProperty(true);
+    private BooleanProperty started = new SimpleBooleanProperty(false);
 
     public void show() {
         parent.setVisible(true);
@@ -92,6 +104,26 @@ public class SimulationController {
         depth.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("depth"));
         phase.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("phase"));
 
+        nextStepButton.setDisable(true);
+        liveButton.setDisable(true);
+        pauseButton.setDisable(true);
+
+        List<Observable> dependenciesList = new ArrayList<>();
+        dependenciesList.add(paused);
+        dependenciesList.add(started);
+        Observable[] dependencies = dependenciesList.toArray(new Observable[0]);
+
+        nextStepButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+            return !(paused.get() && started.get());
+        }, dependencies));
+
+        liveButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+            return !(paused.get() && started.get());
+        }, dependencies));
+
+        pauseButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+            return !(!paused.get() && started.get());
+        }, dependencies));
     }
 
     private void showAlgorithmSettings(AlgorithmType algorithmType) {
@@ -125,6 +157,7 @@ public class SimulationController {
                 .collect(Collectors.toList());
 
         inputDependencies.add(algorithmsBox.getSelectionModel().selectedItemProperty());
+        inputDependencies.add(started);
 
         Observable[] dependencies = inputDependencies.toArray(new Observable[0]);
 
@@ -132,17 +165,20 @@ public class SimulationController {
 
         startButton.disableProperty().unbind();
         startButton.disableProperty().bind(Bindings.createBooleanBinding(()->{
-                List<SettingNode<?>> settingNodes = (algorithmNodes
-                        .stream()
-                        .filter(node -> node instanceof SettingNode<?>)
-                        .map(node -> (SettingNode<?>)node)
-                        .collect(Collectors.toList()));
-                for (SettingNode<?> settingNode : settingNodes){
-                    if (!settingNode.getIsValidProperty().get()){
-                        return true;
-                    }
+            if (started.get()) {
+                return true;
+            }
+            List<SettingNode<?>> settingNodes = (algorithmNodes
+                    .stream()
+                    .filter(node -> node instanceof SettingNode<?>)
+                    .map(node -> (SettingNode<?>)node)
+                    .collect(Collectors.toList()));
+            for (SettingNode<?> settingNode : settingNodes){
+                if (!settingNode.getIsValidProperty().get()){
+                    return true;
                 }
-                return false;
+            }
+            return false;
             }, dependencies
         ));
     }
@@ -161,19 +197,74 @@ public class SimulationController {
         return true;
     }
 
-    public void startAlgorithm() {
+    public void initSimulation() {
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
-//        simulation.start(selectedAlgorithm.getAlgorithm(), algorithmSettings);
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), algorithmSettings);
-        ((SimpleSimulation)simulation).start();
-//        if (verifySettings(selectedAlgorithm))
-//            simulation.start(selectedAlgorithm.getAlgorithm(), algorithmSettings);
-//        else
-//            System.out.println("Can't run algorithm because some options have invalid type");
+        ((SimpleSimulation)simulation).loadEnvironment();
+        started.set(true);
+    }
+
+    public void doStepTask() {
+        if (!((SimpleSimulation)simulation).isFinished()) {
+            List<Operation> operations = ((SimpleSimulation)simulation).step();
+        } else {
+            System.out.println("Finished");
+        }
     }
 
     public void doStep() {
-        ;
+        paused.set(false);
+        new SimulationStepService().start();
+        paused.set(true);
     }
 
+    private void liveTask() {
+        while(!((SimpleSimulation)simulation).isFinished()) {
+            List<Operation> operations = ((SimpleSimulation)simulation).step();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (paused.get()) {
+                return;
+            }
+        }
+        System.out.println("Finished");
+    }
+
+    public void pause() {
+        paused.set(true);
+    }
+
+    public void live() {
+        paused.set(false);
+        new SimulationLiveService().start();
+    }
+
+    public class SimulationLiveService extends Service<Boolean> {
+        @Override
+        protected Task<Boolean> createTask() {
+            return new Task<Boolean>() {
+                @Override
+                protected Boolean call() throws Exception {
+                    liveTask();
+                    return true;
+                }
+            };
+        }
+    }
+
+    public class SimulationStepService extends Service<Boolean> {
+        @Override
+        protected Task<Boolean> createTask() {
+            return new Task<Boolean>() {
+                @Override
+                protected Boolean call() throws Exception {
+                    doStepTask();
+                    return true;
+                }
+            };
+        }
+    }
 }
