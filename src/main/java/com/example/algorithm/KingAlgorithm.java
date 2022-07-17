@@ -1,30 +1,18 @@
 package com.example.algorithm;
 
 import com.brunomnsilva.smartgraph.graph.Vertex;
-import com.example.algorithm.operations.Operation;
+import com.example.algorithm.operations.ChooseOperation;
+import com.example.algorithm.operations.SendOperation;
 import com.example.algorithm.report.StepReport;
-import com.example.model.MyGraph;
-import com.example.model.MyVertex;
+import com.example.model.*;
 import com.example.settings.AlgorithmSettings;
 
-import java.util.List;
 
 public class KingAlgorithm implements Algorithm{
     private int phase = 0;
     private int numberOfPhases;
     private MyGraph<Integer, Integer> graph;
     private AlgorithmPhase round = AlgorithmPhase.SEND;
-
-//    @Override
-//    public void execute(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
-//        int f = (int)settings.getSettings().get("phase").getValue();
-//        if(graph.numVertices() == 0){
-//            return;
-//        }
-//        for(int i = 0; i <= f; i++){
-//            step(graph);
-//        }
-//    }
 
     @Override
     public AlgorithmType getType() {
@@ -41,13 +29,13 @@ public class KingAlgorithm implements Algorithm{
     public StepReport step() {
         switch (round){
             case SEND -> {
-                firstRound(graph);
                 round = AlgorithmPhase.CHOOSE;
+                return firstRound(graph);
             }
             case CHOOSE -> {
-                secondRound(graph);
                 phase ++;
                 round = AlgorithmPhase.SEND;
+                return secondRound(graph);
             }
         }
         return null;
@@ -58,28 +46,47 @@ public class KingAlgorithm implements Algorithm{
         return phase > numberOfPhases;
     }
 
-    public void firstRound(MyGraph<Integer, Integer> graph){
+    public StepReport firstRound(MyGraph<Integer, Integer> graph){
+        KingStepRecord report = new KingStepRecord();
+        report.fillRoles(null);
         for(Vertex<Integer> v : graph.vertices()){
             for(Vertex<Integer> u : graph.vertices()){
-                ((MyVertex<Integer>) u).receiveOpinion(((MyVertex<Integer>) v).getNextOpinion((MyVertex<Integer>) u));
+                AgentOpinion opinion = ((MyVertex<Integer>) v).getNextOpinion((MyVertex<Integer>) u);
+                ((MyVertex<Integer>) u).receiveOpinion(opinion);
+                report.getOperations().add(new SendOperation(v.element(), u.element(), opinion));
             }
-            // send all
         }
+        return report;
     }
 
-    public void secondRound(MyGraph<Integer, Integer> graph){
+    public StepReport secondRound(MyGraph<Integer, Integer> graph){
+        KingStepRecord report = new KingStepRecord();
         MyVertex<Integer> king = (MyVertex<Integer>) graph.vertices().stream().toList().get(phase % graph.numVertices());
-        // suspend -> show king
+        report.fillRoles(king);
         int condition = graph.numVertices() / 2 + graph.getTraitorsCount();
         for(Vertex<Integer> v : graph.vertices()){
             ((MyVertex<Integer>) v).chooseMajorityWithTieBreaker(king.getNextOpinion((MyVertex<Integer>) v), condition);
+            report.getOperations().add(new ChooseOperation(v.element(), ((MyVertex<Integer>) v).getOpinion()));
         }
-        // king sent
+        return report;
     }
 
     private enum AlgorithmPhase{
         SEND,
-        CHOOSE
+        CHOOSE,
+    }
+
+    private class KingStepRecord extends StepReport{
+        public void fillRoles(Vertex<Integer> king){
+            for(Vertex<Integer> v : graph.vertices()){
+                if(v.equals(king)){
+                    getRoles().put(v, VertexRole.KING);
+                }
+                else{
+                    getRoles().put(king, VertexRole.LIEUTENANT);
+                }
+            }
+        }
     }
 
 }
