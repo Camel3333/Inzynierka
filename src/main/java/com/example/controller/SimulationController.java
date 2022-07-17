@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.algorithm.*;
+import com.example.algorithm.report.StepReport;
 import com.example.settings.*;
 import com.example.simulation.SimpleSimulation;
 import com.example.simulation.Simulation;
@@ -206,7 +207,7 @@ public class SimulationController {
 
     public void doStepTask() {
         if (!((SimpleSimulation)simulation).isFinished()) {
-            List<Operation> operations = ((SimpleSimulation)simulation).step();
+            StepReport report = ((SimpleSimulation)simulation).step();
         } else {
             System.out.println("Finished");
         }
@@ -220,7 +221,7 @@ public class SimulationController {
 
     private void liveTask() {
         while(!((SimpleSimulation)simulation).isFinished()) {
-            List<Operation> operations = ((SimpleSimulation)simulation).step();
+            StepReport report = ((SimpleSimulation)simulation).step();
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
