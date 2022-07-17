@@ -10,5 +10,6 @@
 
     <items>
         <MenuItem text="Simulate" fx:id = "simulateItem"/>
+        <MenuItem text="Draw" fx:id = "drawItem"/>
     </items>
 </Menu>

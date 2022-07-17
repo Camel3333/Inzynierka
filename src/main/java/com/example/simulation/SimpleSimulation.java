@@ -5,7 +5,6 @@ import com.example.algorithm.operations.Operation;
 import com.example.algorithm.report.StepReport;
 import com.example.animation.AnimationEngine;
 import com.example.animation.AnimationEngineFactory;
-import com.example.animation.LamportAnimationEngine;
 import com.example.settings.AlgorithmSettings;
 import com.example.controller.GraphController;
 import com.example.model.MyGraph;
@@ -79,5 +78,20 @@ public class SimpleSimulation extends Service<Boolean> implements Simulation{
                 return true;
             }
         };
+    }
+
+
+    public void loadEnvironment() {
+        algorithm.loadEnvironment((MyGraph<Integer, Integer>) graphController.getGraph(), settings);
+    }
+
+    public boolean isFinished() {
+        return algorithm.isFinished();
+    }
+
+    public StepReport step() {
+        StepReport report = algorithm.step();
+        graphController.update();
+        return report;
     }
 }
