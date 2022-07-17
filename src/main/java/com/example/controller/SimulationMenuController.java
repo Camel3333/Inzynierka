@@ -14,7 +14,9 @@ public class SimulationMenuController {
     private int i = 0;
 
     @FXML
-    MenuItem simulateItem;
+    private MenuItem simulateItem;
+    @FXML
+    private MenuItem drawItem;
 
     private final AppController appController;
 
@@ -35,9 +37,21 @@ public class SimulationMenuController {
             }
             i++;
         });
+        drawItem.setOnAction(e -> {
+            changeApplicationState(ApplicationState.DRAWING);
+        });
     }
 
     public void changeApplicationState(ApplicationState applicationState) {
         appController.setApplicationState(applicationState);
+    }
+
+    public void setEnabled(boolean enabled) {
+//        simulateItem.setDisable(!enabled);
+        drawItem.setDisable(!enabled);
+    }
+
+    public void setChaneStateToSimulationEnabled(boolean enabled) {
+        simulateItem.setDisable(!enabled);
     }
 }

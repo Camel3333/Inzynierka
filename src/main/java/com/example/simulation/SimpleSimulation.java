@@ -1,6 +1,7 @@
 package com.example.simulation;
 
 import com.example.algorithm.Algorithm;
+import com.example.algorithm.Operation;
 import com.example.settings.AlgorithmSettings;
 import com.example.controller.GraphController;
 import com.example.model.MyGraph;
@@ -9,6 +10,8 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import lombok.Setter;
+
+import java.util.List;
 
 public class SimpleSimulation extends Service<Boolean> implements Simulation{
 
@@ -45,7 +48,7 @@ public class SimpleSimulation extends Service<Boolean> implements Simulation{
             algorithm.step();
             try {
                 // simulate animation
-                Thread.sleep(100);
+                Thread.sleep(10000);
                 System.out.println("Animate!");
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -63,5 +66,20 @@ public class SimpleSimulation extends Service<Boolean> implements Simulation{
                 return true;
             }
         };
+    }
+
+
+    public void loadEnvironment() {
+        algorithm.loadEnvironment((MyGraph<Integer, Integer>) graphController.getGraph(), settings);
+    }
+
+    public boolean isFinished() {
+        return algorithm.isFinished();
+    }
+
+    public List<Operation> step() {
+        List<Operation> operations = algorithm.step();
+        graphController.update();
+        return operations;
     }
 }
