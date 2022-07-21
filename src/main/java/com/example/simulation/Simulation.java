@@ -12,6 +12,8 @@ import com.example.algorithm.Algorithm;
 import com.example.settings.AlgorithmSettings;
 
 public interface Simulation {
-    void start(Algorithm algorithm, AlgorithmSettings settings);
+    void startSimulation();
+    void setEnvironment(Algorithm algorithm, AlgorithmSettings settings);
+    void allowAnimations(boolean allow);
 }
 
