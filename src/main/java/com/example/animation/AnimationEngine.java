@@ -6,10 +6,19 @@ import com.example.algorithm.operations.ChooseOperation;
 import com.example.algorithm.operations.Operation;
 import com.example.algorithm.operations.SendOperation;
 import com.example.algorithm.report.StepReport;
+import com.example.controller.GraphController;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+@Service
 public abstract class AnimationEngine{
+    public void setGraphController(GraphController graphController) {
+        this.graphController = graphController;
+    }
+
+    GraphController graphController;
+
     public void animate(StepReport report){
 //        try {
 //            System.out.println("Staring animation...");
@@ -32,6 +41,9 @@ public abstract class AnimationEngine{
     public void animateSend(SendOperation operation){
         // unpack send operation and animate
         System.out.println("Animating send between "+operation.getFromId()+" and "+operation.getToId()+" message: "+operation.getSentOpinion().getValue());
+        System.out.println(graphController);
+        graphController.sendMessage(operation.getFromId(), operation.getToId());
+
     }
 
     public void animateOpinionChange(ChooseOperation operation){

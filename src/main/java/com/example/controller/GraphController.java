@@ -180,7 +180,13 @@ public class GraphController {
             ball.setX(pos1);
             ball.setY(pos2);
 
-            ((Pane)(this.graphRoot.getChildren().stream().toList().get(0))).getChildren().add(ball);
+            try {
+                ((Pane) (this.graphRoot.getChildren().stream().toList().get(0)))
+                        .getChildren().add(ball);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+        }
 
             Path path = new Path();
             path.getElements().add(new MoveTo(pos1,pos2));
@@ -191,6 +197,7 @@ public class GraphController {
             pathTransition.setNode(ball);
             pathTransition.setPath(path);
 
+            System.out.println("DEBUG sending mesg2");
             pathTransition.play();
             pathTransition.setOnFinished(
                     e -> ((Pane)(this.graphRoot.getChildren().stream().toList().get(0))).getChildren().remove(ball)
