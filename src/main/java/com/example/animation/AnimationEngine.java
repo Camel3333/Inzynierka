@@ -31,11 +31,11 @@ public abstract class AnimationEngine{
 
     public void animateSend(SendOperation operation){
         // unpack send operation and animate
-        System.out.println("Animating send between "+operation.getFromId()+" and "+operation.getToId()+" message: "+operation.getSentOpinion().isSupporting().get());
+        System.out.println("Animating send between "+operation.getFromId()+" and "+operation.getToId()+" message: "+operation.getSentOpinion().getValue());
     }
 
     public void animateOpinionChange(ChooseOperation operation){
         // unpack opinion change operation and animate
-        System.out.println("Animating opinion change for "+operation.getId()+" to "+operation.getChosenOpinion().isSupporting().get());
+        System.out.println("Animating opinion change for "+operation.getId()+" to "+operation.getChosenOpinion().getValue());
     }
 }

@@ -1,6 +1,6 @@
 package com.example.algorithm.operations;
 
-import com.example.model.Opinion;
+import javafx.beans.property.BooleanProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ public class SendOperation implements Operation{
     @Getter
     private int toId;
     @Getter
-    private Opinion sentOpinion;
+    private BooleanProperty sentOpinion;
 
     @Override
     public OperationType getType() {

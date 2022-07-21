@@ -6,6 +6,7 @@ import com.example.algorithm.operations.SendOperation;
 import com.example.algorithm.report.StepReport;
 import com.example.model.*;
 import com.example.settings.AlgorithmSettings;
+import javafx.beans.property.BooleanProperty;
 
 
 public class KingAlgorithm implements Algorithm{
@@ -51,7 +52,7 @@ public class KingAlgorithm implements Algorithm{
         report.fillRoles(null);
         for(Vertex<Integer> v : graph.vertices()){
             for(Vertex<Integer> u : graph.vertices()){
-                AgentOpinion opinion = ((MyVertex<Integer>) v).getNextOpinion((MyVertex<Integer>) u);
+                BooleanProperty opinion = ((MyVertex<Integer>) v).getNextOpinion((MyVertex<Integer>) u);
                 ((MyVertex<Integer>) u).receiveOpinion(opinion);
                 report.getOperations().add(new SendOperation(v.element(), u.element(), opinion));
             }
@@ -66,7 +67,7 @@ public class KingAlgorithm implements Algorithm{
         int condition = graph.numVertices() / 2 + graph.getTraitorsCount();
         for(Vertex<Integer> v : graph.vertices()){
             ((MyVertex<Integer>) v).chooseMajorityWithTieBreaker(king.getNextOpinion((MyVertex<Integer>) v), condition);
-            report.getOperations().add(new ChooseOperation(v.element(), ((MyVertex<Integer>) v).getOpinion()));
+            report.getOperations().add(new ChooseOperation(v.element(), ((MyVertex<Integer>) v).getForAttack()));
         }
         return report;
     }
