@@ -20,5 +20,6 @@
     <Button fx:id="startButton" text="Start" onAction="#initSimulation"/>
     <Button fx:id="nextStepButton" text="Next Step" onAction="#doStep"/>
     <Button fx:id="liveButton" text="Live" onAction="#live"/>
+    <Button fx:id="instantFinishButton" text="Instant finish" onAction="#instantFinish"/>
     <Button fx:id="pauseButton" text="Pause" onAction="#pause"/>
 </VBox>

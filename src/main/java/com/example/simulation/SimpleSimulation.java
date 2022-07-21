@@ -89,6 +89,10 @@ public class SimpleSimulation extends Service<Boolean> implements Simulation{
         return algorithm.isFinished();
     }
 
+    public BooleanProperty getIsFinishedProperty() {
+        return algorithm.getIsFinishedProperty();
+    }
+
     public StepReport step() {
         StepReport report = algorithm.step();
         if (allowAnimations.get()){
