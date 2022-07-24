@@ -13,6 +13,7 @@ import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;
 import com.example.util.GraphObserver;
 import javafx.animation.PathTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 @Component
 @FxmlView("/view/graphView.fxml")
@@ -168,41 +170,62 @@ public class GraphController {
     }
 
     public void sendMessage(int v1, int v2) {
-            System.out.println("DEBUG sending mesg");
-            MyVertex<Integer> commander = (MyVertex<Integer>) graph.vertices().stream().toList().get(v1);
-            MyVertex<Integer> commander1 = (MyVertex<Integer>) graph.vertices().stream().toList().get(v2);
+        System.out.println("DEBUG sending mesg");
+        MyVertex<Integer> commander = (MyVertex<Integer>) graph.vertices().stream().toList().get(v1);
+        MyVertex<Integer> commander1 = (MyVertex<Integer>) graph.vertices().stream().toList().get(v2);
 
-            double pos1 = graphView.getVertexPositionX(commander);
-            double pos2 = graphView.getVertexPositionY(commander);
-            double pos2_1 = graphView.getVertexPositionX(commander1);
-            double pos2_2 = graphView.getVertexPositionY(commander1);
-            ImageView ball = new ImageView(new Image("file:src/main/resources/ms.jpg", 20, 20, false, false));
-            ball.setX(pos1);
-            ball.setY(pos2);
+        double pos1 = graphView.getVertexPositionX(commander);
+        double pos2 = graphView.getVertexPositionY(commander);
+        double pos2_1 = graphView.getVertexPositionX(commander1);
+        double pos2_2 = graphView.getVertexPositionY(commander1);
+        ImageView ball = new ImageView(new Image("file:src/main/resources/ms.jpg", 20, 20, false, false));
+        ball.setX(pos1);
+        ball.setY(pos2);
 
+        Semaphore semaphore = new Semaphore(0);
+        Platform.runLater(() -> {
             try {
                 ((Pane) (this.graphRoot.getChildren().stream().toList().get(0)))
                         .getChildren().add(ball);
+                semaphore.release();
             }
             catch (Exception e) {
                 e.printStackTrace();
+            }
+        });
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-            Path path = new Path();
-            path.getElements().add(new MoveTo(pos1,pos2));
-            path.getElements().add(new LineTo(pos2_1, pos2_2));
+        Path path = new Path();
+        path.getElements().add(new MoveTo(pos1,pos2));
+        path.getElements().add(new LineTo(pos2_1, pos2_2));
 
-            PathTransition pathTransition = new PathTransition();
-            pathTransition.setDuration(Duration.millis(1000));
-            pathTransition.setNode(ball);
-            pathTransition.setPath(path);
+        Semaphore animationSemaphore = new Semaphore(0);
+        PathTransition pathTransition = new PathTransition();
+        pathTransition.setDuration(Duration.millis(1000));
+        pathTransition.setNode(ball);
+        pathTransition.setPath(path);
 
-            System.out.println("DEBUG sending mesg2");
-            pathTransition.play();
-            pathTransition.setOnFinished(
-                    e -> ((Pane)(this.graphRoot.getChildren().stream().toList().get(0))).getChildren().remove(ball)
-            );
-
+        System.out.println("DEBUG sending mesg2");
+        pathTransition.play();
+        pathTransition.setOnFinished(
+                e -> {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((Pane)(graphRoot.getChildren().stream().toList().get(0))).getChildren().remove(ball);
+                            semaphore.release();
+                        }
+                    });
+                });
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     // TODO: implement update as listener to graph changes
