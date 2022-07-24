@@ -7,6 +7,7 @@ import com.example.algorithm.operations.Operation;
 import com.example.algorithm.operations.SendOperation;
 import com.example.algorithm.report.StepReport;
 import com.example.controller.GraphController;
+import javafx.application.Platform;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -42,7 +43,7 @@ public abstract class AnimationEngine{
         // unpack send operation and animate
         System.out.println("Animating send between "+operation.getFromId()+" and "+operation.getToId()+" message: "+operation.getSentOpinion().getValue());
         System.out.println(graphController);
-        graphController.sendMessage(operation.getFromId(), operation.getToId());
+        Platform.runLater(() -> graphController.sendMessage(operation.getFromId(), operation.getToId()));
 
     }
 
