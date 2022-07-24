@@ -50,7 +50,6 @@ public abstract class AnimationEngine{
     public void animateSend(SendOperation operation){
         // unpack send operation and animate
         System.out.println("Animating send between "+operation.getFromId()+" and "+operation.getToId()+" message: "+operation.getSentOpinion().getValue());
-        System.out.println(graphController);
         graphController.sendMessage(operation.getFromId(), operation.getToId());
 
     }
@@ -68,7 +67,9 @@ public abstract class AnimationEngine{
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            System.out.println("Starting send animation for thread "+Thread.currentThread().getId());
                             animateSend((SendOperation) operation);
+                            System.out.println("Finished send animation for thread "+Thread.currentThread().getId());
                         }
                     });
                     animations.add(thread);

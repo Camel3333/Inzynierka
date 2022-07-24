@@ -217,12 +217,12 @@ public class GraphController {
                         @Override
                         public void run() {
                             ((Pane)(graphRoot.getChildren().stream().toList().get(0))).getChildren().remove(ball);
-                            semaphore.release();
+                            animationSemaphore.release();
                         }
                     });
                 });
         try {
-            semaphore.acquire();
+            animationSemaphore.acquire();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
