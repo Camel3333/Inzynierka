@@ -7,6 +7,7 @@ import com.example.algorithm.report.StepReport;
 import com.example.model.*;
 import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 
 public class KingAlgorithm implements Algorithm{
@@ -14,6 +15,7 @@ public class KingAlgorithm implements Algorithm{
     private int numberOfPhases;
     private MyGraph<Integer, Integer> graph;
     private AlgorithmPhase round = AlgorithmPhase.SEND;
+    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
 
     @Override
     public AlgorithmType getType() {
@@ -28,6 +30,7 @@ public class KingAlgorithm implements Algorithm{
 
     @Override
     public StepReport step() {
+        //TODO: set isFinished property
         switch (round){
             case SEND -> {
                 round = AlgorithmPhase.CHOOSE;
@@ -45,6 +48,11 @@ public class KingAlgorithm implements Algorithm{
     @Override
     public boolean isFinished() {
         return phase > numberOfPhases;
+    }
+
+    @Override
+    public BooleanProperty getIsFinishedProperty() {
+        return isFinished;
     }
 
     public StepReport firstRound(MyGraph<Integer, Integer> graph){

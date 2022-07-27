@@ -6,6 +6,7 @@ import com.example.algorithm.report.StepReport;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.settings.AlgorithmSettings;
+import javafx.beans.property.BooleanProperty;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -98,5 +99,10 @@ public class LamportAlgorithm implements Algorithm{
     @Override
     public boolean isFinished() {
         return isFinished;
+    }
+
+    @Override
+    public BooleanProperty getIsFinishedProperty() {
+        return null;
     }
 }

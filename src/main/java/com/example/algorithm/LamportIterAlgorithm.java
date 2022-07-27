@@ -8,6 +8,7 @@ import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ public class LamportIterAlgorithm implements Algorithm{
     private int depth;
     private Map<String, String> algorithmState = new HashMap<>();
     private Stack<StackRecord> stack = new Stack<>();
+    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
 
     @Override
     public AlgorithmType getType() {
@@ -77,14 +79,23 @@ public class LamportIterAlgorithm implements Algorithm{
     @Override
     public StepReport step() {
         if (!stack.empty()){
-            return om_iter();
+            StepReport stepReport = om_iter();
+            if (stack.empty()) {
+                isFinished.set(true);
+            }
+            return stepReport;
         }
         return null;
     }
 
     @Override
     public boolean isFinished() {
-        return stack.empty();
+        return isFinished.get();
+    }
+
+    @Override
+    public BooleanProperty getIsFinishedProperty() {
+        return isFinished;
     }
 
 //    private StepReport buildReport(StackRecord record){

@@ -44,6 +44,8 @@ public class SimulationController {
     @FXML
     private Button liveButton;
     @FXML
+    private Button instantFinishButton;
+    @FXML
     private Button pauseButton;
     @FXML
     private ComboBox<AlgorithmType> algorithmsBox;
@@ -59,6 +61,8 @@ public class SimulationController {
 
     private BooleanProperty paused =  new SimpleBooleanProperty(true);
     private BooleanProperty started = new SimpleBooleanProperty(false);
+    private BooleanProperty idle = new SimpleBooleanProperty(true);
+    private BooleanProperty isFinished;
 
     public void show() {
         parent.setVisible(true);
@@ -107,23 +111,29 @@ public class SimulationController {
 
         nextStepButton.setDisable(true);
         liveButton.setDisable(true);
+        instantFinishButton.setDisable(true);
         pauseButton.setDisable(true);
 
         List<Observable> dependenciesList = new ArrayList<>();
         dependenciesList.add(paused);
         dependenciesList.add(started);
+        dependenciesList.add(idle);
         Observable[] dependencies = dependenciesList.toArray(new Observable[0]);
 
         nextStepButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
-            return !(paused.get() && started.get());
+            return !(idle.get() && started.get() && !isFinished.get());
         }, dependencies));
 
         liveButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
-            return !(paused.get() && started.get());
+            return !(idle.get() && started.get() && !isFinished.get());
+        }, dependencies));
+
+        instantFinishButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+            return !(idle.get() && started.get() && !isFinished.get());
         }, dependencies));
 
         pauseButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
-            return !(!paused.get() && started.get());
+            return !(!paused.get() && started.get() && !isFinished.get());
         }, dependencies));
     }
 
@@ -202,25 +212,22 @@ public class SimulationController {
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), algorithmSettings);
         ((SimpleSimulation)simulation).loadEnvironment();
+        isFinished = ((SimpleSimulation) simulation).getIsFinishedProperty();
         started.set(true);
     }
 
     public void doStepTask() {
-        if (!((SimpleSimulation)simulation).isFinished()) {
+        if (!isFinished.get()) {
             StepReport report = ((SimpleSimulation)simulation).step();
-        } else {
-            System.out.println("Finished");
+
+            if(isFinished.get()) {
+                System.out.println("Finished");
+            }
         }
     }
 
-    public void doStep() {
-        paused.set(false);
-        new SimulationStepService().start();
-        paused.set(true);
-    }
-
     private void liveTask() {
-        while(!((SimpleSimulation)simulation).isFinished()) {
+        while(!isFinished.get()) {
             StepReport report = ((SimpleSimulation)simulation).step();
 //            try {
 //                Thread.sleep(1000);
@@ -234,13 +241,27 @@ public class SimulationController {
         System.out.println("Finished");
     }
 
+    private void instantFinishTask() {
+        while(!isFinished.get()) {
+            StepReport report = ((SimpleSimulation)simulation).step();
+        }
+        System.out.println("Finished");
+    }
+
     public void pause() {
         paused.set(true);
     }
 
     public void live() {
-        paused.set(false);
         new SimulationLiveService().start();
+    }
+
+    public void instantFinish() {
+        new SimulationInstantFinishService().start();
+    }
+
+    public void doStep() {
+        new SimulationStepService().start();
     }
 
     public class SimulationLiveService extends Service<Boolean> {
@@ -249,7 +270,10 @@ public class SimulationController {
             return new Task<Boolean>() {
                 @Override
                 protected Boolean call() throws Exception {
+                    idle.set(false);
+                    paused.set(false);
                     liveTask();
+                    idle.set(true);
                     return true;
                 }
             };
@@ -262,7 +286,24 @@ public class SimulationController {
             return new Task<Boolean>() {
                 @Override
                 protected Boolean call() throws Exception {
+                    idle.set(false);
                     doStepTask();
+                    idle.set(true);
+                    return true;
+                }
+            };
+        }
+    }
+
+    public class SimulationInstantFinishService extends Service<Boolean> {
+        @Override
+        protected Task<Boolean> createTask() {
+            return new Task<Boolean>() {
+                @Override
+                protected Boolean call() throws Exception {
+                    idle.set(false);
+                    instantFinishTask();
+                    idle.set(true);
                     return true;
                 }
             };
