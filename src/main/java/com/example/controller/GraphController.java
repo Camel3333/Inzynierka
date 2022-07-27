@@ -94,8 +94,8 @@ public class GraphController {
         container = new SmartGraphDemoContainer(graphView);
     }
 
-    public void setGeneral(int id) {
-        graphView.getStylableVertex(id).setStyleClass("general");
+    public void setVertexStyle(int id, String style) {
+        Platform.runLater(()->graphView.getStylableVertex(id).setStyleClass(style));
     }
 
     private void setGraphViewBindings(){

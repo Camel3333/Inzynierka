@@ -16,8 +16,8 @@ public class LamportAnimationEngine extends AnimationEngine{
     protected void highlightRoles(Map<Vertex<Integer>, VertexRole> roles) {
         for (Map.Entry<Vertex<Integer>, VertexRole> entry : roles.entrySet()){
             switch (entry.getValue()){
-                case COMMANDER -> graphController.getGraphView().getStylableVertex(entry.getKey()).setStyleClass("general");
-                case LIEUTENANT -> graphController.getGraphView().getStylableVertex(entry.getKey()).setStyleClass("vertex");
+                case COMMANDER -> graphController.setVertexStyle(entry.getKey().element(), "general");
+                case LIEUTENANT -> graphController.setVertexStyle(entry.getKey().element(), "vertex");
             }
         }
     }

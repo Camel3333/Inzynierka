@@ -48,6 +48,7 @@ public class KingAlgorithm implements Algorithm{
     }
 
     public StepReport firstRound(MyGraph<Integer, Integer> graph){
+        System.out.println("First round");
         KingStepRecord report = new KingStepRecord();
         report.fillRoles(null);
         for(Vertex<Integer> v : graph.vertices()){
@@ -61,6 +62,7 @@ public class KingAlgorithm implements Algorithm{
     }
 
     public StepReport secondRound(MyGraph<Integer, Integer> graph){
+        System.out.println("Second round");
         KingStepRecord report = new KingStepRecord();
         MyVertex<Integer> king = (MyVertex<Integer>) graph.vertices().stream().toList().get(phase % graph.numVertices());
         report.fillRoles(king);
@@ -84,7 +86,7 @@ public class KingAlgorithm implements Algorithm{
                     getRoles().put(v, VertexRole.KING);
                 }
                 else{
-                    getRoles().put(king, VertexRole.LIEUTENANT);
+                    getRoles().put(v, VertexRole.LIEUTENANT);
                 }
             }
         }
