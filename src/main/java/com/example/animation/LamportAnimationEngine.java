@@ -7,17 +7,17 @@ import com.example.controller.GraphController;
 import java.util.Map;
 
 public class LamportAnimationEngine extends AnimationEngine{
+
     public LamportAnimationEngine(GraphController graphController) {
-        super();
-        this.graphController = graphController;
+        super(graphController);
     }
 
     @Override
     protected void highlightRoles(Map<Vertex<Integer>, VertexRole> roles) {
         for (Map.Entry<Vertex<Integer>, VertexRole> entry : roles.entrySet()){
             switch (entry.getValue()){
-                case COMMANDER -> System.out.println("Vertex "+entry.getKey().element()+" is commander");
-                case LIEUTENANT -> System.out.println("Vertex "+entry.getKey().element()+" is lieutenant");
+                case COMMANDER -> graphController.getGraphView().getStylableVertex(entry.getKey()).setStyleClass("general");
+                case LIEUTENANT -> graphController.getGraphView().getStylableVertex(entry.getKey()).setStyleClass("vertex");
             }
         }
     }

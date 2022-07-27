@@ -8,28 +8,18 @@ import com.example.algorithm.operations.OperationType;
 import com.example.algorithm.operations.SendOperation;
 import com.example.algorithm.report.StepReport;
 import com.example.controller.GraphController;
-import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
-import static com.example.algorithm.operations.OperationType.CHOOSE;
-import static com.example.algorithm.operations.OperationType.SEND;
-
 @Service
+@AllArgsConstructor
 public abstract class AnimationEngine{
-    public void setGraphController(GraphController graphController) {
-        this.graphController = graphController;
-    }
-
-    GraphController graphController;
+    protected GraphController graphController;
 
     public void animate(StepReport report){
         highlightRoles(report.getRoles());
@@ -104,5 +94,9 @@ public abstract class AnimationEngine{
                 }
             }
         }
+    }
+
+    public void setGraphController(GraphController graphController) {
+        this.graphController = graphController;
     }
 }

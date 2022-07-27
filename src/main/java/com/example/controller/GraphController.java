@@ -55,6 +55,7 @@ public class GraphController {
 
     private int vertexIdCounter = 0;
     private SmartGraphDemoContainer container;
+    @Getter
     private MySmartGraphPanel<Integer, Integer> graphView;
 
     @Getter

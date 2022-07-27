@@ -56,4 +56,5 @@
 .general {
     -fx-stroke: green;
     -fx-stroke-type: inside;
+    -fx-fill: yellow;
 }
