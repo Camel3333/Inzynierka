@@ -48,6 +48,7 @@ public class SimpleSimulation extends Service<Boolean> implements Simulation{
         this.algorithm = algorithm;
         this.settings = settings;
         this.animationEngine = animationEngineFactory.create(algorithm.getType());
+        this.animationEngine.setGraphController(graphController);
     }
 
     @Override

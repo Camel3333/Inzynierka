@@ -1,6 +1,6 @@
 package com.example.algorithm.operations;
 
-import com.example.model.Opinion;
+import javafx.beans.property.BooleanProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,7 +9,7 @@ public class ChooseOperation implements Operation{
     @Getter
     int id;
     @Getter
-    Opinion chosenOpinion;
+    BooleanProperty chosenOpinion;
 
     @Override
     public OperationType getType() {

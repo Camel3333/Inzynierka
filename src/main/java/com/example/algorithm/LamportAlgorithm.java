@@ -74,7 +74,7 @@ public class LamportAlgorithm implements Algorithm{
         }
         for(Vertex<Integer> vertex : lieutenants){
             if (m == depth){
-                ((MyVertex<Integer>) vertex).getOpinion().setIsSupporting(commander.isSupportingOpinion().get());
+                ((MyVertex<Integer>) vertex).setForAttack(commander.isSupportingOpinion());
             }
             ((MyVertex<Integer>) vertex).receiveOpinion(commander.getNextOpinion((MyVertex<Integer>) vertex));
         }
