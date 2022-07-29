@@ -13,6 +13,7 @@ import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;
 import com.example.util.GraphObserver;
 import javafx.animation.PathTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -37,9 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -170,10 +169,10 @@ public class GraphController {
         }
     }
 
-    public void sendMessage(int v1, int v2) {
-        System.out.println("DEBUG sending mesg");
+    public PathTransition getSendTransition(int v1, int v2){
         MyVertex<Integer> commander = (MyVertex<Integer>) graph.vertices().stream().toList().get(v1);
         MyVertex<Integer> commander1 = (MyVertex<Integer>) graph.vertices().stream().toList().get(v2);
+        Random random = new Random();
 
         double pos1 = graphView.getVertexPositionX(commander);
         double pos2 = graphView.getVertexPositionY(commander);
@@ -186,8 +185,59 @@ public class GraphController {
         Semaphore semaphore = new Semaphore(0);
         Platform.runLater(() -> {
             try {
-                ((Pane) (this.graphRoot.getChildren().stream().toList().get(0)))
-                        .getChildren().add(ball);
+                graphView.getChildren().add(ball);
+                semaphore.release();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Path path = new Path();
+        path.getElements().add(new MoveTo(pos1,pos2));
+        path.getElements().add(new LineTo(pos2_1, pos2_2));
+
+        PathTransition pathTransition = new PathTransition();
+        pathTransition.setDuration(Duration.millis(1000));
+        pathTransition.setNode(ball);
+        pathTransition.setPath(path);
+
+        pathTransition.setOnFinished(
+                e -> {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            graphView.getChildren().remove(ball);
+                        }
+                    });
+                });
+
+        return pathTransition;
+
+    }
+
+    public void sendMessage(int v1, int v2) {
+        MyVertex<Integer> commander = (MyVertex<Integer>) graph.vertices().stream().toList().get(v1);
+        MyVertex<Integer> commander1 = (MyVertex<Integer>) graph.vertices().stream().toList().get(v2);
+        Random random = new Random();
+
+        double pos1 = graphView.getVertexPositionX(commander);
+        double pos2 = graphView.getVertexPositionY(commander);
+        double pos2_1 = graphView.getVertexPositionX(commander1);
+        double pos2_2 = graphView.getVertexPositionY(commander1);
+        ImageView ball = new ImageView(new Image("file:src/main/resources/ms.jpg", 20, 20, false, false));
+        ball.setX(pos1);
+        ball.setY(pos2);
+
+        Semaphore semaphore = new Semaphore(0);
+        Platform.runLater(() -> {
+            try {
+                graphView.getChildren().add(ball);
                 semaphore.release();
             }
             catch (Exception e) {
@@ -210,18 +260,26 @@ public class GraphController {
         pathTransition.setNode(ball);
         pathTransition.setPath(path);
 
-        System.out.println("DEBUG sending mesg2");
-        pathTransition.play();
+//        TranslateTransition pathTransition = new TranslateTransition();
+//        pathTransition.setDuration(Duration.millis(1000));
+//        pathTransition.setNode(ball);
+//        pathTransition.setToX(pos2_1);
+//        pathTransition.setToY(pos2_2);
+
         pathTransition.setOnFinished(
                 e -> {
+                    System.out.println("Animation finished for "+v1+" and "+v2);
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            ((Pane)(graphRoot.getChildren().stream().toList().get(0))).getChildren().remove(ball);
+                            graphView.getChildren().remove(ball);
                             animationSemaphore.release();
                         }
                     });
                 });
+
+        pathTransition.play();
+
         try {
             animationSemaphore.acquire();
         } catch (InterruptedException e) {
