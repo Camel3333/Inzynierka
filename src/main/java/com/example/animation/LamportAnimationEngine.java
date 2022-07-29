@@ -9,7 +9,7 @@ import java.util.Map;
 public class LamportAnimationEngine extends AnimationEngine{
 
     public LamportAnimationEngine(GraphController graphController) {
-        super(graphController);
+        super(graphController, 1000);
     }
 
     @Override

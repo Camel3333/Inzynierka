@@ -9,7 +9,7 @@ import java.util.Map;
 public class KingAnimationEngine extends AnimationEngine{
 
     public KingAnimationEngine(GraphController graphController) {
-        super(graphController);
+        super(graphController, 1000);
     }
 
     @Override
