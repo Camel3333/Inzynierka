@@ -1,10 +1,10 @@
 package com.example.algorithm;
 
-import com.example.model.AgentOpinion;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.settings.AlgorithmSetting;
 import com.example.settings.AlgorithmSettings;
+import javafx.beans.property.SimpleBooleanProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,11 +34,6 @@ public class LamportIterAlgorithmTest {
         var e5 = graph.insertEdge(v1, v3, 5);
         var e6 = graph.insertEdge(v2, v4, 6);
 
-        var o1 = new AgentOpinion("name", true);
-        var o2 = new AgentOpinion("name", true);
-        var o3 = new AgentOpinion("name", true);
-        var o4 = new AgentOpinion("name", true);
-
         var settings = new AlgorithmSettings();
 
         // When
@@ -47,10 +42,10 @@ public class LamportIterAlgorithmTest {
         v3.setIsTraitor(false);
         v4.setIsTraitor(false);
 
-        v1.setOpinion(o1);
-        v2.setOpinion(o2);
-        v3.setOpinion(o3);
-        v4.setOpinion(o4);
+        v1.setForAttack(new SimpleBooleanProperty(true));
+        v2.setForAttack(new SimpleBooleanProperty(true));
+        v3.setForAttack(new SimpleBooleanProperty(true));
+        v4.setForAttack(new SimpleBooleanProperty(false));
 
         settings.getSettings().put("depth", new AlgorithmSetting("depth", 1, Integer.class, object -> true));
 
