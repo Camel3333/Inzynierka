@@ -39,6 +39,8 @@ public class KingAlgorithm implements Algorithm{
             case CHOOSE -> {
                 phase ++;
                 round = AlgorithmPhase.SEND;
+                if (phase == numberOfPhases)
+                    isFinished.setValue(true);
                 return secondRound(graph);
             }
         }
@@ -63,7 +65,7 @@ public class KingAlgorithm implements Algorithm{
             for(Vertex<Integer> u : graph.vertices()){
                 BooleanProperty opinion = ((MyVertex<Integer>) v).getNextOpinion((MyVertex<Integer>) u);
                 ((MyVertex<Integer>) u).receiveOpinion(opinion);
-                report.getOperations().add(new SendOperation(v.element(), u.element(), opinion));
+                report.getOperations().add(new SendOperation(v, u, opinion));
             }
         }
         return report;
@@ -77,7 +79,7 @@ public class KingAlgorithm implements Algorithm{
         int condition = graph.numVertices() / 2 + graph.getTraitorsCount();
         for(Vertex<Integer> v : graph.vertices()){
             ((MyVertex<Integer>) v).chooseMajorityWithTieBreaker(king.getNextOpinion((MyVertex<Integer>) v), condition);
-            report.getOperations().add(new ChooseOperation(v.element(), ((MyVertex<Integer>) v).getForAttack()));
+            report.getOperations().add(new ChooseOperation(v, ((MyVertex<Integer>) v).getForAttack()));
         }
         return report;
     }
