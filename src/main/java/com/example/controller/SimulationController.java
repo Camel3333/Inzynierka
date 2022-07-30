@@ -242,6 +242,7 @@ public class SimulationController {
     }
 
     private void instantFinishTask() {
+        simulation.allowAnimations(false);
         while(!isFinished.get()) {
             StepReport report = ((SimpleSimulation)simulation).step();
         }
