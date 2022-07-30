@@ -13,9 +13,7 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     private V id;
     @Getter
     private BooleanProperty isTraitor = new SimpleBooleanProperty();
-//    @Getter
-//    @Setter
-//    private BooleanProperty supportsOpinion = new SimpleBooleanProperty();
+
     @Getter
     @Setter
     private BooleanProperty forAttack;

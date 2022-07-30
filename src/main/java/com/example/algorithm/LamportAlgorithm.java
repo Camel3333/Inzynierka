@@ -1,7 +1,6 @@
 package com.example.algorithm;
 
 import com.brunomnsilva.smartgraph.graph.Vertex;
-import com.example.algorithm.operations.Operation;
 import com.example.algorithm.report.StepReport;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
@@ -36,31 +35,6 @@ public class LamportAlgorithm implements Algorithm{
         };
         thread.start();
     }
-
-//    public void execute(MyGraph<Integer, Integer> myGraph, AlgorithmSettings settings){
-//        System.out.println("Entering lamport algorithm");
-//        depth = (int)settings.getSettings().get("depth").getValue();
-//        if(myGraph.numVertices() == 0){
-//            return;
-//        }
-//        MyVertex<Integer> commander = (MyVertex<Integer>) myGraph.vertices().stream().toList().get(0);
-//        System.out.println("Commander opinion before: "+commander.isSupportingOpinion().get()+", his id = "+commander.element());
-//
-//        //om(commander, (List<Vertex<Integer>>) myGraph.vertexNeighbours(commander), depth);
-//        Thread thread = new Thread() {
-//            public void run(){
-//                try {
-//                    om(commander, (List<Vertex<Integer>>) myGraph.vertexNeighbours(commander), depth);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-//        thread.start();
-//
-//        System.out.println("Consensus state after algorithm: "+myGraph.checkConsensus());
-//        System.out.println("Commander opinion after: "+commander.isSupportingOpinion().get());
-//    }
 
     @Override
     public synchronized StepReport step(){
