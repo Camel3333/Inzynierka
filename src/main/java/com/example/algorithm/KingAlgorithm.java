@@ -30,7 +30,6 @@ public class KingAlgorithm implements Algorithm{
 
     @Override
     public StepReport step() {
-        //TODO: set isFinished property
         switch (round){
             case SEND -> {
                 round = AlgorithmPhase.CHOOSE;
@@ -39,6 +38,9 @@ public class KingAlgorithm implements Algorithm{
             case CHOOSE -> {
                 phase ++;
                 round = AlgorithmPhase.SEND;
+                if(phase == numberOfPhases){
+                    isFinished.setValue(true);
+                }
                 return secondRound(graph);
             }
         }
