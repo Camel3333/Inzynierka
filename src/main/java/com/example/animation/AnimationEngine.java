@@ -11,8 +11,15 @@ import com.example.controller.GraphController;
 import javafx.animation.Animation;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
+import javafx.application.Platform;
+import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.util.Duration;
-import lombok.AllArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 public abstract class AnimationEngine{
+    @Setter
     protected GraphController graphController;
     private Duration sendDuration = new Duration(1000);
 
@@ -45,7 +53,9 @@ public abstract class AnimationEngine{
 
     public void animateSend(SendOperation operation){
         // unpack send operation and animate
-        graphController.sendMessage(operation.getFromId(), operation.getToId());
+        Point2D fromPosition = graphController.getVertexPosition(operation.getFrom());
+        Point2D toPosition = graphController.getVertexPosition(operation.getTo());
+        runAnimation(getSendAnimation(fromPosition, toPosition));
     }
 
     public void animateOpinionChange(ChooseOperation operation){
@@ -58,31 +68,17 @@ public abstract class AnimationEngine{
             case SEND -> {
                 ParallelTransition parallelTransition = new ParallelTransition();
 
-                List<PathTransition> animations = (operations
+                parallelTransition.getChildren().addAll(operations
                         .stream()
-                        .map(operation -> graphController.getSendTransition(((SendOperation)operation).getFromId(), ((SendOperation)operation).getToId()))
+                        .map(operation -> (SendOperation) operation)
+                        .map(sendOperation -> {
+                            Point2D fromPosition = graphController.getVertexPosition(sendOperation.getFrom());
+                            Point2D toPosition = graphController.getVertexPosition(sendOperation.getTo());
+                            return getSendAnimation(fromPosition, toPosition);
+                        })
                         .toList());
 
-                // set duration for each animation
-                animations.forEach(animation -> animation.setDuration(sendDuration));
-
-                parallelTransition.getChildren().addAll(animations);
-
-                Semaphore semaphore = new Semaphore(0);
-
-                parallelTransition.setOnFinished(e -> {
-                    System.out.println("All animations finished");
-                    semaphore.release();
-                });
-
-                parallelTransition.play();
-
-                try {
-                    // wait until all animations will finish
-                    semaphore.acquire();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                runAnimation(parallelTransition);
             }
             case CHOOSE -> {
                 List<Thread> animations = new ArrayList<>();
@@ -107,7 +103,66 @@ public abstract class AnimationEngine{
         }
     }
 
-    public void setGraphController(GraphController graphController) {
-        this.graphController = graphController;
+    private void runAnimation(Animation animation){
+        Semaphore semaphore = new Semaphore(0);
+
+        animation.setOnFinished(e -> {
+            System.out.println("Animation finished");
+            semaphore.release();
+        });
+
+        animation.play();
+
+        try {
+            // wait until animation will finish
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
+
+    private PathTransition getSendAnimation(Point2D from, Point2D to){
+
+        ImageView ball = new ImageView(new Image("file:src/main/resources/ms.jpg", 20, 20, false, false));
+        ball.setX(from.getX());
+        ball.setY(from.getY());
+
+        Semaphore semaphore = new Semaphore(0);
+        Platform.runLater(() -> {
+            try {
+                graphController.addNodeToView(ball);
+                semaphore.release();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Path path = new Path();
+        path.getElements().add(new MoveTo(from.getX(), from.getY()));
+        path.getElements().add(new LineTo(to.getX(), to.getY()));
+
+        PathTransition pathTransition = new PathTransition();
+        pathTransition.setDuration(sendDuration);
+        pathTransition.setNode(ball);
+        pathTransition.setPath(path);
+
+        pathTransition.setOnFinished(
+                e -> {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            graphController.removeNodeFromView(ball);
+                        }
+                    });
+                });
+
+        return pathTransition;
+    }
+
 }

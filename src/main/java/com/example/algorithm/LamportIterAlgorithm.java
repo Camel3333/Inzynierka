@@ -1,7 +1,6 @@
 package com.example.algorithm;
 
 import com.brunomnsilva.smartgraph.graph.Graph;
-import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.algorithm.operations.ChooseOperation;
 import com.example.algorithm.operations.SendOperation;
 import com.example.algorithm.report.StepReport;
@@ -42,7 +41,7 @@ public class LamportIterAlgorithm implements Algorithm{
                     }
                     BooleanProperty commanderOpinion = record.commander.getNextOpinion(vertex);
                     vertex.receiveOpinion(commanderOpinion);
-                    stepReport.getOperations().add(new SendOperation(record.commander.element(), vertex.element(), commanderOpinion));
+                    stepReport.getOperations().add(new SendOperation(record.commander, vertex, commanderOpinion));
                 }
 
                 if(record.m > 0) {
@@ -58,7 +57,7 @@ public class LamportIterAlgorithm implements Algorithm{
             case CHOOSE -> {
                 for(MyVertex<Integer> vertex : record.lieutenants){
                     vertex.chooseMajority();
-                    stepReport.getOperations().add(new ChooseOperation(vertex.element(), vertex.getForAttack()));
+                    stepReport.getOperations().add(new ChooseOperation(vertex, vertex.getForAttack()));
                 }
             }
         }

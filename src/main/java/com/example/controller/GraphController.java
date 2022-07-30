@@ -7,28 +7,16 @@ import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrateg
 import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import com.example.draw.CreationHelper;
-import com.example.draw.DrawMode;
 import com.example.draw.MySmartGraphPanel;
 import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;
 import com.example.util.GraphObserver;
-import javafx.animation.PathTransition;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.util.Duration;
-import javafx.util.Pair;
 import lombok.Getter;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -37,10 +25,8 @@ import org.controlsfx.control.PopOver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 @Component
 @FxmlView("/view/graphView.fxml")
@@ -169,122 +155,16 @@ public class GraphController {
         }
     }
 
-    public PathTransition getSendTransition(int v1, int v2){
-        MyVertex<Integer> commander = (MyVertex<Integer>) graph.vertices().stream().toList().get(v1);
-        MyVertex<Integer> commander1 = (MyVertex<Integer>) graph.vertices().stream().toList().get(v2);
-        Random random = new Random();
-
-        double pos1 = graphView.getVertexPositionX(commander);
-        double pos2 = graphView.getVertexPositionY(commander);
-        double pos2_1 = graphView.getVertexPositionX(commander1);
-        double pos2_2 = graphView.getVertexPositionY(commander1);
-        ImageView ball = new ImageView(new Image("file:src/main/resources/ms.jpg", 20, 20, false, false));
-        ball.setX(pos1);
-        ball.setY(pos2);
-
-        Semaphore semaphore = new Semaphore(0);
-        Platform.runLater(() -> {
-            try {
-                graphView.getChildren().add(ball);
-                semaphore.release();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        try {
-            semaphore.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        Path path = new Path();
-        path.getElements().add(new MoveTo(pos1,pos2));
-        path.getElements().add(new LineTo(pos2_1, pos2_2));
-
-        PathTransition pathTransition = new PathTransition();
-        pathTransition.setDuration(Duration.millis(1000));
-        pathTransition.setNode(ball);
-        pathTransition.setPath(path);
-
-        pathTransition.setOnFinished(
-                e -> {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            graphView.getChildren().remove(ball);
-                        }
-                    });
-                });
-
-        return pathTransition;
-
+    public void addNodeToView(Node node){
+        graphView.getChildren().add(node);
     }
 
-    public void sendMessage(int v1, int v2) {
-        MyVertex<Integer> commander = (MyVertex<Integer>) graph.vertices().stream().toList().get(v1);
-        MyVertex<Integer> commander1 = (MyVertex<Integer>) graph.vertices().stream().toList().get(v2);
-        Random random = new Random();
+    public Point2D getVertexPosition(Vertex<Integer> vertex){
+        return new Point2D(graphView.getVertexPositionX(vertex), graphView.getVertexPositionY(vertex));
+    }
 
-        double pos1 = graphView.getVertexPositionX(commander);
-        double pos2 = graphView.getVertexPositionY(commander);
-        double pos2_1 = graphView.getVertexPositionX(commander1);
-        double pos2_2 = graphView.getVertexPositionY(commander1);
-        ImageView ball = new ImageView(new Image("file:src/main/resources/ms.jpg", 20, 20, false, false));
-        ball.setX(pos1);
-        ball.setY(pos2);
-
-        Semaphore semaphore = new Semaphore(0);
-        Platform.runLater(() -> {
-            try {
-                graphView.getChildren().add(ball);
-                semaphore.release();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        try {
-            semaphore.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        Path path = new Path();
-        path.getElements().add(new MoveTo(pos1,pos2));
-        path.getElements().add(new LineTo(pos2_1, pos2_2));
-
-        Semaphore animationSemaphore = new Semaphore(0);
-        PathTransition pathTransition = new PathTransition();
-        pathTransition.setDuration(Duration.millis(1000));
-        pathTransition.setNode(ball);
-        pathTransition.setPath(path);
-
-//        TranslateTransition pathTransition = new TranslateTransition();
-//        pathTransition.setDuration(Duration.millis(1000));
-//        pathTransition.setNode(ball);
-//        pathTransition.setToX(pos2_1);
-//        pathTransition.setToY(pos2_2);
-
-        pathTransition.setOnFinished(
-                e -> {
-                    System.out.println("Animation finished for "+v1+" and "+v2);
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            graphView.getChildren().remove(ball);
-                            animationSemaphore.release();
-                        }
-                    });
-                });
-
-        pathTransition.play();
-
-        try {
-            animationSemaphore.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void removeNodeFromView(Node node){
+        graphView.getChildren().remove(node);
     }
 
     // TODO: implement update as listener to graph changes
