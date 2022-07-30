@@ -1,6 +1,7 @@
 package com.example.model;
 
 import com.brunomnsilva.smartgraph.graph.*;
+import javafx.beans.property.BooleanProperty;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,8 +15,9 @@ public class MyGraph<V,E> implements Graph<V,E> {
         if(numVertices() == 0){
             return true;
         }
-        AgentOpinion expectedOpinion = ((MyVertex<V>) vertices().stream().toList().get(0)).getOpinion();
-        return vertices().stream().allMatch(v -> ((MyVertex<V>) v).getOpinion().compareOpinion(expectedOpinion));
+        BooleanProperty expectedOpinion = ((MyVertex<V>) vertices().stream().toList().get(0)).getForAttack();
+        return vertices().stream().allMatch(v -> ((MyVertex<V>) v).
+                getForAttack().getValue() == expectedOpinion.getValue());
     }
 
     public int getTraitorsCount(){

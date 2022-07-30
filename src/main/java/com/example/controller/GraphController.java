@@ -7,12 +7,13 @@ import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrateg
 import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import com.example.draw.CreationHelper;
-import com.example.draw.DrawMode;
 import com.example.draw.MySmartGraphPanel;
 import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;
 import com.example.util.GraphObserver;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -39,7 +40,9 @@ public class GraphController {
 
     private int vertexIdCounter = 0;
     private SmartGraphDemoContainer container;
+    @Getter
     private MySmartGraphPanel<Integer, Integer> graphView;
+
     @Getter
     private Graph<Integer, Integer> graph;
     private CreationHelper drawingHelper;
@@ -56,6 +59,7 @@ public class GraphController {
     public void setModelGraph(Graph<Integer, Integer> graph){
         this.graph = graph;
         vertexIdCounter = graph.numVertices();
+
         //remove old graph
         graphRoot.getChildren().remove(container);
         init();
@@ -73,6 +77,10 @@ public class GraphController {
         graphView = new MySmartGraphPanel<>(graph, properties, strategy);
         setGraphViewBindings();
         container = new SmartGraphDemoContainer(graphView);
+    }
+
+    public void setVertexStyle(int id, String style) {
+        Platform.runLater(()->graphView.getStylableVertex(id).setStyleClass(style));
     }
 
     private void setGraphViewBindings(){
@@ -101,6 +109,14 @@ public class GraphController {
                     graphView.getStylableVertex(vertex).setStyleClass("traitor");
                 } else {
                     graphView.getStylableVertex(vertex).setStyleClass("vertex");
+                }
+            });
+
+            vertex.isSupportingOpinion().addListener(changed -> {
+                if (vertex.isSupportingOpinion().get()) {
+                    graphView.getStylableVertex(vertex).addStyleClass("attack");
+                } else {
+                    graphView.getStylableVertex(vertex).addStyleClass("defense");
                 }
             });
         });
@@ -137,6 +153,18 @@ public class GraphController {
                 }
             });
         }
+    }
+
+    public void addNodeToView(Node node){
+        graphView.getChildren().add(node);
+    }
+
+    public Point2D getVertexPosition(Vertex<Integer> vertex){
+        return new Point2D(graphView.getVertexPositionX(vertex), graphView.getVertexPositionY(vertex));
+    }
+
+    public void removeNodeFromView(Node node){
+        graphView.getChildren().remove(node);
     }
 
     // TODO: implement update as listener to graph changes

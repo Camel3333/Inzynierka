@@ -229,11 +229,11 @@ public class SimulationController {
     private void liveTask() {
         while(!isFinished.get()) {
             StepReport report = ((SimpleSimulation)simulation).step();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
             if (paused.get()) {
                 return;
             }

@@ -40,3 +40,21 @@
     -fx-stroke-type: inside;
     -fx-fill: #f28888;
 }
+
+.attack {
+    -fx-background-image: url("src/main/resources/ms.jpg");
+    -fx-background-repeat: stretch;
+    -fx-background-size: auto;
+}
+
+.defense {
+    -fx-stroke-width: 3;
+    -fx-stroke: purple;
+    -fx-stroke-type: inside; /* you should keep this for vertex.radius to hold */
+}
+
+.general {
+    -fx-stroke: green;
+    -fx-stroke-type: inside;
+    -fx-fill: yellow;
+}

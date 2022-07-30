@@ -1,11 +1,9 @@
 package com.example.algorithm;
 
-import com.brunomnsilva.smartgraph.graph.Vertex;
+import com.brunomnsilva.smartgraph.graph.Graph;
 import com.example.algorithm.operations.ChooseOperation;
-import com.example.algorithm.operations.Operation;
 import com.example.algorithm.operations.SendOperation;
 import com.example.algorithm.report.StepReport;
-import com.example.model.AgentOpinion;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.settings.AlgorithmSettings;
@@ -19,6 +17,7 @@ import java.util.Stack;
 
 public class LamportIterAlgorithm implements Algorithm{
     private int depth;
+    private Graph<Integer, Integer> graph;
     private Map<String, String> algorithmState = new HashMap<>();
     private Stack<StackRecord> stack = new Stack<>();
     private BooleanProperty isFinished = new SimpleBooleanProperty(false);
@@ -36,13 +35,13 @@ public class LamportIterAlgorithm implements Algorithm{
 
         switch (record.phase){
             case SEND -> {
-                for(Vertex<Integer> vertex : record.lieutenants){
+                for(MyVertex<Integer> vertex : record.lieutenants){
                     if (record.m == depth){
-                        ((MyVertex<Integer>) vertex).getOpinion().setIsSupporting(record.commander.isSupportingOpinion().get());
+                        vertex.setForAttack(record.commander.isSupportingOpinion());
                     }
-                    AgentOpinion commanderOpinion = record.commander.getNextOpinion((MyVertex<Integer>) vertex);
-                    ((MyVertex<Integer>) vertex).receiveOpinion(commanderOpinion);
-                    stepReport.getOperations().add(new SendOperation(record.commander.element(), vertex.element(), commanderOpinion));
+                    BooleanProperty commanderOpinion = record.commander.getNextOpinion(vertex);
+                    vertex.receiveOpinion(commanderOpinion);
+                    stepReport.getOperations().add(new SendOperation(record.commander, vertex, commanderOpinion));
                 }
 
                 if(record.m > 0) {
@@ -56,9 +55,9 @@ public class LamportIterAlgorithm implements Algorithm{
                 }
             }
             case CHOOSE -> {
-                for(Vertex<Integer> vertex : record.lieutenants){
-                    ((MyVertex<Integer>) vertex).chooseMajority();
-                    stepReport.getOperations().add(new ChooseOperation(vertex.element(), ((MyVertex<Integer>) vertex).getOpinion()));
+                for(MyVertex<Integer> vertex : record.lieutenants){
+                    vertex.chooseMajority();
+                    stepReport.getOperations().add(new ChooseOperation(vertex, vertex.getForAttack()));
                 }
             }
         }
@@ -68,6 +67,7 @@ public class LamportIterAlgorithm implements Algorithm{
 
     @Override
     public void loadEnvironment(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
+        this.graph = graph;
         stack = new Stack<>();
         MyVertex<Integer> commander = (MyVertex<Integer>) graph.vertices().stream().toList().get(0);
         depth = (int)settings.getSettings().get("depth").getValue();
@@ -100,36 +100,13 @@ public class LamportIterAlgorithm implements Algorithm{
         return isFinished;
     }
 
-//    private StepReport buildReport(StackRecord record){
-//        StepReport report = new StepReport();
-//
-//        // set roles
-//        report.getRoles().put(record.commander, VertexRole.COMMANDER);
-//        for (Vertex<Integer> vertex : record.lieutenants){
-//            report.getRoles().put(vertex, VertexRole.LIEUTENANT);
-//        }
-//
-//        // fill operations
-//        switch (record.phase){
-//            case CHOOSE -> {
-//                for(Vertex<Integer> vertex : record.lieutenants){
-//                    report.getOperations().add(vertex.element(), new ChooseOperation(vertex.element(), ((MyVertex<Integer>)vertex).getOpinion()));
-//                }
-//            }
-//            case SEND -> {
-//                for (Vertex<Integer> vertex : record.lieutenants){
-//                    report.getOperations().add(vertex.element(), new SendOperation(record.commander.element(), vertex.element(), ));
-//                }
-//            }
-//        }
-//    }
-
     private class LamportIterStepReport extends StepReport{
         public void fillRoles(StackRecord record){
             getRoles().put(record.commander, VertexRole.COMMANDER);
-            for (Vertex<Integer> vertex : record.lieutenants){
-                getRoles().put(vertex, VertexRole.LIEUTENANT);
-            }
+            graph.vertices()
+                    .stream()
+                    .filter(vertex -> !vertex.equals(record.commander))
+                    .forEach(vertex -> getRoles().put(vertex, VertexRole.LIEUTENANT));
         }
     }
 

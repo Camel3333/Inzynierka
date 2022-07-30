@@ -1,17 +1,18 @@
 package com.example.algorithm.operations;
 
-import com.example.model.Opinion;
+import com.brunomnsilva.smartgraph.graph.Vertex;
+import javafx.beans.property.BooleanProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 public class SendOperation implements Operation{
     @Getter
-    private int fromId;
+    private Vertex<Integer> from;
     @Getter
-    private int toId;
+    private Vertex<Integer> to;
     @Getter
-    private Opinion sentOpinion;
+    private BooleanProperty sentOpinion;
 
     @Override
     public OperationType getType() {

@@ -39,6 +39,8 @@ public class KingAlgorithm implements Algorithm{
             case CHOOSE -> {
                 phase ++;
                 round = AlgorithmPhase.SEND;
+                if (phase == numberOfPhases)
+                    isFinished.setValue(true);
                 return secondRound(graph);
             }
         }
@@ -56,26 +58,28 @@ public class KingAlgorithm implements Algorithm{
     }
 
     public StepReport firstRound(MyGraph<Integer, Integer> graph){
+        System.out.println("First round");
         KingStepRecord report = new KingStepRecord();
         report.fillRoles(null);
         for(Vertex<Integer> v : graph.vertices()){
             for(Vertex<Integer> u : graph.vertices()){
-                AgentOpinion opinion = ((MyVertex<Integer>) v).getNextOpinion((MyVertex<Integer>) u);
+                BooleanProperty opinion = ((MyVertex<Integer>) v).getNextOpinion((MyVertex<Integer>) u);
                 ((MyVertex<Integer>) u).receiveOpinion(opinion);
-                report.getOperations().add(new SendOperation(v.element(), u.element(), opinion));
+                report.getOperations().add(new SendOperation(v, u, opinion));
             }
         }
         return report;
     }
 
     public StepReport secondRound(MyGraph<Integer, Integer> graph){
+        System.out.println("Second round");
         KingStepRecord report = new KingStepRecord();
         MyVertex<Integer> king = (MyVertex<Integer>) graph.vertices().stream().toList().get(phase % graph.numVertices());
         report.fillRoles(king);
         int condition = graph.numVertices() / 2 + graph.getTraitorsCount();
         for(Vertex<Integer> v : graph.vertices()){
             ((MyVertex<Integer>) v).chooseMajorityWithTieBreaker(king.getNextOpinion((MyVertex<Integer>) v), condition);
-            report.getOperations().add(new ChooseOperation(v.element(), ((MyVertex<Integer>) v).getOpinion()));
+            report.getOperations().add(new ChooseOperation(v, ((MyVertex<Integer>) v).getForAttack()));
         }
         return report;
     }
@@ -92,7 +96,7 @@ public class KingAlgorithm implements Algorithm{
                     getRoles().put(v, VertexRole.KING);
                 }
                 else{
-                    getRoles().put(king, VertexRole.LIEUTENANT);
+                    getRoles().put(v, VertexRole.LIEUTENANT);
                 }
             }
         }
