@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
 
-<?import javafx.scene.layout.*?>
-
-<?import javafx.scene.control.Button?>
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.controller.AppController"
-            minHeight="400.0" minWidth="600.0"
-            fx:id="root">
+<BorderPane fx:id="root" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.controller.AppController">
 
     <center>
-        <fx:include source="graphView.fxml" fx:id ="graph"/>
+        <fx:include fx:id="graph" source="graphView.fxml" />
     </center>
 
     <right>
-        <fx:include source="simulationOptionsView.fxml" fx:id ="simulation"/>
+        <fx:include fx:id="simulation" source="simulationOptionsView.fxml" />
     </right>
 
     <top>
-        <fx:include source="mainMenuView.fxml" fx:id="menu"/>
+        <fx:include fx:id="menu" source="mainMenuView.fxml" />
     </top>
+   <bottom>
+      <Accordion BorderPane.alignment="CENTER">
+        <panes>
+          <TitledPane animated="false" text="Statystyki">
+            <content>
+              <fx:include fx:id="stats" source="statisticsView.fxml" />
+            </content>
+          </TitledPane>
+        </panes>
+      </Accordion>
+   </bottom>
 
 </BorderPane>
