@@ -4,7 +4,6 @@ import com.example.ApplicationState;
 import com.example.draw.DrawMode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BackgroundImage;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 

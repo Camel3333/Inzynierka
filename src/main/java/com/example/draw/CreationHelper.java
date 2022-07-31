@@ -1,7 +1,6 @@
 package com.example.draw;
 
 import com.brunomnsilva.smartgraph.graph.Edge;
-import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.controller.GraphController;
 import com.example.util.GraphObserver;

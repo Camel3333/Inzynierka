@@ -3,6 +3,7 @@ package com.example.algorithm;
 import com.example.model.*;
 import com.example.settings.AlgorithmSetting;
 import com.example.settings.AlgorithmSettings;
+import javafx.beans.property.SimpleBooleanProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,11 +34,6 @@ public class LamportAlgorithmTest {
         var e5 = graph.insertEdge(v1, v3, 5);
         var e6 = graph.insertEdge(v2, v4, 6);
 
-        var o1 = new AgentOpinion("name", true);
-        var o2 = new AgentOpinion("name", true);
-        var o3 = new AgentOpinion("name", true);
-        var o4 = new AgentOpinion("name", true);
-
         var settings = new AlgorithmSettings();
 
         // When
@@ -46,10 +42,10 @@ public class LamportAlgorithmTest {
         v3.setIsTraitor(false);
         v4.setIsTraitor(false);
 
-        v1.setOpinion(o1);
-        v2.setOpinion(o2);
-        v3.setOpinion(o3);
-        v4.setOpinion(o4);
+        v1.setForAttack(new SimpleBooleanProperty(true));
+        v2.setForAttack(new SimpleBooleanProperty(false));
+        v3.setForAttack(new SimpleBooleanProperty(true));
+        v4.setForAttack(new SimpleBooleanProperty(true));
 
         settings.getSettings().put("depth", new AlgorithmSetting("depth", 1, Integer.class, object -> true));
 
@@ -61,21 +57,4 @@ public class LamportAlgorithmTest {
         // Then
         assertTrue(graph.checkConsensus());
     }
-
-//    @Test
-//    public void emptyGraphTest(){
-//        // Given
-//        var settings = new AlgorithmSettings();
-//
-//        // When
-//        settings.getSettings().put("depth", new AlgorithmSetting("depth", 0, Integer.class,object -> true));
-//        algorithm.loadEnvironment(graph, settings);
-//        while(!algorithm.isFinished()){
-//            algorithm.step();
-//        }
-//
-//        // Then
-//        assertTrue(graph.checkConsensus());
-//    }
-
 }

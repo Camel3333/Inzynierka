@@ -1,12 +1,10 @@
 package com.example.algorithm;
 
-import com.example.algorithm.operations.Operation;
 import com.example.algorithm.report.StepReport;
 import com.example.model.MyGraph;
 import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 
-import java.util.List;
 
 public interface Algorithm {
     AlgorithmType getType();

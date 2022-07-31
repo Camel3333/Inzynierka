@@ -13,7 +13,5 @@ public class BindingsTest {
         BooleanProperty res = new SimpleBooleanProperty(false);
         res.bind(Bindings.and(op1,op2));
         res.addListener(e -> System.out.println("Value changed"));
-
-        System.out.println(res.get());
     }
 }
