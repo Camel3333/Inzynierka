@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
+import com.brunomnsilva.smartgraph.graph.Edge;
 import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
@@ -24,7 +25,16 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.controlsfx.control.PopOver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,6 +163,53 @@ public class GraphController {
                 }
             });
         }
+    }
+
+    public String getGraphML() throws IOException {
+        String header = """
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+""";
+        String attrs = """
+                <key id="d0" for="node" attr.name="attack" attr.type="boolean"><default>true</default></key>
+                <key id="d1" for="node" attr.name="traitor" attr.type="boolean"><default>false</default></key>
+                """;
+
+        String graph = "<graph id=\"G\" edgedefault=\"undirected\">";
+        StringBuilder edgesString = new StringBuilder();
+        int i = 0;
+        for (Edge<Integer, Integer> edge: this.graph.edges()) {
+            edgesString.append("<edge id=\"").append(i).append("\" source=\"").append(edge.vertices()[0].element()).append("\" target=\"").append(edge.vertices()[1].element()).append("\"></edge>").append("\n");
+            i++;
+        }
+        StringBuilder verticesString = new StringBuilder();
+        for (Vertex<Integer> vertex: this.graph.vertices()) {
+            boolean isFor = ((MyVertex<Integer>)vertex).isSupportingOpinion().get();
+            boolean isTraitor = ((MyVertex<Integer>)vertex).isTraitor().get();
+            verticesString.append("<node id=\"").append(vertex.element()).append("\"><data key=\"d0\">").append(isFor).append("</data><data key=\"d1\">").append(isTraitor).append("</data></node>").append("\n");
+        }
+        String finish = "</graph></graphml>";
+        //http://graphml.graphdrawing.org/primer/graphml-primer.html#Intro
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter("test.xml"));
+        writer.write(header+attrs+graph+edgesString+verticesString+finish);
+        writer.close();
+        return "";
+    }
+
+    public void fromML() throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setIgnoringElementContentWhitespace(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        File file = new File("test.xml");
+        Document doc = builder.parse(file);
+
+        this.graph.edges();
+
+        System.out.println(doc.getElementsByTagName("vertex"));
     }
 
     public void addNodeToView(Node node){

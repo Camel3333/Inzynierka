@@ -5,12 +5,25 @@ import com.example.draw.CreationHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.MenuItem;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+
 
 @Component
 @FxmlView("/view/mainMenuView.fxml")
 public class MainMenuController implements ChangeListener<ApplicationState> {
+    @Autowired
+    GraphController graphController;
+    @FXML
+    MenuItem importButton;
+    @FXML
+    MenuItem exportButton;
     // Toolbars
     @FXML
     GraphEditController graphToolsController;
@@ -26,6 +39,20 @@ public class MainMenuController implements ChangeListener<ApplicationState> {
     private void bindToolbars(){
         graphToolsController.setDrawMenuController(drawMenuController);
         graphToolsController.setSimulationMenuController(simulationMenuController);
+        exportButton.setOnAction(e -> {
+            try {
+                graphController.getGraphML();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        importButton.setOnAction(e -> {
+            try {
+                graphController.fromML();
+            } catch (ParserConfigurationException | IOException | SAXException ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 
     @FXML

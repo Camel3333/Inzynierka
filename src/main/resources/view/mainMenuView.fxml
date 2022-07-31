@@ -15,8 +15,8 @@
                 <items>
                     <MenuItem text="Save"></MenuItem>
                     <MenuItem text="Save as"></MenuItem>
-                    <MenuItem text="Import"></MenuItem>
-                    <MenuItem text="Export"></MenuItem>
+                    <MenuItem text="Import" fx:id="importButton"/>
+                    <MenuItem text="Export" fx:id="exportButton"/>
                 </items>
             </Menu>
             <Menu text="Edit" fx:id="editMenu">
