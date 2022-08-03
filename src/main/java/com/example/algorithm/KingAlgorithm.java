@@ -61,7 +61,7 @@ public class KingAlgorithm implements Algorithm{
         KingStepRecord report = new KingStepRecord();
         report.fillRoles(null);
         for(Vertex<Integer> v : graph.vertices()){
-            for(Vertex<Integer> u : graph.vertices()){
+            for(Vertex<Integer> u : graph.vertexNeighbours(v)){
                 BooleanProperty opinion = ((MyVertex<Integer>) v).getNextOpinion((MyVertex<Integer>) u);
                 ((MyVertex<Integer>) u).receiveOpinion(opinion);
                 report.getOperations().add(new SendOperation(v, u, opinion));
