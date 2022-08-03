@@ -32,7 +32,7 @@ public class QVoterModel implements Algorithm{
     }
 
     @Override
-    public StepReport step() { //todo two phases?
+    public StepReport step() { //todo two phases? depends on coloring
         time ++;
         StepReport report = new StepReport();
 
@@ -40,12 +40,8 @@ public class QVoterModel implements Algorithm{
         MyVertex<Integer> agent = (MyVertex<Integer>) graph.vertices().stream().toList().get(agentIndex);
         report.getRoles().put(agent, VertexRole.VOTER_AGENT);
 
-        List<Vertex<Integer>> neighbours = graph.vertexNeighbours(agent).stream().toList();
-        Collections.shuffle(Arrays.asList(neighbours)); //todo refactor
-        neighbours = neighbours.stream().limit(q).toList();
-
         List<Boolean> opinionsReceived = new ArrayList<>();
-        for(Vertex<Integer> neighbour : neighbours){
+        for(Vertex<Integer> neighbour : getNeighbours(agent)){
             BooleanProperty opinion = ((MyVertex<Integer>) neighbour).getNextOpinion(agent);
             opinionsReceived.add(opinion.getValue());
             report.getOperations().add(new SendOperation(neighbour, agent, opinion));
@@ -72,5 +68,16 @@ public class QVoterModel implements Algorithm{
     @Override
     public BooleanProperty getIsFinishedProperty() {
         return isFinished;
+    }
+
+    private List<Vertex<Integer>> getNeighbours(Vertex<Integer> vertex){
+        Random rand = new Random();
+        List<Vertex<Integer>> neighbours = new ArrayList<>(graph.vertexNeighbours(vertex));
+        List<Vertex<Integer>> selectedNeighbours = new ArrayList<>();
+        for (int i = 0; i < q; i++) {
+            int randomIndex = rand.nextInt(neighbours.size());
+            selectedNeighbours.add(neighbours.remove(randomIndex));
+        }
+        return selectedNeighbours;
     }
 }
