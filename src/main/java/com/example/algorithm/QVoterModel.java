@@ -36,7 +36,7 @@ public class QVoterModel implements Algorithm{
         time ++;
         StepReport report = new StepReport();
 
-        int agentIndex = new Random().nextInt(graph.numVertices() + 1);
+        int agentIndex = new Random().nextInt(graph.numVertices());
         MyVertex<Integer> agent = (MyVertex<Integer>) graph.vertices().stream().toList().get(agentIndex);
         report.getRoles().put(agent, VertexRole.VOTER_AGENT);
 
