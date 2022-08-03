@@ -40,9 +40,9 @@ public class QVoterModel implements Algorithm{
         MyVertex<Integer> agent = (MyVertex<Integer>) graph.vertices().stream().toList().get(agentIndex);
         report.getRoles().put(agent, VertexRole.VOTER_AGENT);
 
-        ArrayList<Vertex<Integer>> neighbours = (ArrayList<Vertex<Integer>>) graph.vertexNeighbours(agent).stream().toList();
+        List<Vertex<Integer>> neighbours = graph.vertexNeighbours(agent).stream().toList();
         Collections.shuffle(Arrays.asList(neighbours)); //todo refactor
-        neighbours = (ArrayList<Vertex<Integer>>) neighbours.stream().limit(q).toList();
+        neighbours = neighbours.stream().limit(q).toList();
 
         List<Boolean> opinionsReceived = new ArrayList<>();
         for(Vertex<Integer> neighbour : neighbours){
