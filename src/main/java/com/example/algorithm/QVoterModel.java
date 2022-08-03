@@ -10,11 +10,7 @@ import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class QVoterModel implements Algorithm{
     private MyGraph<Integer, Integer> graph;
@@ -36,29 +32,35 @@ public class QVoterModel implements Algorithm{
     }
 
     @Override
-    public StepReport step() {
-        QVoterStepRecord report = new QVoterStepRecord();
+    public StepReport step() { //todo two phases?
+        time ++;
+        StepReport report = new StepReport();
+
         int agentIndex = new Random().nextInt(graph.numVertices() + 1);
-
         MyVertex<Integer> agent = (MyVertex<Integer>) graph.vertices().stream().toList().get(agentIndex);
+        report.getRoles().put(agent, VertexRole.VOTER_AGENT);
 
-        List<Vertex<Integer>> neighbours = graph.vertexNeighbours(agent).stream().toList();
-        Collections.shuffle(neighbours);
-        neighbours = neighbours.stream().limit(q).toList();
-
-        report.fillRoles(null); //todo
+        ArrayList<Vertex<Integer>> neighbours = (ArrayList<Vertex<Integer>>) graph.vertexNeighbours(agent).stream().toList();
+        Collections.shuffle(Arrays.asList(neighbours)); //todo refactor
+        neighbours = (ArrayList<Vertex<Integer>>) neighbours.stream().limit(q).toList();
 
         List<Boolean> opinionsReceived = new ArrayList<>();
         for(Vertex<Integer> neighbour : neighbours){
             BooleanProperty opinion = ((MyVertex<Integer>) neighbour).getNextOpinion(agent);
             opinionsReceived.add(opinion.getValue());
             report.getOperations().add(new SendOperation(neighbour, agent, opinion));
+            report.getRoles().put(neighbour, VertexRole.NEIGHBOUR);
         }
 
-        if(opinionsReceived.stream().distinct().count() <= 1 ||  time > maxTime / 2){ //todo
+        if(opinionsReceived.stream().distinct().count() <= 1 ||  time > maxTime / 2){ //todo Boltzmann
             agent.setForAttack(new SimpleBooleanProperty(opinionsReceived.get(0)));
         }
         report.getOperations().add(new ChooseOperation(agent, agent.getForAttack()));
+
+        if(time == maxTime){
+            isFinished.setValue(true);
+        }
+
         return report;
     }
 
@@ -70,18 +72,5 @@ public class QVoterModel implements Algorithm{
     @Override
     public BooleanProperty getIsFinishedProperty() {
         return isFinished;
-    }
-
-    private class QVoterStepRecord extends StepReport{ //todo
-        public void fillRoles(Vertex<Integer> king){
-            for(Vertex<Integer> v : graph.vertices()){
-                if(v.equals(king)){
-                    getRoles().put(v, VertexRole.AGENT);
-                }
-                else{
-                    getRoles().put(v, VertexRole.NEIGHBOUR);
-                }
-            }
-        }
     }
 }

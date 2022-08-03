@@ -4,7 +4,6 @@ public enum VertexRole {
     COMMANDER,
     LIEUTENANT,
     NEIGHBOUR,
-    AGENT,
-    KING;
-
+    VOTER_AGENT,
+    KING
 }
