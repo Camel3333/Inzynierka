@@ -159,15 +159,15 @@ public abstract class AnimationEngine{
     }
 
     private Animation getChooseOpinionAnimation(SmartGraphVertexNode<Integer> vertex, boolean attack){
-        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(1000), vertex);
-        scaleUp.setToX(1.25);
-        scaleUp.setToY(1.25);
+        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(2000), vertex);
+        scaleUp.setToX(1.5);
+        scaleUp.setToY(1.5);
 
         String vertexStyle = attack ? "traitor" : "vertex";
 
         scaleUp.setOnFinished(e -> graphController.setVertexStyle(vertex.getUnderlyingVertex().element(), vertexStyle));
 
-        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(1000), vertex);
+        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(2000), vertex);
         scaleDown.setToX(1);
         scaleDown.setToY(1);
 
