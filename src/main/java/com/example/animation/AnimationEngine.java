@@ -163,9 +163,9 @@ public abstract class AnimationEngine{
         scaleUp.setToX(1.5);
         scaleUp.setToY(1.5);
 
-        String vertexStyle = attack ? "traitor" : "vertex";
+        String vertexStyle = attack ? "attack" : "defense";
 
-        scaleUp.setOnFinished(e -> graphController.setVertexStyle(vertex.getUnderlyingVertex().element(), vertexStyle));
+        scaleUp.setOnFinished(e -> graphController.addVertexStyle(vertex.getUnderlyingVertex().element(), vertexStyle));
 
         ScaleTransition scaleDown = new ScaleTransition(Duration.millis(2000), vertex);
         scaleDown.setToX(1);
