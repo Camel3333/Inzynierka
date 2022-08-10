@@ -62,7 +62,7 @@ public class SimulationController {
     private BooleanProperty paused =  new SimpleBooleanProperty(true);
     private BooleanProperty started = new SimpleBooleanProperty(false);
     private BooleanProperty idle = new SimpleBooleanProperty(true);
-    private BooleanProperty isFinished;
+    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
 
     public void show() {
         parent.setVisible(true);
@@ -118,6 +118,7 @@ public class SimulationController {
         dependenciesList.add(paused);
         dependenciesList.add(started);
         dependenciesList.add(idle);
+        dependenciesList.add(isFinished);
         Observable[] dependencies = dependenciesList.toArray(new Observable[0]);
 
         nextStepButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
@@ -169,6 +170,7 @@ public class SimulationController {
 
         inputDependencies.add(algorithmsBox.getSelectionModel().selectedItemProperty());
         inputDependencies.add(started);
+        inputDependencies.add(isFinished);
 
         Observable[] dependencies = inputDependencies.toArray(new Observable[0]);
 
@@ -176,6 +178,9 @@ public class SimulationController {
 
         startButton.disableProperty().unbind();
         startButton.disableProperty().bind(Bindings.createBooleanBinding(()->{
+            if (isFinished.get()) {
+                return false;
+            }
             if (started.get()) {
                 return true;
             }
@@ -212,7 +217,7 @@ public class SimulationController {
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), algorithmSettings);
         ((SimpleSimulation)simulation).loadEnvironment();
-        isFinished = ((SimpleSimulation) simulation).getIsFinishedProperty();
+        isFinished.bind(((SimpleSimulation) simulation).getIsFinishedProperty());
         started.set(true);
     }
 
