@@ -42,19 +42,19 @@
 }
 
 .attack {
-    -fx-background-image: url("src/main/resources/ms.jpg");
-    -fx-background-repeat: stretch;
-    -fx-background-size: auto;
+    -fx-stroke-width: 5;
+    -fx-stroke: green;
+    -fx-stroke-type: inside; /* you should keep this for vertex.radius to hold */
 }
 
 .defense {
-    -fx-stroke-width: 3;
+    -fx-stroke-width: 5;
     -fx-stroke: purple;
     -fx-stroke-type: inside; /* you should keep this for vertex.radius to hold */
 }
 
 .general {
-    -fx-stroke: green;
+    -fx-stroke: orange;
     -fx-stroke-type: inside;
     -fx-fill: yellow;
 }
