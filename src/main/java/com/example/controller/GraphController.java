@@ -83,6 +83,10 @@ public class GraphController {
         Platform.runLater(()->graphView.getStylableVertex(id).setStyleClass(style));
     }
 
+    public void addVertexStyle(int id, String style) {
+        Platform.runLater(()->graphView.getStylableVertex(id).addStyleClass(style));
+    }
+
     private void setGraphViewBindings(){
         graphView.setVertexSingleClickAction(graphVertex -> {
             observers.forEach(observer -> observer.vertexClicked(graphVertex.getUnderlyingVertex()));
