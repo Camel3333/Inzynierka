@@ -2,8 +2,8 @@ package com.example.algorithm;
 
 public enum VertexRole {
     COMMANDER,
-    LIEUTENANT,
-    NEIGHBOUR,
+    KING,
+    VOTER_NEIGHBOUR,
     VOTER_AGENT,
-    KING
+    LIEUTENANT
 }

@@ -15,6 +15,10 @@ import java.util.*;
 public class QVoterModel implements Algorithm{
     private MyGraph<Integer, Integer> graph;
     private BooleanProperty isFinished = new SimpleBooleanProperty(false);
+    private MyVertex<Integer> selectedAgent;
+    private List<Boolean> opinionsReceived;
+    private QVoterModel.AlgorithmPhase algorithmPhase = QVoterModel.AlgorithmPhase.SEND;
+    private ProbabilityType probabilityType = ProbabilityType.LINEAR;
     private int q;
     private int maxTime;
     private int time = 0;
@@ -32,26 +36,51 @@ public class QVoterModel implements Algorithm{
     }
 
     @Override
-    public StepReport step() { //todo two phases? depends on coloring
-        time ++;
-        StepReport report = new StepReport();
+    public StepReport step() {
+        switch (algorithmPhase){
+            case SEND -> {
+                algorithmPhase = QVoterModel.AlgorithmPhase.CHOOSE;
+                return sendOpinions();
+            }
+            case CHOOSE -> {
+                time ++;
+                algorithmPhase = QVoterModel.AlgorithmPhase.SEND;
+                if(time == maxTime){
+                    isFinished.setValue(true);
+                }
+                return makeDecision();
+            }
+        }
+        return null;
+    }
+
+    private StepReport sendOpinions() {
+        QVoterStepRecord report = new QVoterStepRecord();
 
         int agentIndex = new Random().nextInt(graph.numVertices());
-        MyVertex<Integer> agent = (MyVertex<Integer>) graph.vertices().stream().toList().get(agentIndex);
-        report.getRoles().put(agent, VertexRole.VOTER_AGENT);
+        selectedAgent = (MyVertex<Integer>) graph.vertices().stream().toList().get(agentIndex);
+        List<Vertex<Integer>> agentNeighbours = getNeighbours(selectedAgent);
+        report.fillRoles(selectedAgent, agentNeighbours);
 
-        List<Boolean> opinionsReceived = new ArrayList<>();
-        for(Vertex<Integer> neighbour : getNeighbours(agent)){
-            BooleanProperty opinion = ((MyVertex<Integer>) neighbour).getNextOpinion(agent);
+        opinionsReceived = new ArrayList<>();
+        for(Vertex<Integer> neighbour : agentNeighbours){
+            BooleanProperty opinion = ((MyVertex<Integer>) neighbour).getNextOpinion(selectedAgent);
             opinionsReceived.add(opinion.getValue());
-            report.getOperations().add(new SendOperation(neighbour, agent, opinion));
-            report.getRoles().put(neighbour, VertexRole.NEIGHBOUR);
+            report.getOperations().add(new SendOperation(neighbour, selectedAgent, opinion));
         }
 
-        if(opinionsReceived.stream().distinct().count() <= 1 ||  time > maxTime / 2){ //todo Boltzmann
-            agent.setForAttack(new SimpleBooleanProperty(opinionsReceived.get(0)));
+        return report;
+    }
+
+    private StepReport makeDecision() {
+        QVoterStepRecord report = new QVoterStepRecord();
+
+        report.fillRoles(selectedAgent, null);
+
+        if(opinionsReceived.stream().distinct().count() <= 1 ||  checkProbability()){
+            selectedAgent.setForAttack(new SimpleBooleanProperty(opinionsReceived.get(0)));
         }
-        report.getOperations().add(new ChooseOperation(agent, agent.getForAttack()));
+        report.getOperations().add(new ChooseOperation(selectedAgent, selectedAgent.getForAttack()));
 
         if(time == maxTime){
             isFinished.setValue(true);
@@ -79,5 +108,41 @@ public class QVoterModel implements Algorithm{
             selectedNeighbours.add(neighbours.remove(randomIndex));
         }
         return selectedNeighbours;
+    }
+
+    private boolean checkProbability(){
+        switch (probabilityType){
+            case LINEAR -> {
+                return new Random().nextInt(maxTime) <= time;
+            }
+        }
+       return false;
+    }
+
+    private enum AlgorithmPhase{
+        SEND,
+        CHOOSE,
+    }
+
+    private enum ProbabilityType {
+        LINEAR,
+        NON_LINEAR,
+        BOLTZMANN
+    }
+
+    private class QVoterStepRecord extends StepReport{
+        public void fillRoles(Vertex<Integer> agent, List<Vertex<Integer>> neighbours){
+            for(Vertex<Integer> v : graph.vertices()){
+                if(v.equals(agent)){
+                    getRoles().put(v, VertexRole.VOTER_AGENT);
+                }
+                else if(neighbours != null && neighbours.contains(v)){
+                    getRoles().put(v, VertexRole.VOTER_NEIGHBOUR);
+                }
+                else{
+                    getRoles().put(v, VertexRole.LIEUTENANT);
+                }
+            }
+        }
     }
 }

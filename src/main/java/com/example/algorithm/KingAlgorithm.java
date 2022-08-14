@@ -33,14 +33,14 @@ public class KingAlgorithm implements Algorithm{
         switch (round){
             case SEND -> {
                 round = AlgorithmPhase.CHOOSE;
-                return firstRound(graph);
+                return firstRound();
             }
             case CHOOSE -> {
                 phase ++;
                 round = AlgorithmPhase.SEND;
                 if (phase == numberOfPhases)
                     isFinished.setValue(true);
-                return secondRound(graph);
+                return secondRound();
             }
         }
         return null;
@@ -56,7 +56,7 @@ public class KingAlgorithm implements Algorithm{
         return isFinished;
     }
 
-    public StepReport firstRound(MyGraph<Integer, Integer> graph){
+    public StepReport firstRound(){
         System.out.println("First round");
         KingStepRecord report = new KingStepRecord();
         report.fillRoles(null);
@@ -70,7 +70,7 @@ public class KingAlgorithm implements Algorithm{
         return report;
     }
 
-    public StepReport secondRound(MyGraph<Integer, Integer> graph){
+    public StepReport secondRound(){
         System.out.println("Second round");
         KingStepRecord report = new KingStepRecord();
         MyVertex<Integer> king = (MyVertex<Integer>) graph.vertices().stream().toList().get(phase % graph.numVertices());
