@@ -13,6 +13,11 @@ public class QVoterAnimationEngine extends AnimationEngine{
 
     @Override
     protected void highlightRoles(Map<Vertex<Integer>, VertexRole> roles) {
-        //todo
+        for (Map.Entry<Vertex<Integer>, VertexRole> entry : roles.entrySet()){
+            switch (entry.getValue()){
+                case VOTER_AGENT, VOTER_NEIGHBOUR -> graphController.setVertexStyle(entry.getKey().element(), "general");
+                case LIEUTENANT -> graphController.setVertexStyle(entry.getKey().element(), "vertex");
+            }
+        }
     }
 }
