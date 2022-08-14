@@ -84,7 +84,7 @@ public class SimulationController {
 
     private void setDefaultSettings() {
         algorithmSettings.getSettings().put("depth",
-                new AlgorithmSetting<>("depth", 1, Integer.class, (value) -> value >= 0)); //todo validate
+                new AlgorithmSetting<>("depth", 1, Integer.class, (value) -> value >= 0));
         algorithmSettings.getSettings().put("phase",
                 new AlgorithmSetting<>("phase", 1, Integer.class, (value) -> value >= 0));
         algorithmSettings.getSettings().put("q",

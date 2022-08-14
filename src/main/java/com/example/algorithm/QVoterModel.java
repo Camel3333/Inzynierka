@@ -39,11 +39,11 @@ public class QVoterModel implements Algorithm{
     public StepReport step() {
         switch (algorithmPhase){
             case SEND -> {
+                time ++;
                 algorithmPhase = QVoterModel.AlgorithmPhase.CHOOSE;
                 return sendOpinions();
             }
             case CHOOSE -> {
-                time ++;
                 algorithmPhase = QVoterModel.AlgorithmPhase.SEND;
                 if(time == maxTime){
                     isFinished.setValue(true);

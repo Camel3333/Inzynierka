@@ -32,11 +32,11 @@ public class KingAlgorithm implements Algorithm{
     public StepReport step() {
         switch (round){
             case SEND -> {
+                phase ++;
                 round = AlgorithmPhase.CHOOSE;
                 return firstRound();
             }
             case CHOOSE -> {
-                phase ++;
                 round = AlgorithmPhase.SEND;
                 if (phase == numberOfPhases)
                     isFinished.setValue(true);
