@@ -41,7 +41,7 @@ public class AppController {
 
     private CreationHelper drawingHelper = new CreationHelper();
 
-    private Graph<Integer, Integer> graph = new MyGraph<>();
+    private MyGraph<Integer, Integer> graph = new MyGraph<>();
 
     public BorderPane getRoot() {
         return root;

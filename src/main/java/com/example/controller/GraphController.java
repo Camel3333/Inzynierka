@@ -9,6 +9,7 @@ import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import com.example.draw.CreationHelper;
 import com.example.draw.MySmartGraphPanel;
+import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;
 import com.example.util.GraphObserver;
@@ -54,7 +55,7 @@ public class GraphController {
     private MySmartGraphPanel<Integer, Integer> graphView;
 
     @Getter
-    private Graph<Integer, Integer> graph;
+    private MyGraph<Integer, Integer> graph;
     private CreationHelper drawingHelper;
     private List<GraphObserver<Integer, Integer>> observers = new ArrayList<>();
 
@@ -66,7 +67,7 @@ public class GraphController {
         observers.remove(observer);
     }
 
-    public void setModelGraph(Graph<Integer, Integer> graph){
+    public void setModelGraph(MyGraph<Integer, Integer> graph){
         this.graph = graph;
         vertexIdCounter = graph.numVertices();
 
