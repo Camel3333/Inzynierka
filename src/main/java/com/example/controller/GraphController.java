@@ -36,8 +36,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 @FxmlView("/view/graphView.fxml")
@@ -166,20 +165,20 @@ public class GraphController {
         }
     }
 
-    public String getGraphML() throws IOException {
+    public void getGraphML() throws IOException {
         String header = """
-<?xml version="1.0" encoding="UTF-8"?>
-<graphml xmlns="http://graphml.graphdrawing.org/xmlns"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
-http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
-""";
+                <?xml version="1.0" encoding="UTF-8"?>
+                <graphml xmlns="http://graphml.graphdrawing.org/xmlns"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+                http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+                """;
         String attrs = """
                 <key id="d0" for="node" attr.name="attack" attr.type="boolean"><default>true</default></key>
                 <key id="d1" for="node" attr.name="traitor" attr.type="boolean"><default>false</default></key>
                 """;
 
-        String graph = "<graph id=\"G\" edgedefault=\"undirected\">";
+        String graph = "<graph id=\"G\" edgedefault=\"undirected\">\n";
         StringBuilder edgesString = new StringBuilder();
         int i = 0;
         for (Edge<Integer, Integer> edge: this.graph.edges()) {
@@ -192,13 +191,12 @@ http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
             boolean isTraitor = ((MyVertex<Integer>)vertex).isTraitor().get();
             verticesString.append("<node id=\"").append(vertex.element()).append("\"><data key=\"d0\">").append(isFor).append("</data><data key=\"d1\">").append(isTraitor).append("</data></node>").append("\n");
         }
-        String finish = "</graph></graphml>";
-        //http://graphml.graphdrawing.org/primer/graphml-primer.html#Intro
+        String finish = "</graph></graphml>\n";
 
         BufferedWriter writer = new BufferedWriter(new FileWriter("test.xml"));
         writer.write(header+attrs+graph+edgesString+verticesString+finish);
         writer.close();
-        return "";
+        System.out.println("export done");
     }
 
     public void fromML() throws ParserConfigurationException, IOException, SAXException {
