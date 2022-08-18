@@ -4,7 +4,8 @@ import com.example.util.NotImplementedException;
 
 public enum AlgorithmType {
     LAMPORT,
-    KING;
+    KING,
+    QVOTER;
 
     @Override
     public String toString() {
@@ -15,6 +16,7 @@ public enum AlgorithmType {
         switch (this) {
             case LAMPORT -> {return new LamportIterAlgorithm();}
             case KING -> {return new KingAlgorithm();}
+            case QVOTER -> {return new QVoterModel();}
             default -> throw new NotImplementedException(this.toString() + " algorithm not implemented");
         }
     }

@@ -32,11 +32,19 @@ public class SimulationController {
     @FXML
     public Label phaseLabel;
     @FXML
+    public Label qLabel;
+    @FXML
+    public Label timeLabel;
+    @FXML
     private VBox parent;
     @FXML
     private IntegerSettingTextField depth;
     @FXML
     private IntegerSettingTextField phase;
+    @FXML
+    private IntegerSettingTextField q;
+    @FXML
+    private IntegerSettingTextField time;
     @FXML
     private Button startButton;
     @FXML
@@ -79,6 +87,10 @@ public class SimulationController {
                 new AlgorithmSetting<>("depth", 1, Integer.class, (value) -> value >= 0));
         algorithmSettings.getSettings().put("phase",
                 new AlgorithmSetting<>("phase", 1, Integer.class, (value) -> value >= 0));
+        algorithmSettings.getSettings().put("q",
+                new AlgorithmSetting<>("q", 1, Integer.class, (value) -> value >= 0));
+        algorithmSettings.getSettings().put("time",
+                new AlgorithmSetting<>("time", 1, Integer.class, (value) -> value >= 0));
     }
 
     @FXML
@@ -86,6 +98,7 @@ public class SimulationController {
         setDefaultSettings();
         options.put(AlgorithmType.LAMPORT, new ArrayList<>(List.of(depth, depthLabel)));
         options.put(AlgorithmType.KING, new ArrayList<>(List.of(phase, phaseLabel)));
+        options.put(AlgorithmType.QVOTER, new ArrayList<>(List.of(q, qLabel, time, timeLabel)));
         hideAlgorithmSettings();
         algorithmsBox.setCellFactory(param -> new ListCell<>() {
             @Override
@@ -108,6 +121,9 @@ public class SimulationController {
 
         depth.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("depth"));
         phase.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("phase"));
+        q.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("q"));
+        time.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("time"));
+
 
         nextStepButton.setDisable(true);
         liveButton.setDisable(true);
@@ -223,7 +239,7 @@ public class SimulationController {
 
     public void doStepTask() {
         if (!isFinished.get()) {
-            StepReport report = ((SimpleSimulation)simulation).step();
+            StepReport report = simulation.step();
 
             if(isFinished.get()) {
                 System.out.println("Finished");
@@ -233,7 +249,7 @@ public class SimulationController {
 
     private void liveTask() {
         while(!isFinished.get()) {
-            StepReport report = ((SimpleSimulation)simulation).step();
+            StepReport report = simulation.step();
             if (paused.get()) {
                 return;
             }
@@ -244,7 +260,7 @@ public class SimulationController {
     private void instantFinishTask() {
         simulation.allowAnimations(false);
         while(!isFinished.get()) {
-            StepReport report = ((SimpleSimulation)simulation).step();
+            StepReport report = simulation.step();
         }
         System.out.println("Finished");
     }

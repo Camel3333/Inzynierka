@@ -14,6 +14,7 @@ public class AnimationEngineFactory {
         switch (type){
             case LAMPORT -> {return new LamportAnimationEngine(graphController);}
             case KING -> {return new KingAnimationEngine(graphController);}
+            case QVOTER -> {return new QVoterAnimationEngine(graphController);}
         }
         return null;
     }
