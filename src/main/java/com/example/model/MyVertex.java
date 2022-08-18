@@ -88,4 +88,14 @@ public class MyVertex<V> implements Vertex<V>, Agent {
             forAttack.set(kingOpinion.getValue());
         }
     }
+
+    @Override
+    public String toString() {
+        return "MyVertex{" +
+                "id=" + id +
+                ", isTraitor=" + isTraitor +
+                ", forAttack=" + forAttack +
+                ", knowledge=" + knowledge +
+                '}';
+    }
 }
