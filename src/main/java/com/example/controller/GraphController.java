@@ -14,11 +14,13 @@ import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;
 import com.example.util.GraphObserver;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.util.Pair;
 import lombok.Getter;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -27,6 +29,7 @@ import org.controlsfx.control.PopOver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -206,9 +209,69 @@ public class GraphController {
         File file = new File("test.xml");
         Document doc = builder.parse(file);
 
-        this.graph.edges();
+        Map<String, String> keys = new HashMap<>();
+        List<MyVertex<Integer>> vertices = new LinkedList<>();
+        List<Pair<Integer, Integer>> edges = new LinkedList<>();
 
-        System.out.println(doc.getElementsByTagName("vertex"));
+        // Get data keys
+        NodeList keyNodes = doc.getElementsByTagName("key");
+        for (int i = 0; i < keyNodes.getLength(); i++) {
+            org.w3c.dom.Node node = keyNodes.item(i);
+            String id = node.getAttributes().getNamedItem("id").getNodeValue();
+            keys.put(id,
+                    node.getAttributes().getNamedItem("attr.name").getNodeValue());
+        }
+
+        // Get vertices
+        NodeList vertexNodes = doc.getElementsByTagName("node");
+        for (int i = 0; i < vertexNodes.getLength(); i++) {
+            org.w3c.dom.Node node = vertexNodes.item(i);
+            MyVertex<Integer> newVertex = new MyVertex<>(Integer.parseInt(node.getAttributes().getNamedItem("id").getNodeValue()));
+            boolean traitor = false; //todo default value from graphML
+            boolean opinion = false;
+
+            NodeList dataNodes = node.getChildNodes();
+            for (int j = 0; j < dataNodes.getLength(); j++) {
+                org.w3c.dom.Node dataNode = dataNodes.item(j);
+                String key = dataNode.getAttributes().getNamedItem("key").getNodeValue();
+                String attribute = keys.get(key);
+                if (key != null) {
+                    switch (attribute) {
+                        case "traitor" -> traitor = Boolean.parseBoolean(dataNode.getChildNodes().item(0).getNodeValue());
+                        case "attack" -> opinion = Boolean.parseBoolean(dataNode.getChildNodes().item(0).getNodeValue());
+                    }
+
+                }
+            }
+            newVertex.setIsTraitor(traitor);
+            newVertex.setForAttack(new SimpleBooleanProperty(opinion));
+            vertices.add(newVertex);
+        }
+
+        //Get edges
+        NodeList edgeNodes = doc.getElementsByTagName("edge");
+        for (int i = 0; i < edgeNodes.getLength(); i++) {
+            org.w3c.dom.Node node = edgeNodes.item(i);
+            int from = Integer.parseInt(node.getAttributes().getNamedItem("source").getNodeValue());
+            int to = Integer.parseInt(node.getAttributes().getNamedItem("target").getNodeValue());
+            edges.add(new Pair<>(from, to));
+        }
+
+        //Reset graph
+        MyGraph<Integer, Integer> newGraph = new MyGraph<>();
+        int newCounter = 0;
+        for (MyVertex<Integer> vertex : vertices) {
+            newGraph.insertVertex(vertex);
+            vertexIdCounter = Integer.max(vertex.element(), vertexIdCounter);
+        }
+
+        for (Pair<Integer, Integer> edge : edges) {
+            newGraph.insertEdge(edge.getKey(), edge.getValue(), 1);
+        }
+
+        this.setModelGraph(newGraph);
+        vertexIdCounter = newCounter;
+        System.out.println("import done");
     }
 
     public void addNodeToView(Node node){
