@@ -77,7 +77,7 @@ public class QVoterModel implements Algorithm{
 
         report.fillRoles(selectedAgent, null);
 
-        if(opinionsReceived.stream().distinct().count() <= 1 ||  checkProbability()){
+        if(shouldAcceptNeighboursOpinion()){
             selectedAgent.setForAttack(new SimpleBooleanProperty(opinionsReceived.get(0)));
         }
         report.getOperations().add(new ChooseOperation(selectedAgent, selectedAgent.getForAttack()));
@@ -87,6 +87,10 @@ public class QVoterModel implements Algorithm{
         }
 
         return report;
+    }
+
+    private boolean shouldAcceptNeighboursOpinion(){
+        return opinionsReceived.stream().distinct().count() <= 1 || checkProbability();
     }
 
     @Override
