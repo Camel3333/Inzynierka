@@ -8,6 +8,8 @@ import com.example.model.*;
 import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 
 public class KingAlgorithm implements Algorithm{
@@ -15,6 +17,9 @@ public class KingAlgorithm implements Algorithm{
     private int numberOfPhases;
     private MyGraph<Integer, Integer> graph;
     private AlgorithmPhase round = AlgorithmPhase.SEND;
+
+    @Getter
+    @Setter
     private BooleanProperty isFinished = new SimpleBooleanProperty(false);
 
     @Override
@@ -32,14 +37,12 @@ public class KingAlgorithm implements Algorithm{
     public StepReport step() {
         switch (round){
             case SEND -> {
-                phase ++;
                 round = AlgorithmPhase.CHOOSE;
                 return firstRound();
             }
             case CHOOSE -> {
                 round = AlgorithmPhase.SEND;
-                if (phase == numberOfPhases)
-                    isFinished.setValue(true);
+                phase ++;
                 return secondRound();
             }
         }
@@ -54,6 +57,13 @@ public class KingAlgorithm implements Algorithm{
     @Override
     public BooleanProperty getIsFinishedProperty() {
         return isFinished;
+    }
+
+    @Override
+    public void checkIsFinished() {
+        if (phase == numberOfPhases){
+            isFinished.setValue(true);
+        }
     }
 
     public StepReport firstRound(){
@@ -95,7 +105,7 @@ public class KingAlgorithm implements Algorithm{
                     getRoles().put(v, VertexRole.KING);
                 }
                 else{
-                    getRoles().put(v, VertexRole.LIEUTENANT);
+                    getRoles().put(v, VertexRole.NONE);
                 }
             }
         }

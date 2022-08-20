@@ -3,7 +3,6 @@ package com.example.simulation;
 import com.example.algorithm.Algorithm;
 import com.example.algorithm.report.StepReport;
 import com.example.animation.AnimationEngine;
-import com.example.animation.AnimationEngineFactory;
 import com.example.settings.AlgorithmSettings;
 import com.example.controller.GraphController;
 import com.example.model.MyGraph;
@@ -21,21 +20,20 @@ public class SimpleSimulation implements Simulation{
 
     private Algorithm algorithm;
     private AlgorithmSettings settings;
-    private AnimationEngine animationEngine;
-    private BooleanProperty allowAnimations = new SimpleBooleanProperty(true);
-    private AnimationEngineFactory animationEngineFactory = new AnimationEngineFactory();
+    private final AnimationEngine animationEngine;
+    private final BooleanProperty allowAnimations = new SimpleBooleanProperty(true);
 
     @Setter
     private GraphController graphController;
 
     public SimpleSimulation(GraphController graphController) {
         this.graphController = graphController;
+        this.animationEngine = new AnimationEngine(graphController);
     }
 
     public void setEnvironment(Algorithm algorithm, AlgorithmSettings settings){
         this.algorithm = algorithm;
         this.settings = settings;
-        this.animationEngine = animationEngineFactory.create(algorithm.getType());
         this.animationEngine.setGraphController(graphController);
     }
 
@@ -57,6 +55,7 @@ public class SimpleSimulation implements Simulation{
         if (allowAnimations.get()){
             animationEngine.animate(report);
         }
+        algorithm.checkIsFinished();
         graphController.update();
         return report;
     }

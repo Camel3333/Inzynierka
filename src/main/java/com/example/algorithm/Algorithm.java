@@ -12,4 +12,5 @@ public interface Algorithm {
     StepReport step();
     boolean isFinished();
     BooleanProperty getIsFinishedProperty();
+    void checkIsFinished();
 }

@@ -82,9 +82,9 @@ public class LamportIterAlgorithm implements Algorithm{
     public StepReport step() {
         if (!stack.empty()){
             StepReport stepReport = om_iter();
-            if (stack.empty()) {
-                isFinished.set(true);
-            }
+//            if (stack.empty()) {
+//                isFinished.set(true);
+//            }
             return stepReport;
         }
         return null;
@@ -100,13 +100,20 @@ public class LamportIterAlgorithm implements Algorithm{
         return isFinished;
     }
 
+    @Override
+    public void checkIsFinished() {
+        if (stack.empty()) {
+            isFinished.set(true);
+        }
+    }
+
     private class LamportIterStepReport extends StepReport{
         public void fillRoles(StackRecord record){
             getRoles().put(record.commander, VertexRole.COMMANDER);
             graph.vertices()
                     .stream()
                     .filter(vertex -> !vertex.equals(record.commander))
-                    .forEach(vertex -> getRoles().put(vertex, VertexRole.LIEUTENANT));
+                    .forEach(vertex -> getRoles().put(vertex, VertexRole.NONE));
         }
     }
 

@@ -9,12 +9,13 @@ import com.example.model.MyVertex;
 import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 
 public class QVoterModel implements Algorithm{
     private MyGraph<Integer, Integer> graph;
-    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
     private MyVertex<Integer> selectedAgent;
     private List<Boolean> opinionsReceived;
     private QVoterModel.AlgorithmPhase algorithmPhase = QVoterModel.AlgorithmPhase.SEND;
@@ -22,6 +23,10 @@ public class QVoterModel implements Algorithm{
     private int q;
     private int maxTime;
     private int time = 0;
+
+    @Getter
+    @Setter
+    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
 
     @Override
     public AlgorithmType getType() {
@@ -39,15 +44,12 @@ public class QVoterModel implements Algorithm{
     public StepReport step() {
         switch (algorithmPhase){
             case SEND -> {
-                time ++;
                 algorithmPhase = QVoterModel.AlgorithmPhase.CHOOSE;
                 return sendOpinions();
             }
             case CHOOSE -> {
                 algorithmPhase = QVoterModel.AlgorithmPhase.SEND;
-                if(time == maxTime){
-                    isFinished.setValue(true);
-                }
+                time ++;
                 return makeDecision();
             }
         }
@@ -82,10 +84,6 @@ public class QVoterModel implements Algorithm{
         }
         report.getOperations().add(new ChooseOperation(selectedAgent, selectedAgent.getForAttack()));
 
-        if(time == maxTime){
-            isFinished.setValue(true);
-        }
-
         return report;
     }
 
@@ -101,6 +99,13 @@ public class QVoterModel implements Algorithm{
     @Override
     public BooleanProperty getIsFinishedProperty() {
         return isFinished;
+    }
+
+    @Override
+    public void checkIsFinished() {
+        if(time == maxTime){
+            isFinished.setValue(true);
+        }
     }
 
     private List<Vertex<Integer>> getNeighbours(Vertex<Integer> vertex){
@@ -138,13 +143,13 @@ public class QVoterModel implements Algorithm{
         public void fillRoles(Vertex<Integer> agent, List<Vertex<Integer>> neighbours){
             for(Vertex<Integer> v : graph.vertices()){
                 if(v.equals(agent)){
-                    getRoles().put(v, VertexRole.VOTER_AGENT);
+                    getRoles().put(v, VertexRole.VOTER);
                 }
                 else if(neighbours != null && neighbours.contains(v)){
-                    getRoles().put(v, VertexRole.VOTER_NEIGHBOUR);
+                    getRoles().put(v, VertexRole.NEIGHBOUR);
                 }
                 else{
-                    getRoles().put(v, VertexRole.LIEUTENANT);
+                    getRoles().put(v, VertexRole.NONE);
                 }
             }
         }

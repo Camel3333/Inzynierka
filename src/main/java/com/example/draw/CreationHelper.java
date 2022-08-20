@@ -80,6 +80,7 @@ public class CreationHelper implements GraphObserver<Integer, Integer> {
                 var vertex = graphController.getGraph().insertVertex(graphController.getNextVertexId());
                 graphController.update();
                 graphController.setVertexPosition(vertex, x, y);
+                graphController.colorVertex(vertex);
             }
         }
     }

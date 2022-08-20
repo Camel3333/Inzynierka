@@ -79,4 +79,9 @@ public class LamportAlgorithm implements Algorithm{
     public BooleanProperty getIsFinishedProperty() {
         return null;
     }
+
+    @Override
+    public void checkIsFinished() {
+
+    }
 }
