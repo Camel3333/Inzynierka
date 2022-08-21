@@ -70,6 +70,22 @@ public class GraphController {
         observers.remove(observer);
     }
 
+    private void updateCss() {
+        for (Vertex<Integer> vertex : this.graph.vertices()) {
+            if (((MyVertex<Integer>)vertex).getIsTraitor().get()) {
+                graphView.getStylableVertex(vertex).setStyleClass("traitor");
+            } else {
+                graphView.getStylableVertex(vertex).setStyleClass("vertex");
+            }
+
+            if (((MyVertex<Integer>)vertex).getForAttack().get()) {
+                graphView.getStylableVertex(vertex).addStyleClass("attack");
+            } else {
+                graphView.getStylableVertex(vertex).addStyleClass("defense");
+            }
+        }
+    }
+
     public void setModelGraph(MyGraph<Integer, Integer> graph){
         this.graph = graph;
         vertexIdCounter = graph.numVertices();
@@ -78,6 +94,7 @@ public class GraphController {
         graphRoot.getChildren().remove(container);
         init();
         initGraphView();
+        this.updateCss();
     }
 
     public Graph<Integer,Integer> getModelGraph(){
