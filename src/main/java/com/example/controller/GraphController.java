@@ -20,6 +20,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.util.Pair;
 import lombok.Getter;
 import net.rgielen.fxweaver.core.FxControllerAndView;
@@ -168,7 +169,7 @@ public class GraphController {
         }
     }
 
-    public void getGraphML() throws IOException {
+    private void saveGraphML(File file) throws IOException {
         String header = """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <graphml xmlns="http://graphml.graphdrawing.org/xmlns"
@@ -196,17 +197,26 @@ public class GraphController {
         }
         String finish = "</graph></graphml>\n";
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test.xml"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writer.write(header+attrs+graph+edgesString+verticesString+finish);
         writer.close();
         System.out.println("export done");
     }
 
-    public void fromML() throws ParserConfigurationException, IOException, SAXException {
+    public void exportGraph() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Graph");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
+        File file = fileChooser.showSaveDialog(this.graphRoot.getScene().getWindow());
+        if (file != null) {
+            this.saveGraphML(file);
+        }
+    }
+
+    private void fromML(File file) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setIgnoringElementContentWhitespace(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
-        File file = new File("test.xml");
         Document doc = builder.parse(file);
 
         Map<String, String> keys = new HashMap<>();
@@ -272,6 +282,15 @@ public class GraphController {
         this.setModelGraph(newGraph);
         vertexIdCounter = newCounter;
         System.out.println("import done");
+    }
+
+    public void importGraph() throws ParserConfigurationException, IOException, SAXException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Graph File");
+        File graphFile = fileChooser.showOpenDialog(this.graphRoot.getScene().getWindow());
+        if (graphFile != null) {
+            this.fromML(graphFile);
+        }
     }
 
     public void addNodeToView(Node node){

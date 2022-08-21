@@ -41,14 +41,14 @@ public class MainMenuController implements ChangeListener<ApplicationState> {
         graphToolsController.setSimulationMenuController(simulationMenuController);
         exportButton.setOnAction(e -> {
             try {
-                graphController.getGraphML();
+                graphController.exportGraph();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
         importButton.setOnAction(e -> {
             try {
-                graphController.fromML();
+                graphController.importGraph();
             } catch (ParserConfigurationException | IOException | SAXException ex) {
                 ex.printStackTrace();
             }
