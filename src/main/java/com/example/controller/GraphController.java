@@ -45,7 +45,6 @@ public class GraphController {
 
     @Getter
     private Graph<Integer, Integer> graph;
-    private CreationHelper drawingHelper;
     private List<GraphObserver<Integer, Integer>> observers = new ArrayList<>();
 
     public void addObserver(GraphObserver<Integer, Integer> observer) {
