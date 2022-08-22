@@ -60,7 +60,7 @@
 }
 
 .lieutenant {
-    -fx-effect: dropshadow(three-pass-box, orangered, 10, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, limegreen, 10, 0, 0, 0);
 }
 
 .king {
@@ -72,5 +72,5 @@
 }
 
 .neighbour {
-    -fx-effect: dropshadow(three-pass-box, orangered, 10, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, limegreen, 10, 0, 0, 0);
 }
