@@ -110,9 +110,12 @@ public class LamportIterAlgorithm implements Algorithm{
     private class LamportIterStepReport extends StepReport{
         public void fillRoles(StackRecord record){
             getRoles().put(record.commander, VertexRole.COMMANDER);
+            record.lieutenants.forEach(vertex -> {
+                getRoles().put(vertex, VertexRole.LIEUTENANT);
+            });
             graph.vertices()
                     .stream()
-                    .filter(vertex -> !vertex.equals(record.commander))
+                    .filter(vertex -> !vertex.equals(record.commander) && !record.lieutenants.contains(vertex))
                     .forEach(vertex -> getRoles().put(vertex, VertexRole.NONE));
         }
     }

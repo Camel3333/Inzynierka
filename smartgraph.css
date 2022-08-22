@@ -59,6 +59,10 @@
     -fx-effect: dropshadow(three-pass-box, orange, 10, 0, 0, 0);
 }
 
+.lieutenant {
+    -fx-effect: dropshadow(three-pass-box, orangered, 10, 0, 0, 0);
+}
+
 .king {
     -fx-effect: dropshadow(three-pass-box, orange, 10, 0, 0, 0);
 }
