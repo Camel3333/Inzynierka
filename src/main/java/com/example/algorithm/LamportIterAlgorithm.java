@@ -82,9 +82,6 @@ public class LamportIterAlgorithm implements Algorithm{
     public StepReport step() {
         if (!stack.empty()){
             StepReport stepReport = om_iter();
-//            if (stack.empty()) {
-//                isFinished.set(true);
-//            }
             return stepReport;
         }
         return null;
