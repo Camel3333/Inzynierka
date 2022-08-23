@@ -12,7 +12,6 @@ import com.example.animation.choose.ChooseAnimationFactory;
 import com.example.animation.send.SendAnimationFactory;
 import com.example.controller.GraphController;
 import javafx.animation.Animation;
-import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
@@ -29,6 +28,7 @@ import java.util.stream.Collectors;
 public abstract class AnimationEngine {
     @Setter
     protected GraphController graphController;
+    private final AnimationRunner animationRunner = new AnimationRunner();
     private SendAnimationFactory sendAnimationFactory = new SendAnimationFactory();
     private ChooseAnimationFactory chooseAnimationFactory = new ChooseAnimationFactory();
 
@@ -43,7 +43,7 @@ public abstract class AnimationEngine {
                 .stream()
                 .map(e -> getAnimationsPerOperationType(e.getKey(), e.getValue()))
                 .toList();
-        animationsPertType.forEach(this::animateConcurrently);
+        animationsPertType.forEach(animationRunner::runAnimationsConcurrently);
     }
 
     protected abstract void highlightRoles(Map<Vertex<Integer>, VertexRole> roles);
@@ -54,12 +54,12 @@ public abstract class AnimationEngine {
 
     public void animateSend(SendOperation operation) {
         List<Animation> sendAnimations = getAnimationsPerOperationType(OperationType.SEND, List.of(operation));
-        animateConcurrently(sendAnimations);
+        animationRunner.runAnimationsConcurrently(sendAnimations);
     }
 
     public void animateOpinionChange(ChooseOperation operation) {
         List<Animation> chooseAnimations = getAnimationsPerOperationType(OperationType.CHOOSE, List.of(operation));
-        animateConcurrently(chooseAnimations);
+        animationRunner.runAnimationsConcurrently(chooseAnimations);
     }
 
     private List<Animation> getAnimationsPerOperationType(OperationType operationType, List<Operation> operations) {
@@ -114,27 +114,5 @@ public abstract class AnimationEngine {
     private Animation getChooseOpinionAnimation(SmartGraphVertexNode<Integer> vertex, boolean attack) {
         String vertexStyle = attack ? "attack" : "defense";
         return chooseAnimationFactory.getChooseOpinionAnimation(vertex, e -> graphController.addVertexStyle(vertex.getUnderlyingVertex().element(), vertexStyle));
-    }
-
-    public void animateConcurrently(List<Animation> animations) {
-        ParallelTransition parallelTransition = new ParallelTransition();
-        parallelTransition.getChildren().addAll(animations);
-        runAnimation(parallelTransition);
-    }
-
-    private void runAnimation(Animation animation) {
-        Semaphore semaphore = new Semaphore(0);
-
-        animation.setOnFinished(e -> {
-            semaphore.release();
-        });
-
-        animation.play();
-
-        try {
-            semaphore.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }
