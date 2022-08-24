@@ -88,7 +88,7 @@ public class KingAlgorithm implements Algorithm{
         int condition = graph.numVertices() / 2 + graph.getTraitorsCount();
         for(Vertex<Integer> v : graph.vertices()){
             ((MyVertex<Integer>) v).chooseMajorityWithTieBreaker(king.getNextOpinion((MyVertex<Integer>) v), condition);
-            report.getOperations().add(new ChooseOperation(v, ((MyVertex<Integer>) v).getForAttack()));
+            report.getOperations().add(new ChooseOperation(v, ((MyVertex<Integer>) v).getIsSupporting()));
         }
         return report;
     }

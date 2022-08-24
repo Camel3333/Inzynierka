@@ -80,9 +80,9 @@ public class QVoterModel implements Algorithm{
         report.fillRoles(selectedAgent, null);
 
         if(shouldAcceptNeighboursOpinion()){
-            selectedAgent.setForAttack(new SimpleBooleanProperty(opinionsReceived.get(0)));
+            selectedAgent.setIsSupporting(opinionsReceived.get(0));
         }
-        report.getOperations().add(new ChooseOperation(selectedAgent, selectedAgent.getForAttack()));
+        report.getOperations().add(new ChooseOperation(selectedAgent, selectedAgent.getIsSupporting()));
 
         return report;
     }

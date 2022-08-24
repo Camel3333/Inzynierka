@@ -37,7 +37,7 @@ public class LamportIterAlgorithm implements Algorithm{
             case SEND -> {
                 for(MyVertex<Integer> vertex : record.lieutenants){
                     if (record.m == depth){
-                        vertex.setForAttack(record.commander.isSupportingOpinion());
+                        vertex.setIsSupporting(record.commander.isSupportingOpinion().getValue());
                     }
                     BooleanProperty commanderOpinion = record.commander.getNextOpinion(vertex);
                     vertex.receiveOpinion(commanderOpinion);
@@ -57,7 +57,7 @@ public class LamportIterAlgorithm implements Algorithm{
             case CHOOSE -> {
                 for(MyVertex<Integer> vertex : record.lieutenants){
                     vertex.chooseMajority();
-                    stepReport.getOperations().add(new ChooseOperation(vertex, vertex.getForAttack()));
+                    stepReport.getOperations().add(new ChooseOperation(vertex, vertex.getIsSupporting()));
                 }
             }
         }

@@ -42,10 +42,10 @@ public class LamportIterAlgorithmTest {
         v3.setIsTraitor(false);
         v4.setIsTraitor(false);
 
-        v1.setForAttack(new SimpleBooleanProperty(true));
-        v2.setForAttack(new SimpleBooleanProperty(true));
-        v3.setForAttack(new SimpleBooleanProperty(true));
-        v4.setForAttack(new SimpleBooleanProperty(false));
+        v1.setIsSupporting(true);
+        v2.setIsSupporting(true);
+        v3.setIsSupporting(true);
+        v4.setIsSupporting(false);
 
         settings.getSettings().put("depth", new AlgorithmSetting("depth", 1, Integer.class, object -> true));
 

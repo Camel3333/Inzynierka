@@ -107,18 +107,6 @@ public class GraphController {
             // configure and show popUp
             PopOver vertexSettingsWindow = new PopOver(controllerAndView.getView().get());
             vertexSettingsWindow.show((Node)graphVertex);
-
-            // bind vertex traitor property with vertex color
-            MyVertex<Integer> vertex = (MyVertex<Integer>)graphVertex.getUnderlyingVertex();
-            vertex.getIsTraitor().addListener(changed -> {
-                System.out.println("traitor changed");
-                changeVertexFillStyle(vertex);
-            });
-
-            vertex.isSupportingOpinion().addListener(changed -> {
-                System.out.println("opinion changed");
-                changeVertexStrokeStyle(vertex);
-            });
         });
 
         graphView.setEdgeDoubleClickAction(graphEdge -> {
@@ -134,6 +122,18 @@ public class GraphController {
             observers.forEach(observer -> observer.clickedAt(x,y));
         });
         graphView.addEventHandler(MouseEvent.ANY, drawMouseEventHandler);
+    }
+
+    public void addVertexListeners(Vertex<Integer> vertex) {
+        ((MyVertex<Integer>) vertex).getIsTraitor().addListener(changed -> {
+            System.out.println("traitor changed");
+            changeVertexFillStyle(vertex);
+        });
+
+        ((MyVertex<Integer>) vertex).isSupportingOpinion().addListener(changed -> {
+            System.out.println("opinion changed");
+            changeVertexStrokeStyle(vertex);
+        });
     }
 
     public void colorGraphView () {

@@ -1,12 +1,10 @@
 package com.example.model;
 
 import com.brunomnsilva.smartgraph.graph.Vertex;
-import com.brunomnsilva.smartgraph.graphview.SmartLabelSource;
 import javafx.beans.binding.BooleanExpression;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.*;
 
@@ -16,13 +14,13 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     private BooleanProperty isTraitor = new SimpleBooleanProperty();
 
     @Getter
-    @Setter
-    private BooleanProperty forAttack;
+    private BooleanProperty isSupporting;
+
     @Getter
     private List<BooleanProperty> knowledge = new ArrayList<>();
 
     public MyVertex(V id){
-        forAttack = new SimpleBooleanProperty(true);
+        isSupporting = new SimpleBooleanProperty(true);
         this.id = id;
     }
 
@@ -42,25 +40,29 @@ public class MyVertex<V> implements Vertex<V>, Agent {
 
     @Override
     public BooleanProperty isSupportingOpinion() {
-        return forAttack;
+        return isSupporting;
     }
 
     public void setIsTraitor(boolean isTraitor) {
-        this.isTraitor = new SimpleBooleanProperty(isTraitor);
+        this.isTraitor.set(isTraitor);
+    }
+
+    public void setIsSupporting(boolean isSupporting) {
+        this.isSupporting.set(isSupporting);
     }
 
     public BooleanProperty getNextOpinion(MyVertex<V> vertex){
         if(isTraitor.getValue() && (int) vertex.element() % 2 == 0){
-            return new SimpleBooleanProperty(!forAttack.getValue());
+            return new SimpleBooleanProperty(!isSupporting.getValue());
         }
         else{
-            return new SimpleBooleanProperty(forAttack.getValue());
+            return new SimpleBooleanProperty(isSupporting.getValue());
         }
     }
 
     public void receiveOpinion(BooleanProperty agentOpinion){
-        if(forAttack == null){
-            forAttack = agentOpinion;
+        if(isSupporting == null){
+            isSupporting = agentOpinion;
         }
         knowledge.add(agentOpinion);
     }
@@ -78,15 +80,19 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     }
 
     public void chooseMajority(){
-        forAttack.set(getMajorityVote());
+        isSupporting.set(getMajorityVote());
     }
 
     public void chooseMajorityWithTieBreaker(BooleanProperty kingOpinion, int condition){
         if(getMajorityVoteCount() > condition){
-            forAttack.set(getMajorityVote());
+            isSupporting.set(getMajorityVote());
         }
         else{
-            forAttack.set(kingOpinion.getValue());
+            isSupporting.set(kingOpinion.getValue());
         }
+    }
+
+    public void test() {
+        isSupporting.set(!isSupporting.getValue());
     }
 }
