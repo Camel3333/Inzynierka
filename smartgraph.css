@@ -56,21 +56,21 @@
 }
 
 .commander {
-    -fx-effect: dropshadow(three-pass-box, orange, 10, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, #8800ff, 15, 10, 0, 0);
 }
 
 .lieutenant {
-    -fx-effect: dropshadow(three-pass-box, limegreen, 10, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, #8800ff, 15, 0, 0, 0);
 }
 
 .king {
-    -fx-effect: dropshadow(three-pass-box, orange, 10, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, #1bac00, 15, 0, 0, 0);
 }
 
 .voter {
-    -fx-effect: dropshadow(three-pass-box, orange, 10, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, #8800ff, 15, 0, 0, 0);
 }
 
 .neighbour {
-    -fx-effect: dropshadow(three-pass-box, limegreen, 10, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, #1bac00, 15, 0, 0, 0);
 }
