@@ -17,7 +17,7 @@ public class GraphGenerator {
             case FULL_6 -> generatedGraph = getFullGraph(6);
             default -> throw new IllegalStateException("Unexpected value: " + definedGraph);
         }
-        graphController.setModelGraph(generatedGraph);
+        graphController.setModelGraph((MyGraph<Integer, Integer>) generatedGraph);
     }
 
     private Graph<Integer, Integer> getFullGraph(int numberOfVertices) {

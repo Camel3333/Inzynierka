@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MyGraph<V,E> implements Graph<V,E> {
-    private Map vertices = new LinkedHashMap<>();
+    private Map<V, Vertex<V>> vertices = new LinkedHashMap<>();
     private Map<Vertex<V>, List<Vertex<V>>> adjacency = new LinkedHashMap<>();
     private List<Edge<E, V>> edges = new ArrayList<>();
 
@@ -116,7 +116,7 @@ public class MyGraph<V,E> implements Graph<V,E> {
         if (!(this.vertices.containsKey(v1) && this.vertices.containsKey(v2))){
             throw new InvalidVertexException("Both vertices must be a part of graph.");
         } else {
-            MyEdge newEdge = new MyEdge(e, (Vertex<V>) vertices.get(v1), (Vertex<V>) vertices.get(v2));
+            MyEdge newEdge = new MyEdge(e, vertices.get(v1), vertices.get(v2));
             this.edges.add(newEdge);
             if (!adjacency.get(vertices.get(v1)).contains(vertices.get(v2)))
                 adjacency.get(vertices.get(v1)).add(vertices.get(v2));
