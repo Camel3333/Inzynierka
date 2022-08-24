@@ -25,8 +25,7 @@ public class QVoterModel implements Algorithm{
     private int time = 0;
 
     @Getter
-    @Setter
-    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
+    private final BooleanProperty isFinished = new SimpleBooleanProperty(false);
 
     @Override
     public AlgorithmType getType() {

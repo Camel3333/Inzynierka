@@ -19,8 +19,7 @@ public class KingAlgorithm implements Algorithm{
     private AlgorithmPhase round = AlgorithmPhase.SEND;
 
     @Getter
-    @Setter
-    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
+    private final BooleanProperty isFinished = new SimpleBooleanProperty(false);
 
     @Override
     public AlgorithmType getType() {
