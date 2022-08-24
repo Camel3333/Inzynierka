@@ -9,6 +9,7 @@ import lombok.Setter;
 
 public class CreationHelper implements GraphObserver<Integer, Integer> {
     @Setter
+    @Getter
     private GraphController graphController;
     @Getter
     private DrawMode currentDrawMode = DrawMode.NONE;

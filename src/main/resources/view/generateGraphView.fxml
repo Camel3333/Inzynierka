@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+
+<?import javafx.scene.layout.VBox?>
+
+<DialogPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.controller.GenerateGraphController">
+
+    <content>
+        <VBox>
+            <Label text="Select graph to be generated"/>
+            <ComboBox fx:id ="graphBox"/>
+        </VBox>
+    </content>
+
+    <buttonTypes>
+        <ButtonType fx:constant="CANCEL"/>
+        <ButtonType fx:constant="OK"/>
+    </buttonTypes>
+</DialogPane>

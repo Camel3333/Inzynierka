@@ -63,7 +63,7 @@ public class AppController {
     }
 
     public void initSimulationController() {
-        simulationController.setAvailableAlgorithms(FXCollections.observableArrayList(AlgorithmType.LAMPORT, AlgorithmType.KING));
+        simulationController.setAvailableAlgorithms(FXCollections.observableArrayList(AlgorithmType.LAMPORT, AlgorithmType.KING, AlgorithmType.QVOTER));
         simulationController.setSimulation(new SimpleSimulation(graphController));
     }
 

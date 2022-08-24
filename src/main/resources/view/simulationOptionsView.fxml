@@ -14,8 +14,12 @@
     <GridPane>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Depth" fx:id="depthLabel"/>
         <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id = "depth"/>
-        <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Phase" fx:id="phaseLabel"/>
-        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id = "phase"/>
+        <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Phase" fx:id="phaseLabel"/>
+        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id = "phase"/>
+        <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Q" fx:id="qLabel"/>
+        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id = "q"/>
+        <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Time" fx:id="timeLabel"/>
+        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id = "time"/>
     </GridPane>
     <Button fx:id="startButton" text="Start" onAction="#initSimulation"/>
     <Button fx:id="nextStepButton" text="Next Step" onAction="#doStep"/>

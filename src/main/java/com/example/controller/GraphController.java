@@ -60,6 +60,7 @@ public class GraphController {
     @Getter
     private MyGraph<Integer, Integer> graph;
     private CreationHelper drawingHelper;
+
     private List<GraphObserver<Integer, Integer>> observers = new ArrayList<>();
 
     public void addObserver(GraphObserver<Integer, Integer> observer) {
@@ -112,6 +113,10 @@ public class GraphController {
 
     public void setVertexStyle(int id, String style) {
         Platform.runLater(()->graphView.getStylableVertex(id).setStyleClass(style));
+    }
+
+    public void addVertexStyle(int id, String style) {
+        Platform.runLater(()->graphView.getStylableVertex(id).addStyleClass(style));
     }
 
     private void setGraphViewBindings(){

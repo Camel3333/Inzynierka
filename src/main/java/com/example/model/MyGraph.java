@@ -118,6 +118,10 @@ public class MyGraph<V,E> implements Graph<V,E> {
         } else {
             MyEdge newEdge = new MyEdge(e, (Vertex<V>) vertices.get(v1), (Vertex<V>) vertices.get(v2));
             this.edges.add(newEdge);
+            if (!adjacency.get(vertices.get(v1)).contains(vertices.get(v2)))
+                adjacency.get(vertices.get(v1)).add(vertices.get(v2));
+            if (!adjacency.get(vertices.get(v2)).contains(vertices.get(v1)))
+                adjacency.get(vertices.get(v2)).add(vertices.get(v1));
             return newEdge;
         }
     }
