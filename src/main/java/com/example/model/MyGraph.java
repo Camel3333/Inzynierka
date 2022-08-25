@@ -15,9 +15,9 @@ public class MyGraph<V,E> implements Graph<V,E> {
         if(numVertices() == 0){
             return true;
         }
-        BooleanProperty expectedOpinion = ((MyVertex<V>) vertices().stream().toList().get(0)).getForAttack();
+        BooleanProperty expectedOpinion = ((MyVertex<V>) vertices().stream().toList().get(0)).getIsSupporting();
         return vertices().stream().allMatch(v -> ((MyVertex<V>) v).
-                getForAttack().getValue() == expectedOpinion.getValue());
+                getIsSupporting().getValue() == expectedOpinion.getValue());
     }
 
     public int getTraitorsCount(){

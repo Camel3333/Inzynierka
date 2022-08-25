@@ -7,6 +7,7 @@ import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
+import com.example.algorithm.VertexRole;
 import com.example.draw.CreationHelper;
 import com.example.draw.MySmartGraphPanel;
 import com.example.model.MyGraph;
@@ -33,6 +34,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -69,22 +73,6 @@ public class GraphController {
         observers.remove(observer);
     }
 
-    private void updateCss() {
-        for (Vertex<Integer> vertex : this.graph.vertices()) {
-            if (((MyVertex<Integer>)vertex).getIsTraitor().get()) {
-                graphView.getStylableVertex(vertex).setStyleClass("traitor");
-            } else {
-                graphView.getStylableVertex(vertex).setStyleClass("vertex");
-            }
-
-            if (((MyVertex<Integer>)vertex).getForAttack().get()) {
-                graphView.getStylableVertex(vertex).addStyleClass("attack");
-            } else {
-                graphView.getStylableVertex(vertex).addStyleClass("defense");
-            }
-        }
-    }
-
     public void setModelGraph(MyGraph<Integer, Integer> graph){
         this.graph = graph;
         vertexIdCounter = graph.numVertices();
@@ -93,11 +81,8 @@ public class GraphController {
         graphRoot.getChildren().remove(container);
         init();
         initGraphView();
-        this.updateCss();
-    }
 
-    public Graph<Integer,Integer> getModelGraph(){
-        return graph;
+        colorGraphView();
     }
 
     private void buildGraphContainers() {
@@ -115,6 +100,10 @@ public class GraphController {
 
     public void addVertexStyle(int id, String style) {
         Platform.runLater(()->graphView.getStylableVertex(id).addStyleClass(style));
+    }
+
+    public void removeVertexStyle(int id, String style) {
+        Platform.runLater(()->graphView.getStylableVertex(id).removeStyleClass(style));
     }
 
     private void setGraphViewBindings(){
@@ -135,24 +124,6 @@ public class GraphController {
             // configure and show popUp
             PopOver vertexSettingsWindow = new PopOver(controllerAndView.getView().get());
             vertexSettingsWindow.show((Node)graphVertex);
-
-            // bind vertex traitor property with vertex color
-            MyVertex<Integer> vertex = (MyVertex<Integer>)graphVertex.getUnderlyingVertex();
-            vertex.getIsTraitor().addListener(changed -> {
-                if (vertex.getIsTraitor().get()) {
-                    graphView.getStylableVertex(vertex).setStyleClass("traitor");
-                } else {
-                    graphView.getStylableVertex(vertex).setStyleClass("vertex");
-                }
-            });
-
-            vertex.isSupportingOpinion().addListener(changed -> {
-                if (vertex.isSupportingOpinion().get()) {
-                    graphView.getStylableVertex(vertex).addStyleClass("attack");
-                } else {
-                    graphView.getStylableVertex(vertex).addStyleClass("defense");
-                }
-            });
         });
 
         graphView.setEdgeDoubleClickAction(graphEdge -> {
@@ -168,6 +139,58 @@ public class GraphController {
             observers.forEach(observer -> observer.clickedAt(x,y));
         });
         graphView.addEventHandler(MouseEvent.ANY, drawMouseEventHandler);
+
+        graph.vertices().forEach(this::addVertexListeners);
+    }
+
+    public void addVertexListeners(Vertex<Integer> vertex) {
+        ((MyVertex<Integer>) vertex).getIsTraitor().addListener(changed -> {
+            System.out.println("traitor changed");
+            changeVertexFillStyle(vertex);
+        });
+
+        ((MyVertex<Integer>) vertex).isSupportingOpinion().addListener(changed -> {
+            System.out.println("opinion changed");
+            changeVertexStrokeStyle(vertex);
+        });
+    }
+
+    public void colorGraphView () {
+        for(Vertex<Integer> vertex : graph.vertices()) {
+            colorVertex(vertex);
+        }
+    }
+
+    public void colorVertex (Vertex<Integer> vertex) {
+        changeVertexFillStyle(vertex);
+        changeVertexStrokeStyle(vertex);
+    }
+
+    public void changeVertexFillStyle(Vertex<Integer> vertex) {
+        if (((MyVertex<Integer>) vertex).getIsTraitor().get()) {
+            removeVertexStyle(vertex.element(), "loyal");
+            addVertexStyle(vertex.element(), "traitor");
+        } else {
+            removeVertexStyle(vertex.element(), "traitor");
+            addVertexStyle(vertex.element(), "loyal");
+        }
+    }
+
+    public void changeVertexStrokeStyle (Vertex<Integer> vertex) {
+        if (((MyVertex<Integer>) vertex).isSupportingOpinion().get()) {
+            removeVertexStyle(vertex.element(), "defense");
+            addVertexStyle(vertex.element(), "attack");
+        } else {
+            removeVertexStyle(vertex.element(), "attack");
+            addVertexStyle(vertex.element(), "defense");
+        }
+    }
+
+    public void highlightRole (Vertex<Integer> vertex, VertexRole vertexRole) {
+        for(VertexRole role : VertexRole.values()){
+            removeVertexStyle(vertex.element(), role.toString().toLowerCase(Locale.ROOT));
+        }
+        addVertexStyle(vertex.element(), vertexRole.toString().toLowerCase(Locale.ROOT));
     }
 
     public void setVertexPosition(Vertex vertex, double x, double y) {

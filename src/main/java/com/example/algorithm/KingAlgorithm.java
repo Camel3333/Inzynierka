@@ -8,6 +8,8 @@ import com.example.model.*;
 import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 
 public class KingAlgorithm implements Algorithm{
@@ -15,7 +17,9 @@ public class KingAlgorithm implements Algorithm{
     private int numberOfPhases;
     private MyGraph<Integer, Integer> graph;
     private AlgorithmPhase round = AlgorithmPhase.SEND;
-    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
+
+    @Getter
+    private final BooleanProperty isFinished = new SimpleBooleanProperty(false);
 
     @Override
     public AlgorithmType getType() {
@@ -32,14 +36,13 @@ public class KingAlgorithm implements Algorithm{
     public StepReport step() {
         switch (round){
             case SEND -> {
-                phase ++;
                 round = AlgorithmPhase.CHOOSE;
                 return firstRound();
             }
             case CHOOSE -> {
                 round = AlgorithmPhase.SEND;
-                if (phase == numberOfPhases)
-                    isFinished.setValue(true);
+                phase ++;
+                checkIsFinished();
                 return secondRound();
             }
         }
@@ -54,6 +57,12 @@ public class KingAlgorithm implements Algorithm{
     @Override
     public BooleanProperty getIsFinishedProperty() {
         return isFinished;
+    }
+
+    private void checkIsFinished() {
+        if (phase == numberOfPhases){
+            isFinished.setValue(true);
+        }
     }
 
     public StepReport firstRound(){
@@ -78,7 +87,7 @@ public class KingAlgorithm implements Algorithm{
         int condition = graph.numVertices() / 2 + graph.getTraitorsCount();
         for(Vertex<Integer> v : graph.vertices()){
             ((MyVertex<Integer>) v).chooseMajorityWithTieBreaker(king.getNextOpinion((MyVertex<Integer>) v), condition);
-            report.getOperations().add(new ChooseOperation(v, ((MyVertex<Integer>) v).getForAttack()));
+            report.getOperations().add(new ChooseOperation(v, ((MyVertex<Integer>) v).getIsSupporting()));
         }
         return report;
     }
@@ -95,7 +104,7 @@ public class KingAlgorithm implements Algorithm{
                     getRoles().put(v, VertexRole.KING);
                 }
                 else{
-                    getRoles().put(v, VertexRole.LIEUTENANT);
+                    getRoles().put(v, VertexRole.NONE);
                 }
             }
         }
