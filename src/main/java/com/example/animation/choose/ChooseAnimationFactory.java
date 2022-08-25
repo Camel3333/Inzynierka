@@ -13,11 +13,13 @@ import java.util.function.Consumer;
 public class ChooseAnimationFactory {
     @Setter
     private Duration duration = new Duration(2000);
+    @Setter
+    private double scale = 1.5;
 
     public Animation getChooseOpinionAnimation(Node node, Consumer<ActionEvent> chooseAction){
         ScaleTransition scaleUp = new ScaleTransition(duration, node);
-        scaleUp.setToX(1.5);
-        scaleUp.setToY(1.5);
+        scaleUp.setToX(scale);
+        scaleUp.setToY(scale);
 
         scaleUp.setOnFinished(chooseAction::accept);
 
