@@ -47,6 +47,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+import static java.util.Comparator.comparing;
+
 @Component
 @FxmlView("/view/graphView.fxml")
 public class GraphController {
@@ -75,8 +77,11 @@ public class GraphController {
     }
 
     public void setModelGraph(MyGraph<Integer, Integer> graph){
+        vertexIdCounter = 0;
+        for (Vertex<Integer> vertex : graph.vertices()) {
+            vertexIdCounter = Integer.max(vertex.element() + 1, vertexIdCounter);
+        }
         this.graph = graph;
-        vertexIdCounter = graph.numVertices();
 
         //remove old graph
         graphRoot.getChildren().remove(container);
