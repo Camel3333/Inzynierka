@@ -48,8 +48,8 @@ public class QVoterModel implements Algorithm{
             }
             case CHOOSE -> {
                 algorithmPhase = QVoterModel.AlgorithmPhase.SEND;
-                checkIsFinished();
                 time ++;
+                checkIsFinished();
                 return makeDecision();
             }
         }

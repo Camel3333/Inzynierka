@@ -60,11 +60,11 @@
 }
 
 .lieutenant {
-    -fx-effect: dropshadow(three-pass-box, #8800ff, 15, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, #1bac00, 15, 0, 0, 0);
 }
 
 .king {
-    -fx-effect: dropshadow(three-pass-box, #1bac00, 15, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, #8800ff, 15, 0, 0, 0);
 }
 
 .voter {

@@ -41,8 +41,8 @@ public class KingAlgorithm implements Algorithm{
             }
             case CHOOSE -> {
                 round = AlgorithmPhase.SEND;
-                checkIsFinished();
                 phase ++;
+                checkIsFinished();
                 return secondRound();
             }
         }
