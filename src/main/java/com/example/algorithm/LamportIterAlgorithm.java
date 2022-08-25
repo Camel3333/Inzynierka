@@ -37,7 +37,7 @@ public class LamportIterAlgorithm implements Algorithm{
             case SEND -> {
                 for(MyVertex<Integer> vertex : record.lieutenants){
                     if (record.m == depth){
-                        vertex.setForAttack(record.commander.isSupportingOpinion());
+                        vertex.setIsSupporting(record.commander.isSupportingOpinion().getValue());
                     }
                     BooleanProperty commanderOpinion = record.commander.getNextOpinion(vertex);
                     vertex.receiveOpinion(commanderOpinion);
@@ -57,7 +57,7 @@ public class LamportIterAlgorithm implements Algorithm{
             case CHOOSE -> {
                 for(MyVertex<Integer> vertex : record.lieutenants){
                     vertex.chooseMajority();
-                    stepReport.getOperations().add(new ChooseOperation(vertex, vertex.getForAttack()));
+                    stepReport.getOperations().add(new ChooseOperation(vertex, vertex.getIsSupporting()));
                 }
             }
         }
@@ -82,9 +82,7 @@ public class LamportIterAlgorithm implements Algorithm{
     public StepReport step() {
         if (!stack.empty()){
             StepReport stepReport = om_iter();
-            if (stack.empty()) {
-                isFinished.set(true);
-            }
+            checkIsFinished();
             return stepReport;
         }
         return null;
@@ -100,13 +98,22 @@ public class LamportIterAlgorithm implements Algorithm{
         return isFinished;
     }
 
+    private void checkIsFinished() {
+        if (stack.empty()) {
+            isFinished.set(true);
+        }
+    }
+
     private class LamportIterStepReport extends StepReport{
         public void fillRoles(StackRecord record){
             getRoles().put(record.commander, VertexRole.COMMANDER);
+            record.lieutenants.forEach(vertex -> {
+                getRoles().put(vertex, VertexRole.LIEUTENANT);
+            });
             graph.vertices()
                     .stream()
-                    .filter(vertex -> !vertex.equals(record.commander))
-                    .forEach(vertex -> getRoles().put(vertex, VertexRole.LIEUTENANT));
+                    .filter(vertex -> !vertex.equals(record.commander) && !record.lieutenants.contains(vertex))
+                    .forEach(vertex -> getRoles().put(vertex, VertexRole.NONE));
         }
     }
 

@@ -1,7 +1,6 @@
 package com.example.animation;
 
 import com.brunomnsilva.smartgraph.graph.Vertex;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphVertex;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphVertexNode;
 import com.example.algorithm.VertexRole;
 import com.example.algorithm.operations.ChooseOperation;
@@ -22,17 +21,16 @@ import javafx.util.Duration;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 @Service
-public abstract class AnimationEngine{
+public class AnimationEngine{
     @Setter
     protected GraphController graphController;
-    private Duration sendDuration = new Duration(1000);
+    private final Duration sendDuration = new Duration(1000);
 
     public AnimationEngine(GraphController graphController){
         this.graphController = graphController;
@@ -44,25 +42,13 @@ public abstract class AnimationEngine{
         // group animations by type
         Map<OperationType, List<Operation>> operationsPerType = report.getOperations().stream().collect(Collectors.groupingBy(Operation::getType));
 
-        operationsPerType.entrySet().forEach(entry -> {
-            animateConcurrently(entry.getKey(), entry.getValue());
-        });
+        operationsPerType.forEach(this::animateConcurrently);
     }
 
-    protected abstract void highlightRoles(Map<Vertex<Integer>, VertexRole> roles);
-
-    public void animateSend(SendOperation operation){
-        // unpack send operation and animate
-        Point2D fromPosition = graphController.getVertexPosition(operation.getFrom());
-        Point2D toPosition = graphController.getVertexPosition(operation.getTo());
-        runAnimation(getSendAnimation(fromPosition, toPosition));
-    }
-
-    public void animateOpinionChange(ChooseOperation operation){
-        // unpack opinion change operation and animate
-        SmartGraphVertexNode<Integer> vertexNode = (SmartGraphVertexNode<Integer>) graphController.getGraphView().getStylableVertex(operation.getVertex().element());
-        runAnimation(getChooseOpinionAnimation(vertexNode, operation.getChosenOpinion().get()));
-//        System.out.println("Animating opinion change for "+operation.getId()+" to "+operation.getChosenOpinion().getValue());
+    private void highlightRoles(Map<Vertex<Integer>, VertexRole> roles) {
+        for (Map.Entry<Vertex<Integer>, VertexRole> entry : roles.entrySet()){
+            graphController.highlightRole(entry.getKey(), entry.getValue());
+        }
     }
 
     public void animateConcurrently(OperationType type, List<Operation> operations){
@@ -146,28 +132,19 @@ public abstract class AnimationEngine{
         pathTransition.setPath(path);
 
         pathTransition.setOnFinished(
-                e -> {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            graphController.removeNodeFromView(ball);
-                        }
-                    });
-                });
+                e -> Platform.runLater(() -> graphController.removeNodeFromView(ball)));
 
         return pathTransition;
     }
 
     private Animation getChooseOpinionAnimation(SmartGraphVertexNode<Integer> vertex, boolean attack){
-        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(2000), vertex);
+        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(1000), vertex);
         scaleUp.setToX(1.5);
         scaleUp.setToY(1.5);
 
-        String vertexStyle = attack ? "attack" : "defense";
+        scaleUp.setOnFinished(e -> graphController.changeVertexStrokeStyle(vertex.getUnderlyingVertex()));
 
-        scaleUp.setOnFinished(e -> graphController.addVertexStyle(vertex.getUnderlyingVertex().element(), vertexStyle));
-
-        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(2000), vertex);
+        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(1000), vertex);
         scaleDown.setToX(1);
         scaleDown.setToY(1);
 
