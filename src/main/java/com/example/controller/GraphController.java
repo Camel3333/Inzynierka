@@ -297,7 +297,7 @@ public class GraphController {
                 }
             }
             newVertex.setIsTraitor(traitor);
-            newVertex.setForAttack(new SimpleBooleanProperty(opinion));
+            newVertex.setIsSupporting(opinion);
             vertices.add(newVertex);
         }
 
