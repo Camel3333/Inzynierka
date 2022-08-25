@@ -55,7 +55,6 @@ public class SimpleSimulation implements Simulation{
         if (allowAnimations.get()){
             animationEngine.animate(report);
         }
-        algorithm.checkIsFinished();
         graphController.update();
         return report;
     }

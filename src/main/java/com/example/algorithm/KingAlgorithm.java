@@ -41,6 +41,7 @@ public class KingAlgorithm implements Algorithm{
             }
             case CHOOSE -> {
                 round = AlgorithmPhase.SEND;
+                checkIsFinished();
                 phase ++;
                 return secondRound();
             }
@@ -58,8 +59,7 @@ public class KingAlgorithm implements Algorithm{
         return isFinished;
     }
 
-    @Override
-    public void checkIsFinished() {
+    private void checkIsFinished() {
         if (phase == numberOfPhases){
             isFinished.setValue(true);
         }

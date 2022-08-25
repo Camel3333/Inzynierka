@@ -48,6 +48,7 @@ public class QVoterModel implements Algorithm{
             }
             case CHOOSE -> {
                 algorithmPhase = QVoterModel.AlgorithmPhase.SEND;
+                checkIsFinished();
                 time ++;
                 return makeDecision();
             }
@@ -100,8 +101,7 @@ public class QVoterModel implements Algorithm{
         return isFinished;
     }
 
-    @Override
-    public void checkIsFinished() {
+    private void checkIsFinished() {
         if(time == maxTime){
             isFinished.setValue(true);
         }

@@ -82,6 +82,7 @@ public class LamportIterAlgorithm implements Algorithm{
     public StepReport step() {
         if (!stack.empty()){
             StepReport stepReport = om_iter();
+            checkIsFinished();
             return stepReport;
         }
         return null;
@@ -97,8 +98,7 @@ public class LamportIterAlgorithm implements Algorithm{
         return isFinished;
     }
 
-    @Override
-    public void checkIsFinished() {
+    private void checkIsFinished() {
         if (stack.empty()) {
             isFinished.set(true);
         }
