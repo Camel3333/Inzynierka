@@ -25,7 +25,7 @@ import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 @Service
-public class AnimationEngine{
+public class AnimationEngine {
     @Setter
     protected GraphController graphController;
     private final AnimationRunner animationRunner = new AnimationRunner();
@@ -51,7 +51,7 @@ public class AnimationEngine{
     }
 
     private void highlightRoles(Map<Vertex<Integer>, VertexRole> roles) {
-        for (Map.Entry<Vertex<Integer>, VertexRole> entry : roles.entrySet()){
+        for (Map.Entry<Vertex<Integer>, VertexRole> entry : roles.entrySet()) {
             graphController.highlightRole(entry.getKey(), entry.getValue());
         }
     }

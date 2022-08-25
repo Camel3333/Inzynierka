@@ -16,7 +16,7 @@ public class ChooseAnimationFactory {
     @Setter
     private double scale = 1.5;
 
-    public Animation getChooseOpinionAnimation(Node node, Consumer<ActionEvent> chooseAction){
+    public Animation getChooseOpinionAnimation(Node node, Consumer<ActionEvent> chooseAction) {
         ScaleTransition scaleUp = new ScaleTransition(duration, node);
         scaleUp.setToX(scale);
         scaleUp.setToY(scale);

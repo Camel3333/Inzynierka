@@ -7,7 +7,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-
 import javafx.util.Duration;
 import lombok.Setter;
 
@@ -19,15 +18,15 @@ public class SendAnimationFactory {
     @Setter
     private Duration duration = new Duration(1500);
 
-    public PathTransition getAttackAnimation(Point2D from, Point2D to){
+    public PathTransition getAttackAnimation(Point2D from, Point2D to) {
         return getSendAnimation(from, to, new ImageView(attackImage));
     }
 
-    public PathTransition getDefenseAnimation(Point2D from, Point2D to){
+    public PathTransition getDefenseAnimation(Point2D from, Point2D to) {
         return getSendAnimation(from, to, new ImageView(defenseImage));
     }
 
-    private PathTransition getSendAnimation(Point2D from, Point2D to, ImageView image){
+    private PathTransition getSendAnimation(Point2D from, Point2D to, ImageView image) {
         image.setX(from.getX());
         image.setY(from.getY());
 
