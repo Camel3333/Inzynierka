@@ -65,6 +65,8 @@ public class GraphController {
         graphRoot.getChildren().remove(container);
         init();
         initGraphView();
+
+        colorGraphView();
     }
 
     private void buildGraphContainers() {
@@ -121,6 +123,8 @@ public class GraphController {
             observers.forEach(observer -> observer.clickedAt(x,y));
         });
         graphView.addEventHandler(MouseEvent.ANY, drawMouseEventHandler);
+
+        graph.vertices().forEach(this::addVertexListeners);
     }
 
     public void addVertexListeners(Vertex<Integer> vertex) {
