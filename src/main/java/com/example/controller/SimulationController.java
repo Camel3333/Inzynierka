@@ -187,14 +187,15 @@ public class SimulationController {
         inputDependencies.add(algorithmsBox.getSelectionModel().selectedItemProperty());
         inputDependencies.add(started);
         inputDependencies.add(isFinished);
+        inputDependencies.add(idle);
 
         Observable[] dependencies = inputDependencies.toArray(new Observable[0]);
 
         List<Node> algorithmNodes = options.get(algorithmsBox.getSelectionModel().selectedItemProperty().get());
 
         startButton.disableProperty().unbind();
-        startButton.disableProperty().bind(Bindings.createBooleanBinding(()->{
-            if (isFinished.get()) {
+        startButton.disableProperty().bind(Bindings.createBooleanBinding(()-> {
+            if (isFinished.get() && idle.get()) {
                 return false;
             }
             if (started.get()) {

@@ -29,7 +29,7 @@ public class MyVertexTest {
         var v3 = new MyVertex<>(3);
 
         // When
-        v1.setForAttack(new SimpleBooleanProperty(false));
+        v1.setIsSupporting(false);
         v1.setIsTraitor(false);
 
         var o2 = v1.getNextOpinion(v2);
@@ -48,7 +48,7 @@ public class MyVertexTest {
         var v3 = new MyVertex<>(3);
 
         // When
-        v1.setForAttack(new SimpleBooleanProperty(false));
+        v1.setIsSupporting(false);
         v1.setIsTraitor(true);
 
         var o3 = v1.getNextOpinion(v2);
@@ -125,7 +125,7 @@ public class MyVertexTest {
         v1.chooseMajority();
 
         // Then
-        assertTrue(v1.getForAttack().getValue());
+        assertTrue(v1.getIsSupporting().getValue());
     }
 
     @Test
@@ -134,11 +134,11 @@ public class MyVertexTest {
         var v1 = new MyVertex<>(1);
 
         // When
-        v1.setForAttack(new SimpleBooleanProperty(false));
+        v1.setIsSupporting(false);
         v1.chooseMajority();
 
         // Then
-        assertFalse(v1.getForAttack().getValue());
+        assertFalse(v1.getIsSupporting().getValue());
     }
 
     @Test
@@ -153,7 +153,7 @@ public class MyVertexTest {
         v1.chooseMajorityWithTieBreaker(new SimpleBooleanProperty(false), 1);
 
         // Then
-        assertTrue(v1.getForAttack().getValue());
+        assertTrue(v1.getIsSupporting().getValue());
     }
 
     @Test
@@ -167,6 +167,6 @@ public class MyVertexTest {
         v1.chooseMajorityWithTieBreaker(new SimpleBooleanProperty(true), 1);
 
         // Then
-        assertTrue(v1.getForAttack().getValue());
+        assertTrue(v1.getIsSupporting().getValue());
     }
 }

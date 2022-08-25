@@ -25,7 +25,7 @@ import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 @Service
-public abstract class AnimationEngine {
+public class AnimationEngine{
     @Setter
     protected GraphController graphController;
     private final AnimationRunner animationRunner = new AnimationRunner();
@@ -46,10 +46,14 @@ public abstract class AnimationEngine {
         animationsPertType.forEach(animationRunner::runAnimationsConcurrently);
     }
 
-    protected abstract void highlightRoles(Map<Vertex<Integer>, VertexRole> roles);
-
     private Map<OperationType, List<Operation>> groupOperationsByType(List<Operation> operations) {
         return operations.stream().collect(Collectors.groupingBy(Operation::getType));
+    }
+
+    private void highlightRoles(Map<Vertex<Integer>, VertexRole> roles) {
+        for (Map.Entry<Vertex<Integer>, VertexRole> entry : roles.entrySet()){
+            graphController.highlightRole(entry.getKey(), entry.getValue());
+        }
     }
 
     public void animateSend(SendOperation operation) {
@@ -79,7 +83,7 @@ public abstract class AnimationEngine {
                 return operations
                         .stream()
                         .map(operation -> (ChooseOperation) operation)
-                        .map(chooseOperation -> getChooseOpinionAnimation((SmartGraphVertexNode<Integer>) graphController.getGraphView().getStylableVertex(chooseOperation.getVertex().element()), chooseOperation.getChosenOpinion().get()))
+                        .map(chooseOperation -> getChooseOpinionAnimation((SmartGraphVertexNode<Integer>) graphController.getGraphView().getStylableVertex(chooseOperation.getVertex().element())))
                         .toList();
             }
         }
@@ -111,8 +115,7 @@ public abstract class AnimationEngine {
         return animation;
     }
 
-    private Animation getChooseOpinionAnimation(SmartGraphVertexNode<Integer> vertex, boolean attack) {
-        String vertexStyle = attack ? "attack" : "defense";
-        return chooseAnimationFactory.getChooseOpinionAnimation(vertex, e -> graphController.addVertexStyle(vertex.getUnderlyingVertex().element(), vertexStyle));
+    private Animation getChooseOpinionAnimation(SmartGraphVertexNode<Integer> vertex) {
+        return chooseAnimationFactory.getChooseOpinionAnimation(vertex, e -> graphController.changeVertexFillStyle(vertex.getUnderlyingVertex()));
     }
 }
