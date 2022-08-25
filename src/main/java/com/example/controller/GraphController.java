@@ -218,25 +218,6 @@ public class GraphController {
         }
     }
 
-    public void exportGraph() throws IOException {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Graph");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
-        File file = fileChooser.showSaveDialog(this.graphRoot.getScene().getWindow());
-        if (file != null) {
-            GraphConverter.saveGraphML(file, graph);
-        }
-    }
-
-    public void importGraph() throws ParserConfigurationException, IOException, SAXException {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Graph File");
-        File graphFile = fileChooser.showOpenDialog(this.graphRoot.getScene().getWindow());
-        if (graphFile != null) {
-            setModelGraph(GraphConverter.fromML(graphFile));
-        }
-    }
-
     public void addNodeToView(Node node){
         graphView.getChildren().add(node);
     }

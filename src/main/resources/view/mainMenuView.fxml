@@ -11,14 +11,7 @@
 
     <MenuBar>
         <menus>
-            <Menu text="File" fx:id="fileMenu">
-                <items>
-                    <MenuItem text="Save"></MenuItem>
-                    <MenuItem text="Save as"></MenuItem>
-                    <MenuItem text="Import" fx:id="importButton"/>
-                    <MenuItem text="Export" fx:id="exportButton"/>
-                </items>
-            </Menu>
+            <fx:include source="fileMenuView.fxml" fx:id="fileMenu"/>
             <Menu text="Edit" fx:id="editMenu">
                 <items>
                     <MenuItem text="Undo"></MenuItem>
