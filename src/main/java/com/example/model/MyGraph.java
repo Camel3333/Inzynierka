@@ -184,6 +184,14 @@ public class MyGraph<V,E> implements Graph<V,E> {
         return oldElement;
     }
 
+    public void insertVertex(Vertex<V> vertex) throws InvalidVertexException {
+        if (this.existsVertexWith(vertex.element())) {
+            throw new InvalidVertexException("There's already a vertex with this element.");
+        }
+        this.vertices.put(vertex.element(), vertex);
+        adjacency.put(vertex, new ArrayList<>());
+    }
+
     private boolean existsVertexWith(V vElement) {
         return this.vertices.containsKey(vElement);
     }

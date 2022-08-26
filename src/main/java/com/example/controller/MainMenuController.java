@@ -6,11 +6,14 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @FxmlView("/view/mainMenuView.fxml")
 public class MainMenuController implements ChangeListener<ApplicationState> {
+    @Autowired
+    GraphController graphController;
     // Toolbars
     @FXML
     GraphEditController graphToolsController;
@@ -31,7 +34,6 @@ public class MainMenuController implements ChangeListener<ApplicationState> {
     @FXML
     public void initialize(){
         bindToolbars();
-
     }
 
     public void setDrawingHelper(CreationHelper drawingHelper) {

@@ -1,13 +1,13 @@
 package com.example.controller;
 
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
-import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import com.example.algorithm.VertexRole;
 import com.example.draw.MySmartGraphPanel;
+import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;
 import com.example.util.GraphObserver;
@@ -45,7 +45,7 @@ public class GraphController {
     private MySmartGraphPanel<Integer, Integer> graphView;
 
     @Getter
-    private Graph<Integer, Integer> graph;
+    private MyGraph<Integer, Integer> graph;
     private List<GraphObserver<Integer, Integer>> observers = new ArrayList<>();
 
     public void addObserver(GraphObserver<Integer, Integer> observer) {
@@ -56,9 +56,12 @@ public class GraphController {
         observers.remove(observer);
     }
 
-    public void setModelGraph(Graph<Integer, Integer> graph){
+    public void setModelGraph(MyGraph<Integer, Integer> graph){
+        vertexIdCounter = 0;
+        for (Vertex<Integer> vertex : graph.vertices()) {
+            vertexIdCounter = Integer.max(vertex.element() + 1, vertexIdCounter);
+        }
         this.graph = graph;
-        vertexIdCounter = graph.numVertices();
 
         //remove old graph
         graphRoot.getChildren().remove(container);
