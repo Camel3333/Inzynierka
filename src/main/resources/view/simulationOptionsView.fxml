@@ -8,7 +8,8 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.controller.SimulationController"
-      fx:id="parent">
+      fx:id="parent"
+      style="-fx-background-color: #f4f4f4; -fx-padding: 15px">
 
     <ComboBox fx:id = "algorithmsBox"/>
     <GridPane>

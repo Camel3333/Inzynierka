@@ -7,7 +7,8 @@
 <?import javafx.scene.control.MenuBar?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.controller.MainMenuController">
+      fx:controller="com.example.controller.MainMenuController"
+      style="-fx-background-color: #eaeaea">
 
     <MenuBar>
         <menus>
