@@ -57,7 +57,7 @@ public class QVoterModel implements Algorithm{
     }
 
     private StepReport sendOpinions() {
-        QVoterStepRecord report = new QVoterStepRecord();
+        QVoterStepReport report = new QVoterStepReport();
 
         int agentIndex = new Random().nextInt(graph.numVertices());
         selectedAgent = (MyVertex<Integer>) graph.vertices().stream().toList().get(agentIndex);
@@ -75,7 +75,7 @@ public class QVoterModel implements Algorithm{
     }
 
     private StepReport makeDecision() {
-        QVoterStepRecord report = new QVoterStepRecord();
+        QVoterStepReport report = new QVoterStepReport();
 
         report.fillRoles(selectedAgent, null);
 
@@ -138,7 +138,7 @@ public class QVoterModel implements Algorithm{
         BOLTZMANN
     }
 
-    private class QVoterStepRecord extends StepReport{
+    private class QVoterStepReport extends StepReport{
         public void fillRoles(Vertex<Integer> agent, List<Vertex<Integer>> neighbours){
             for(Vertex<Integer> v : graph.vertices()){
                 if(v.equals(agent)){

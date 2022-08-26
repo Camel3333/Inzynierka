@@ -7,7 +7,6 @@ import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrateg
 import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import com.example.algorithm.VertexRole;
-import com.example.draw.CreationHelper;
 import com.example.draw.MySmartGraphPanel;
 import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;

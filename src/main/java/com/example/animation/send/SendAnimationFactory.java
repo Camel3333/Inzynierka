@@ -12,9 +12,9 @@ import lombok.Setter;
 
 public class SendAnimationFactory {
     @Setter
-    private Image attackImage = new Image("file:src/main/resources/icons/sword.png", 40, 40, false, false);
+    private Image attackImage = new Image("file:src/main/resources/icons/sword.png", 30, 30, false, false);
     @Setter
-    private Image defenseImage = new Image("file:src/main/resources/icons/shield.png", 40, 40, false, false);
+    private Image defenseImage = new Image("file:src/main/resources/icons/shield.png", 30, 30, false, false);
     @Setter
     private Duration duration = new Duration(1500);
 
