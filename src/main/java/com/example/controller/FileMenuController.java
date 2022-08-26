@@ -23,7 +23,7 @@ public class FileMenuController {
     @FXML
     MenuItem exportButton;
 
-    private void bindToolbars() {
+    private void bindButtons() {
         exportButton.setOnAction(e -> {
             try {
                 exportGraph();
@@ -42,7 +42,7 @@ public class FileMenuController {
 
     @FXML
     public void initialize() {
-        bindToolbars();
+        bindButtons();
     }
 
     private void exportGraph() throws IOException {
