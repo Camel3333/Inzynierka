@@ -231,6 +231,7 @@ public class SimulationController {
     }
 
     public void initSimulation() {
+        simulation.allowAnimations(true);
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), algorithmSettings);
         ((SimpleSimulation)simulation).loadEnvironment();
