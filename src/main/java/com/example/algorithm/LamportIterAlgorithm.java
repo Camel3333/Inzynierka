@@ -122,9 +122,4 @@ public class LamportIterAlgorithm implements Algorithm{
                                int m,
                                AlgorithmPhase phase){
     }
-
-    private enum AlgorithmPhase{
-        SEND,
-        CHOOSE
-    }
 }

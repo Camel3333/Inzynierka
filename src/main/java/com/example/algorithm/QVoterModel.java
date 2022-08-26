@@ -18,7 +18,7 @@ public class QVoterModel implements Algorithm{
     private MyGraph<Integer, Integer> graph;
     private MyVertex<Integer> selectedAgent;
     private List<Boolean> opinionsReceived;
-    private QVoterModel.AlgorithmPhase algorithmPhase = QVoterModel.AlgorithmPhase.SEND;
+    private AlgorithmPhase algorithmPhase = AlgorithmPhase.SEND;
     private ProbabilityType probabilityType = ProbabilityType.LINEAR;
     private int q;
     private int maxTime;
@@ -43,11 +43,11 @@ public class QVoterModel implements Algorithm{
     public StepReport step() {
         switch (algorithmPhase){
             case SEND -> {
-                algorithmPhase = QVoterModel.AlgorithmPhase.CHOOSE;
+                algorithmPhase = AlgorithmPhase.CHOOSE;
                 return sendOpinions();
             }
             case CHOOSE -> {
-                algorithmPhase = QVoterModel.AlgorithmPhase.SEND;
+                algorithmPhase = AlgorithmPhase.SEND;
                 time ++;
                 checkIsFinished();
                 return makeDecision();
@@ -57,7 +57,7 @@ public class QVoterModel implements Algorithm{
     }
 
     private StepReport sendOpinions() {
-        QVoterStepRecord report = new QVoterStepRecord();
+        QVoterStepReport report = new QVoterStepReport();
 
         int agentIndex = new Random().nextInt(graph.numVertices());
         selectedAgent = (MyVertex<Integer>) graph.vertices().stream().toList().get(agentIndex);
@@ -75,7 +75,7 @@ public class QVoterModel implements Algorithm{
     }
 
     private StepReport makeDecision() {
-        QVoterStepRecord report = new QVoterStepRecord();
+        QVoterStepReport report = new QVoterStepReport();
 
         report.fillRoles(selectedAgent, null);
 
@@ -127,18 +127,13 @@ public class QVoterModel implements Algorithm{
        return false;
     }
 
-    private enum AlgorithmPhase{
-        SEND,
-        CHOOSE,
-    }
-
     private enum ProbabilityType {
         LINEAR,
         NON_LINEAR,
         BOLTZMANN
     }
 
-    private class QVoterStepRecord extends StepReport{
+    private class QVoterStepReport extends StepReport{
         public void fillRoles(Vertex<Integer> agent, List<Vertex<Integer>> neighbours){
             for(Vertex<Integer> v : graph.vertices()){
                 if(v.equals(agent)){

@@ -8,111 +8,98 @@ import com.example.algorithm.operations.Operation;
 import com.example.algorithm.operations.OperationType;
 import com.example.algorithm.operations.SendOperation;
 import com.example.algorithm.report.StepReport;
+import com.example.animation.choose.ChooseAnimationFactory;
+import com.example.animation.send.SendAnimationFactory;
 import com.example.controller.GraphController;
-import javafx.animation.*;
+import javafx.animation.Animation;
+import javafx.animation.PathTransition;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.util.Duration;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 @Service
-public class AnimationEngine{
+public class AnimationEngine {
     @Setter
     protected GraphController graphController;
-    private final Duration sendDuration = new Duration(1000);
+    private final AnimationRunner animationRunner = new AnimationRunner();
+    private SendAnimationFactory sendAnimationFactory = new SendAnimationFactory();
+    private ChooseAnimationFactory chooseAnimationFactory = new ChooseAnimationFactory();
 
-    public AnimationEngine(GraphController graphController){
+    public AnimationEngine(GraphController graphController) {
         this.graphController = graphController;
     }
 
-    public void animate(StepReport report){
+    public void animate(StepReport report) {
         highlightRoles(report.getRoles());
+        Map<OperationType, List<Operation>> operationsPerType = groupOperationsByType(report.getOperations());
+        List<List<Animation>> animationsPertType = operationsPerType.entrySet()
+                .stream()
+                .map(e -> getAnimationsPerOperationType(e.getKey(), e.getValue()))
+                .toList();
+        animationsPertType.forEach(animationRunner::runAnimationsConcurrently);
+    }
 
-        // group animations by type
-        Map<OperationType, List<Operation>> operationsPerType = report.getOperations().stream().collect(Collectors.groupingBy(Operation::getType));
-
-        operationsPerType.forEach(this::animateConcurrently);
+    private Map<OperationType, List<Operation>> groupOperationsByType(List<Operation> operations) {
+        return operations.stream().collect(Collectors.groupingBy(Operation::getType));
     }
 
     private void highlightRoles(Map<Vertex<Integer>, VertexRole> roles) {
-        for (Map.Entry<Vertex<Integer>, VertexRole> entry : roles.entrySet()){
+        for (Map.Entry<Vertex<Integer>, VertexRole> entry : roles.entrySet()) {
             graphController.highlightRole(entry.getKey(), entry.getValue());
         }
     }
 
-    public void animateConcurrently(OperationType type, List<Operation> operations){
-        switch (type){
-            case SEND -> {
-                ParallelTransition parallelTransition = new ParallelTransition();
+    public void animateSend(SendOperation operation) {
+        List<Animation> sendAnimations = getAnimationsPerOperationType(OperationType.SEND, List.of(operation));
+        animationRunner.runAnimationsConcurrently(sendAnimations);
+    }
 
-                parallelTransition.getChildren().addAll(operations
+    public void animateOpinionChange(ChooseOperation operation) {
+        List<Animation> chooseAnimations = getAnimationsPerOperationType(OperationType.CHOOSE, List.of(operation));
+        animationRunner.runAnimationsConcurrently(chooseAnimations);
+    }
+
+    private List<Animation> getAnimationsPerOperationType(OperationType operationType, List<Operation> operations) {
+        switch (operationType) {
+            case SEND -> {
+                return operations
                         .stream()
                         .map(operation -> (SendOperation) operation)
                         .map(sendOperation -> {
                             Point2D fromPosition = graphController.getVertexPosition(sendOperation.getFrom());
                             Point2D toPosition = graphController.getVertexPosition(sendOperation.getTo());
-                            return getSendAnimation(fromPosition, toPosition);
+                            return getSendAnimation(fromPosition, toPosition, sendOperation.getSentOpinion().get());
                         })
-                        .toList());
-
-                runAnimation(parallelTransition);
+                        .toList();
             }
             case CHOOSE -> {
-                ParallelTransition parallelTransition = new ParallelTransition();
-
-                parallelTransition.getChildren().addAll(operations
+                return operations
                         .stream()
                         .map(operation -> (ChooseOperation) operation)
-                        .map(chooseOperation -> getChooseOpinionAnimation((SmartGraphVertexNode<Integer>) graphController.getGraphView().getStylableVertex(chooseOperation.getVertex().element()), chooseOperation.getChosenOpinion().get()))
-                        .toList());
-
-                runAnimation(parallelTransition);
+                        .map(chooseOperation -> getChooseOpinionAnimation((SmartGraphVertexNode<Integer>) graphController.getGraphView().getStylableVertex(chooseOperation.getVertex().element())))
+                        .toList();
             }
         }
+        return Collections.emptyList();
     }
 
-    private void runAnimation(Animation animation){
-        Semaphore semaphore = new Semaphore(0);
+    private Animation getSendAnimation(Point2D from, Point2D to, boolean attack) {
 
-        animation.setOnFinished(e -> {
-            System.out.println("Animation finished");
-            semaphore.release();
-        });
-
-        animation.play();
-
-        try {
-            // wait until animation will finish
-            semaphore.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private PathTransition getSendAnimation(Point2D from, Point2D to){
-
-        ImageView ball = new ImageView(new Image("file:src/main/resources/ms.jpg", 20, 20, false, false));
-        ball.setX(from.getX());
-        ball.setY(from.getY());
+        PathTransition animation = attack ? sendAnimationFactory.getAttackAnimation(from, to) : sendAnimationFactory.getDefenseAnimation(from, to);
 
         Semaphore semaphore = new Semaphore(0);
         Platform.runLater(() -> {
             try {
-                graphController.addNodeToView(ball);
+                graphController.addNodeToView(animation.getNode());
                 semaphore.release();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -122,32 +109,13 @@ public class AnimationEngine{
             e.printStackTrace();
         }
 
-        Path path = new Path();
-        path.getElements().add(new MoveTo(from.getX(), from.getY()));
-        path.getElements().add(new LineTo(to.getX(), to.getY()));
+        animation.setOnFinished(
+                e -> Platform.runLater(() -> graphController.removeNodeFromView(animation.getNode())));
 
-        PathTransition pathTransition = new PathTransition();
-        pathTransition.setDuration(sendDuration);
-        pathTransition.setNode(ball);
-        pathTransition.setPath(path);
-
-        pathTransition.setOnFinished(
-                e -> Platform.runLater(() -> graphController.removeNodeFromView(ball)));
-
-        return pathTransition;
+        return animation;
     }
 
-    private Animation getChooseOpinionAnimation(SmartGraphVertexNode<Integer> vertex, boolean attack){
-        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(1000), vertex);
-        scaleUp.setToX(1.5);
-        scaleUp.setToY(1.5);
-
-        scaleUp.setOnFinished(e -> graphController.changeVertexStrokeStyle(vertex.getUnderlyingVertex()));
-
-        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(1000), vertex);
-        scaleDown.setToX(1);
-        scaleDown.setToY(1);
-
-        return new SequentialTransition(scaleUp, scaleDown);
+    private Animation getChooseOpinionAnimation(SmartGraphVertexNode<Integer> vertex) {
+        return chooseAnimationFactory.getChooseOpinionAnimation(vertex, e -> graphController.changeVertexFillStyle(vertex.getUnderlyingVertex()));
     }
 }
