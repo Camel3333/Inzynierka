@@ -10,7 +10,7 @@ import javafx.beans.property.BooleanProperty;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Deprecated
 public class LamportAlgorithm implements Algorithm{
     private int depth;
     private boolean isFinished = false;

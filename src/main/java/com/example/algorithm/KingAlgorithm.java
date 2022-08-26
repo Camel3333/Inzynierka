@@ -92,11 +92,6 @@ public class KingAlgorithm implements Algorithm{
         return report;
     }
 
-    private enum AlgorithmPhase{
-        SEND,
-        CHOOSE,
-    }
-
     private class KingStepRecord extends StepReport{
         public void fillRoles(Vertex<Integer> king){
             for(Vertex<Integer> v : graph.vertices()){
