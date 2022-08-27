@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.example.settings.IntegerSettingTextField?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -11,20 +9,31 @@
       fx:id="parent"
       style="-fx-background-color: #f4f4f4; -fx-padding: 15px">
 
-    <ComboBox fx:id = "algorithmsBox"/>
+    <ComboBox fx:id="algorithmsBox"/>
     <GridPane>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Depth" fx:id="depthLabel"/>
-        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id = "depth"/>
+        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="depth"/>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Phase" fx:id="phaseLabel"/>
-        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id = "phase"/>
+        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="phase"/>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Q" fx:id="qLabel"/>
-        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id = "q"/>
+        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="q"/>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Time" fx:id="timeLabel"/>
-        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id = "time"/>
+        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="time"/>
     </GridPane>
     <Button fx:id="startButton" text="Start" onAction="#initSimulation"/>
     <Button fx:id="nextStepButton" text="Next Step" onAction="#doStep"/>
     <Button fx:id="liveButton" text="Live" onAction="#live"/>
     <Button fx:id="instantFinishButton" text="Instant finish" onAction="#instantFinish"/>
     <Button fx:id="pauseButton" text="Pause" onAction="#pause"/>
+    <VBox>
+        <Label text="Animation speed"/>
+        <Slider fx:id="animationSpeedSlider"
+                showTickLabels="true"
+                min="0.25"
+                max="2."
+                value="1."
+                majorTickUnit="0.25"
+                minorTickCount="0"
+                snapToTicks="true"/>
+    </VBox>
 </VBox>
