@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.BorderPane?>
 
@@ -17,15 +16,9 @@
         <fx:include fx:id="menu" source="mainMenuView.fxml" />
     </top>
    <bottom>
-      <Accordion BorderPane.alignment="CENTER">
-        <panes>
-          <TitledPane animated="false" text="Statystyki">
-            <content>
-              <fx:include fx:id="stats" source="statisticsView.fxml" />
-            </content>
-          </TitledPane>
-        </panes>
-      </Accordion>
+       <TitledPane animated="false" text="Statystyki">
+           <fx:include fx:id="stats" source="statisticsView.fxml"/>
+       </TitledPane>
    </bottom>
 
 </BorderPane>
