@@ -217,10 +217,7 @@ public class SimulationController {
                 }, dependencies
         ));
 
-        animationSpeedSlider.valueProperty().addListener(observable -> {
-            if (!animationSpeedSlider.isValueChanging())
-                simulation.setAnimationsSpeed(animationSpeedSlider.getValue());
-        });
+        animationSpeedSlider.valueProperty().addListener(observable -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()));
     }
 
     private boolean verifySettings(AlgorithmType algorithmType) {

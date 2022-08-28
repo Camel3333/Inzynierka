@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SendAnimationFactoryTest {
     private JFXPanel panel = new JFXPanel(); //allows to run test with JavaFX objects
-    private SendAnimationFactory sendAnimationFactory = new SendAnimationFactory(new Duration(1500));
+    private SendAnimationFactory sendAnimationFactory;
 
     @BeforeEach
     public void init(){
