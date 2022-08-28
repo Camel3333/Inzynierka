@@ -17,7 +17,7 @@ import java.util.Stack;
 
 public class LamportIterAlgorithm implements Algorithm{
     private int depth;
-    private Graph<Integer, Integer> graph;
+    private MyGraph<Integer, Integer> graph;
     private Map<String, String> algorithmState = new HashMap<>();
     private Stack<StackRecord> stack = new Stack<>();
     private BooleanProperty isFinished = new SimpleBooleanProperty(false);
@@ -83,6 +83,8 @@ public class LamportIterAlgorithm implements Algorithm{
         if (!stack.empty()){
             StepReport stepReport = om_iter();
             checkIsFinished();
+            stepReport.setNumSupporting(graph.getSupportingOpinionCount());
+            stepReport.setNumNotSupporting(graph.getNotSupportingOpinionCount());
             return stepReport;
         }
         return null;
