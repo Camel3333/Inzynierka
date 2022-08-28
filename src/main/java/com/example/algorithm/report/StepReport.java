@@ -4,6 +4,7 @@ import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.algorithm.VertexRole;
 import com.example.algorithm.operations.Operation;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,4 +16,10 @@ public class StepReport {
     private Map<Vertex<Integer>, VertexRole> roles = new HashMap<>();
     @Getter
     private List<Operation> operations = new ArrayList<>();
+    @Getter
+    @Setter
+    private int numSupporting;
+    @Getter
+    @Setter
+    private int numNotSupporting;
 }
