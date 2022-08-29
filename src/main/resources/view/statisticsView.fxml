@@ -8,7 +8,7 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:id="opinionChart"
            fx:controller="com.example.controller.StatisticsController"
-           prefHeight="300.0" prefWidth="600.0" title="Dominujące opinie">
+           prefHeight="300.0" prefWidth="600.0" title="Opinions">
     <xAxis>
         <NumberAxis side="BOTTOM"/>
     </xAxis>

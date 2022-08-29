@@ -16,7 +16,7 @@
         <fx:include fx:id="menu" source="mainMenuView.fxml" />
     </top>
    <bottom>
-       <TitledPane animated="false" text="Statystyki">
+       <TitledPane animated="false" text="Statistics">
            <fx:include fx:id="stats" source="statisticsView.fxml"/>
        </TitledPane>
    </bottom>
