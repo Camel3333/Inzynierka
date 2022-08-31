@@ -10,8 +10,20 @@
 
     <content>
         <VBox>
-            <Label text="Select graph to be generated"/>
+            <Label text="Select type of graph to be generated"/>
             <ComboBox fx:id ="graphBox"/>
+            <Label text="Select number of vertices"/>
+            <Slider fx:id="verticesSlider"
+                    blockIncrement="1.0"
+                    cache="true"
+                    majorTickUnit="5.0"
+                    max="30.0"
+                    min="0.0"
+                    minorTickCount="4"
+                    showTickLabels="true"
+                    showTickMarks="true"
+                    snapToTicks="true"
+                    value="5.0" />
         </VBox>
     </content>
 

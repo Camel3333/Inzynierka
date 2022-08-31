@@ -51,7 +51,7 @@ public class KingAlgorithm implements Algorithm{
 
     @Override
     public boolean isFinished() {
-        return phase > numberOfPhases;
+        return isFinished.get();
     }
 
     @Override
