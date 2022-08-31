@@ -15,6 +15,7 @@ import javafx.animation.Animation;
 import javafx.animation.PathTransition;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
+import javafx.util.Duration;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +30,8 @@ public class AnimationEngine {
     @Setter
     protected GraphController graphController;
     private final AnimationRunner animationRunner = new AnimationRunner();
-    private SendAnimationFactory sendAnimationFactory = new SendAnimationFactory();
-    private ChooseAnimationFactory chooseAnimationFactory = new ChooseAnimationFactory();
+    private SendAnimationFactory sendAnimationFactory = new SendAnimationFactory(new Duration(1500));
+    private ChooseAnimationFactory chooseAnimationFactory = new ChooseAnimationFactory(new Duration(3000));
 
     public AnimationEngine(GraphController graphController) {
         this.graphController = graphController;
@@ -117,5 +118,10 @@ public class AnimationEngine {
 
     private Animation getChooseOpinionAnimation(SmartGraphVertexNode<Integer> vertex) {
         return chooseAnimationFactory.getChooseOpinionAnimation(vertex, e -> graphController.changeVertexFillStyle(vertex.getUnderlyingVertex()));
+    }
+
+    public void setAnimationsSpeed(Double multiplier){
+        sendAnimationFactory.setDuration(sendAnimationFactory.getBaseDuration().divide(multiplier));
+        chooseAnimationFactory.setDuration(chooseAnimationFactory.getBaseDuration().divide(multiplier));
     }
 }

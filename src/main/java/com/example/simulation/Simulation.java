@@ -8,5 +8,6 @@ public interface Simulation {
     void setEnvironment(Algorithm algorithm, AlgorithmSettings settings);
     void allowAnimations(boolean allow);
     StepReport step();
+    void setAnimationsSpeed(double speedMultiplier);
 }
 

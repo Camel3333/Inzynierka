@@ -63,6 +63,12 @@ public class SimpleSimulation implements Simulation{
         return report;
     }
 
+    @Override
+    public void setAnimationsSpeed(double speedMultiplier) {
+        System.out.println("Changing animation speed to " + speedMultiplier);
+        animationEngine.setAnimationsSpeed(speedMultiplier);
+    }
+
     private void removeSimulationRelatedColoring(){
         graphController.getGraph()
                 .vertices()
