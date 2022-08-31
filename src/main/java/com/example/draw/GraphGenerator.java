@@ -8,13 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class GraphGenerator {
 
-    public void generateGraph(GraphController graphController, DefinedGraph definedGraph){
+    public void generateGraph(GraphController graphController, DefinedGraph definedGraph, int numberOfVertices){
         Graph<Integer, Integer> generatedGraph;
         switch (definedGraph) {
-            case FULL_3 -> generatedGraph = getFullGraph(3);
-            case FULL_4 -> generatedGraph = getFullGraph(4);
-            case FULL_5 -> generatedGraph = getFullGraph(5);
-            case FULL_6 -> generatedGraph = getFullGraph(6);
+            case FULL -> generatedGraph = getFullGraph(numberOfVertices);
             default -> throw new IllegalStateException("Unexpected value: " + definedGraph);
         }
         graphController.setModelGraph((MyGraph<Integer, Integer>) generatedGraph);
