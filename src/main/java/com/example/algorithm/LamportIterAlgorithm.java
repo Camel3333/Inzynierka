@@ -1,6 +1,5 @@
 package com.example.algorithm;
 
-import com.brunomnsilva.smartgraph.graph.Graph;
 import com.example.algorithm.operations.ChooseOperation;
 import com.example.algorithm.operations.SendOperation;
 import com.example.algorithm.report.StepReport;
@@ -10,17 +9,13 @@ import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 public class LamportIterAlgorithm implements Algorithm{
-    private int depth;
-    private Graph<Integer, Integer> graph;
-    private Map<String, String> algorithmState = new HashMap<>();
+    private MyGraph<Integer, Integer> graph;
     private Stack<StackRecord> stack = new Stack<>();
-    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
+    private final BooleanProperty isFinished = new SimpleBooleanProperty(false);
+    private final List<MyVertex<Integer>> verticesWithOpinion = new ArrayList<>();
 
     @Override
     public AlgorithmType getType() {
@@ -36,8 +31,9 @@ public class LamportIterAlgorithm implements Algorithm{
         switch (record.phase){
             case SEND -> {
                 for(MyVertex<Integer> vertex : record.lieutenants){
-                    if (record.m == depth){
-                        vertex.setIsSupporting(record.commander.isSupportingOpinion().getValue());
+                    if (!verticesWithOpinion.contains(vertex)){
+                        vertex.setIsSupporting(record.commander.getNextOpinion(vertex).getValue());
+                        verticesWithOpinion.add(vertex);
                     }
                     BooleanProperty commanderOpinion = record.commander.getNextOpinion(vertex);
                     vertex.receiveOpinion(commanderOpinion);
@@ -45,12 +41,12 @@ public class LamportIterAlgorithm implements Algorithm{
                 }
 
                 if(record.m > 0) {
-                    stack.push(new StackRecord(record.commander, record.lieutenants, record.m, AlgorithmPhase.CHOOSE));
+                    record.previous_commanders.add(record.commander);
+                    stack.push(new StackRecord(record.commander, new ArrayList<>(record.previous_commanders), record.lieutenants, record.m, AlgorithmPhase.CHOOSE));
 
                     for (MyVertex<Integer> vertex : record.lieutenants) {
-                        List<MyVertex<Integer>> new_lieutenants = record.lieutenants.stream()
-                                .filter(general -> !general.equals(vertex)).toList();
-                        stack.push(new StackRecord(vertex, new_lieutenants, record.m - 1, AlgorithmPhase.SEND));
+                        List<MyVertex<Integer>> lieutenants = getLieutenants(vertex, record.previous_commanders);
+                        stack.push(new StackRecord(vertex,  new ArrayList<>(record.previous_commanders), lieutenants, record.m - 1, AlgorithmPhase.SEND));
                     }
                 }
             }
@@ -65,14 +61,22 @@ public class LamportIterAlgorithm implements Algorithm{
         return stepReport;
     }
 
+    private List<MyVertex<Integer>> getLieutenants(MyVertex<Integer> vertex, List<MyVertex<Integer>> commanders) {
+        return graph.vertexNeighbours(vertex).stream()
+                .filter(v -> !commanders.contains((MyVertex<Integer>) v))
+                .map(v -> (MyVertex<Integer>)v)
+                .toList();
+    }
+
     @Override
     public void loadEnvironment(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
         this.graph = graph;
         stack = new Stack<>();
         MyVertex<Integer> commander = (MyVertex<Integer>) graph.vertices().stream().toList().get(0);
-        depth = (int)settings.getSettings().get("depth").getValue();
+        int depth = (int) settings.getSettings().get("depth").getValue();
         if(graph.numVertices() > 0){
             stack.push(new StackRecord(commander,
+                    new ArrayList<>(),
                     graph.vertexNeighbours(commander).stream().map(vertex -> (MyVertex<Integer>)vertex).toList(),
                     depth, AlgorithmPhase.SEND));
         }
@@ -107,17 +111,16 @@ public class LamportIterAlgorithm implements Algorithm{
     private class LamportIterStepReport extends StepReport{
         public void fillRoles(StackRecord record){
             getRoles().put(record.commander, VertexRole.COMMANDER);
-            record.lieutenants.forEach(vertex -> {
-                getRoles().put(vertex, VertexRole.LIEUTENANT);
-            });
+            record.lieutenants.forEach(vertex -> getRoles().put(vertex, VertexRole.LIEUTENANT));
             graph.vertices()
                     .stream()
-                    .filter(vertex -> !vertex.equals(record.commander) && !record.lieutenants.contains(vertex))
+                    .filter(vertex -> !vertex.equals(record.commander) && !record.lieutenants.contains((MyVertex<Integer>) vertex))
                     .forEach(vertex -> getRoles().put(vertex, VertexRole.NONE));
         }
     }
 
     private record StackRecord(MyVertex<Integer> commander,
+                               List<MyVertex<Integer>> previous_commanders,
                                List<MyVertex<Integer>> lieutenants,
                                int m,
                                AlgorithmPhase phase){
