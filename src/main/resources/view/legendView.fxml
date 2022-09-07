@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -10,8 +7,6 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.text.Font?>
 <FlowPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.controller.LegendController"
             orientation="VERTICAL" vgap="30" hgap="20">
         <HBox alignment="CENTER_LEFT" spacing="10">
             <ImageView fitWidth="45" fitHeight="45">
