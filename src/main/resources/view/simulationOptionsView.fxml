@@ -20,11 +20,6 @@
         <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Time" fx:id="timeLabel"/>
         <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="time"/>
     </GridPane>
-    <Button fx:id="startButton" text="Start" onAction="#initSimulation"/>
-    <Button fx:id="nextStepButton" text="Next Step" onAction="#doStep"/>
-    <Button fx:id="liveButton" text="Live" onAction="#live"/>
-    <Button fx:id="instantFinishButton" text="Instant finish" onAction="#instantFinish"/>
-    <Button fx:id="pauseButton" text="Pause" onAction="#pause"/>
     <VBox>
         <Label text="Animation speed"/>
         <Slider fx:id="animationSpeedSlider"

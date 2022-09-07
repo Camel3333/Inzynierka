@@ -14,6 +14,16 @@ public class SimulationMenuController {
     private int i = 0;
 
     @FXML
+    public MenuItem startItem;
+    @FXML
+    public MenuItem nextStepItem;
+    @FXML
+    public MenuItem liveItem;
+    @FXML
+    public MenuItem instantFinishItem;
+    @FXML
+    public MenuItem pauseItem;
+    @FXML
     private MenuItem simulateItem;
     @FXML
     private MenuItem drawItem;
@@ -28,6 +38,12 @@ public class SimulationMenuController {
 
     @FXML
     public void initialize(){
+        bindItems();
+        startItem.setOnAction(e -> appController.getSimulationController().initSimulation());
+        nextStepItem.setOnAction(e -> appController.getSimulationController().doStep());
+        liveItem.setOnAction(e -> appController.getSimulationController().live());
+        instantFinishItem.setOnAction(e -> appController.getSimulationController().instantFinish());
+        pauseItem.setOnAction(e -> appController.getSimulationController().pause());
         simulateItem.setOnAction(e -> {
             if(i % 2 == 0) {
                 changeApplicationState(ApplicationState.SIMULATING);
@@ -37,9 +53,7 @@ public class SimulationMenuController {
             }
             i++;
         });
-        drawItem.setOnAction(e -> {
-            changeApplicationState(ApplicationState.DRAWING);
-        });
+        drawItem.setOnAction(e -> changeApplicationState(ApplicationState.DRAWING));
     }
 
     public void changeApplicationState(ApplicationState applicationState) {
@@ -53,5 +67,18 @@ public class SimulationMenuController {
 
     public void setChaneStateToSimulationEnabled(boolean enabled) {
         simulateItem.setDisable(!enabled);
+    }
+
+    public void bindItems() {
+        startItem.disableProperty().bind(appController.getSimulationController().getStartProperty()
+                .or(appController.getApplicationStateProperty().isEqualTo(ApplicationState.DRAWING)));
+        nextStepItem.disableProperty().bind(appController.getSimulationController().getNextStepProperty()
+                .or(appController.getApplicationStateProperty().isEqualTo(ApplicationState.DRAWING)));
+        liveItem.disableProperty().bind(appController.getSimulationController().getLiveProperty()
+                .or(appController.getApplicationStateProperty().isEqualTo(ApplicationState.DRAWING)));
+        instantFinishItem.disableProperty().bind(appController.getSimulationController().getInstantFinishProperty()
+                .or(appController.getApplicationStateProperty().isEqualTo(ApplicationState.DRAWING)));
+        pauseItem.disableProperty().bind(appController.getSimulationController().getPauseProperty()
+                .or(appController.getApplicationStateProperty().isEqualTo(ApplicationState.DRAWING)));
     }
 }
