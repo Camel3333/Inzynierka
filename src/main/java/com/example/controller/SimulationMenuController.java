@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.ApplicationState;
+import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -70,15 +71,18 @@ public class SimulationMenuController {
     }
 
     public void bindItems() {
-        startItem.disableProperty().bind(appController.getSimulationController().getStartProperty()
-                .or(appController.getApplicationStateProperty().isEqualTo(ApplicationState.DRAWING)));
-        nextStepItem.disableProperty().bind(appController.getSimulationController().getNextStepProperty()
-                .or(appController.getApplicationStateProperty().isEqualTo(ApplicationState.DRAWING)));
-        liveItem.disableProperty().bind(appController.getSimulationController().getLiveProperty()
-                .or(appController.getApplicationStateProperty().isEqualTo(ApplicationState.DRAWING)));
-        instantFinishItem.disableProperty().bind(appController.getSimulationController().getInstantFinishProperty()
-                .or(appController.getApplicationStateProperty().isEqualTo(ApplicationState.DRAWING)));
-        pauseItem.disableProperty().bind(appController.getSimulationController().getPauseProperty()
-                .or(appController.getApplicationStateProperty().isEqualTo(ApplicationState.DRAWING)));
+        SimulationController simulationController = appController.getSimulationController();
+        ObjectProperty<ApplicationState> applicationState = appController.getApplicationStateProperty();
+
+        startItem.disableProperty().bind(simulationController.getStartProperty()
+                .or(applicationState.isEqualTo(ApplicationState.DRAWING)));
+        nextStepItem.disableProperty().bind(simulationController.getNextStepProperty()
+                .or(applicationState.isEqualTo(ApplicationState.DRAWING)));
+        liveItem.disableProperty().bind(simulationController.getLiveProperty()
+                .or(applicationState.isEqualTo(ApplicationState.DRAWING)));
+        instantFinishItem.disableProperty().bind(simulationController.getInstantFinishProperty()
+                .or(applicationState.isEqualTo(ApplicationState.DRAWING)));
+        pauseItem.disableProperty().bind(simulationController.getPauseProperty()
+                .or(applicationState.isEqualTo(ApplicationState.DRAWING)));
     }
 }
