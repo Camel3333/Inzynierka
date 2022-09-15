@@ -16,8 +16,8 @@ public class StatisticsController {
     private LineChart<Number, Number> opinionChart;
 
     private int nextX = 1;
-    private XYChart.Series<Number, Number> supporting = new XYChart.Series<>();
-    private XYChart.Series<Number, Number> notSupporting = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> supporting = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> notSupporting = new XYChart.Series<>();
 
     @FXML
     public void initialize() {
