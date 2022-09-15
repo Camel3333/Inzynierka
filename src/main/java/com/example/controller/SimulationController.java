@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.algorithm.*;
+import com.example.algorithm.AlgorithmType;
 import com.example.algorithm.report.StepReport;
 import com.example.settings.*;
 import com.example.simulation.SimpleSimulation;
@@ -58,6 +58,8 @@ public class SimulationController {
     private Button pauseButton;
     @FXML
     private ComboBox<AlgorithmType> algorithmsBox;
+    @FXML
+    private Slider animationSpeedSlider;
 
     private AlgorithmSettings algorithmSettings = new AlgorithmSettings();
 
@@ -71,7 +73,7 @@ public class SimulationController {
     @Autowired
     private StatisticsController statisticsController;
 
-    private BooleanProperty paused =  new SimpleBooleanProperty(true);
+    private BooleanProperty paused = new SimpleBooleanProperty(true);
     private BooleanProperty started = new SimpleBooleanProperty(false);
     private BooleanProperty idle = new SimpleBooleanProperty(true);
     private BooleanProperty isFinished = new SimpleBooleanProperty(false);
@@ -184,7 +186,7 @@ public class SimulationController {
                 .stream()
                 .flatMap(List::stream)
                 .filter(node -> node instanceof SettingNode<?>)
-                .map(node -> (SettingNode<?>)node)
+                .map(node -> (SettingNode<?>) node)
                 .map(settingNode -> (BooleanProperty) (settingNode.getIsValidProperty()))
                 .collect(Collectors.toList());
 
@@ -198,36 +200,38 @@ public class SimulationController {
         List<Node> algorithmNodes = options.get(algorithmsBox.getSelectionModel().selectedItemProperty().get());
 
         startButton.disableProperty().unbind();
-        startButton.disableProperty().bind(Bindings.createBooleanBinding(()-> {
-            if (isFinished.get() && idle.get()) {
-                return false;
-            }
-            if (started.get()) {
-                return true;
-            }
-            List<SettingNode<?>> settingNodes = (algorithmNodes
-                    .stream()
-                    .filter(node -> node instanceof SettingNode<?>)
-                    .map(node -> (SettingNode<?>)node)
-                    .collect(Collectors.toList()));
-            for (SettingNode<?> settingNode : settingNodes){
-                if (!settingNode.getIsValidProperty().get()){
-                    return true;
-                }
-            }
-            return false;
-            }, dependencies
+        startButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+                    if (isFinished.get() && idle.get()) {
+                        return false;
+                    }
+                    if (started.get()) {
+                        return true;
+                    }
+                    List<SettingNode<?>> settingNodes = (algorithmNodes
+                            .stream()
+                            .filter(node -> node instanceof SettingNode<?>)
+                            .map(node -> (SettingNode<?>) node)
+                            .collect(Collectors.toList()));
+                    for (SettingNode<?> settingNode : settingNodes) {
+                        if (!settingNode.getIsValidProperty().get()) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }, dependencies
         ));
+
+        animationSpeedSlider.valueProperty().addListener(observable -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()));
     }
 
-    private boolean verifySettings(AlgorithmType algorithmType){
+    private boolean verifySettings(AlgorithmType algorithmType) {
         List<SettingNode<?>> settingNodes = (options.get(algorithmType)
                 .stream()
                 .filter(node -> node instanceof SettingNode<?>)
-                .map(node -> (SettingNode<?>)node)
+                .map(node -> (SettingNode<?>) node)
                 .collect(Collectors.toList()));
-        for (SettingNode<?> settingNode : settingNodes){
-            if (!settingNode.getIsValidProperty().get()){
+        for (SettingNode<?> settingNode : settingNodes) {
+            if (!settingNode.getIsValidProperty().get()) {
                 return false;
             }
         }
@@ -239,7 +243,7 @@ public class SimulationController {
         simulation.allowAnimations(true);
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), algorithmSettings);
-        ((SimpleSimulation)simulation).loadEnvironment();
+        ((SimpleSimulation) simulation).loadEnvironment();
         isFinished.bind(((SimpleSimulation) simulation).getIsFinishedProperty());
         started.set(true);
     }
@@ -253,7 +257,7 @@ public class SimulationController {
         if (!isFinished.get()) {
             processStep();
 
-            if(isFinished.get()) {
+            if (isFinished.get()) {
                 System.out.println("Finished");
             }
         }

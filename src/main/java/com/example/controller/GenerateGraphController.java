@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.Slider;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class GenerateGraphController {
     @FXML
     private ComboBox<DefinedGraph> graphBox;
 
+    @FXML
+    private Slider verticesSlider;
+
     @Autowired
     private GraphGenerator graphGenerator;
 
@@ -28,7 +32,7 @@ public class GenerateGraphController {
     }
 
     public void generateGraph(GraphController graphController) {
-        graphGenerator.generateGraph(graphController, selectedDefinedGraph);
+        graphGenerator.generateGraph(graphController, selectedDefinedGraph, (int) verticesSlider.getValue());
     }
 
     @FXML
@@ -52,8 +56,7 @@ public class GenerateGraphController {
                     }
                 }));
 
-        ObservableList<DefinedGraph> definedGraphs = FXCollections.observableArrayList
-                (DefinedGraph.FULL_3, DefinedGraph.FULL_4, DefinedGraph.FULL_5, DefinedGraph.FULL_6);
+        ObservableList<DefinedGraph> definedGraphs = FXCollections.observableArrayList(DefinedGraph.FULL);
         graphBox.setItems(definedGraphs);
         graphBox.getSelectionModel().select(0);
     }

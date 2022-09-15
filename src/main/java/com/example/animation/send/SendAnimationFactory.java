@@ -8,6 +8,7 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
+import lombok.Getter;
 import lombok.Setter;
 
 public class SendAnimationFactory {
@@ -16,7 +17,14 @@ public class SendAnimationFactory {
     @Setter
     private Image defenseImage = new Image("file:src/main/resources/icons/shield.png", 30, 30, false, false);
     @Setter
-    private Duration duration = new Duration(1500);
+    private Duration duration;
+    @Getter
+    private final Duration baseDuration;
+
+    public SendAnimationFactory(Duration duration){
+        baseDuration = duration;
+        this.duration = duration;
+    }
 
     public PathTransition getAttackAnimation(Point2D from, Point2D to) {
         return getSendAnimation(from, to, new ImageView(attackImage));

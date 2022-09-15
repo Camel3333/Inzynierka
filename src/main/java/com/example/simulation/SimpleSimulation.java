@@ -1,6 +1,7 @@
 package com.example.simulation;
 
 import com.example.algorithm.Algorithm;
+import com.example.algorithm.VertexRole;
 import com.example.algorithm.report.StepReport;
 import com.example.animation.AnimationEngine;
 import com.example.settings.AlgorithmSettings;
@@ -43,7 +44,7 @@ public class SimpleSimulation implements Simulation{
     }
 
     public void loadEnvironment() {
-        algorithm.loadEnvironment((MyGraph<Integer, Integer>) graphController.getGraph(), settings);
+        algorithm.loadEnvironment(graphController.getGraph(), settings);
     }
 
     public BooleanProperty getIsFinishedProperty() {
@@ -55,7 +56,22 @@ public class SimpleSimulation implements Simulation{
         if (allowAnimations.get()){
             animationEngine.animate(report);
         }
+        if (algorithm.isFinished()){
+            removeSimulationRelatedColoring();
+        }
         graphController.update();
         return report;
+    }
+
+    @Override
+    public void setAnimationsSpeed(double speedMultiplier) {
+        System.out.println("Changing animation speed to " + speedMultiplier);
+        animationEngine.setAnimationsSpeed(speedMultiplier);
+    }
+
+    private void removeSimulationRelatedColoring(){
+        graphController.getGraph()
+                .vertices()
+                .forEach(v -> graphController.highlightRole(v, VertexRole.NONE));
     }
 }
