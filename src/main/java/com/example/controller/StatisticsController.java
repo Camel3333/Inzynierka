@@ -68,4 +68,15 @@ public class StatisticsController {
         );
 
     }
+
+    public void clear() {
+        opinionChart.setAnimated(false);
+        supporting.getData().clear();
+        notSupporting.getData().clear();
+        opinionChart.getData().clear();
+        opinionChart.getData().add(supporting);
+        opinionChart.getData().add(notSupporting);
+        nextX = 1;
+        opinionChart.setAnimated(true);
+    }
 }
