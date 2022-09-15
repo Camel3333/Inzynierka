@@ -26,6 +26,18 @@ public class MyGraph<V,E> implements Graph<V,E> {
                 .count();
     }
 
+    public int getSupportingOpinionCount(){
+        return (int) vertices().stream()
+                .filter(v -> ((MyVertex<Integer>) v).isSupportingOpinion().getValue())
+                .count();
+    }
+
+    public int getNotSupportingOpinionCount(){
+        return (int) vertices().stream()
+                .filter(v -> !((MyVertex<Integer>) v).isSupportingOpinion().getValue())
+                .count();
+    }
+
     @Override
     public int numVertices() {
         return adjacency.keySet().size();

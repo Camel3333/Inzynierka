@@ -87,6 +87,8 @@ public class LamportIterAlgorithm implements Algorithm{
         if (!stack.empty()){
             StepReport stepReport = om_iter();
             checkIsFinished();
+            stepReport.setNumSupporting(graph.getSupportingOpinionCount());
+            stepReport.setNumNotSupporting(graph.getNotSupportingOpinionCount());
             return stepReport;
         }
         return null;

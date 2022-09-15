@@ -19,6 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -68,6 +69,9 @@ public class SimulationController {
 
     @Setter
     private Simulation simulation;
+
+    @Autowired
+    private StatisticsController statisticsController;
 
     private BooleanProperty paused = new SimpleBooleanProperty(true);
     private BooleanProperty started = new SimpleBooleanProperty(false);
@@ -235,6 +239,7 @@ public class SimulationController {
     }
 
     public void initSimulation() {
+        statisticsController.clear();
         simulation.allowAnimations(true);
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), algorithmSettings);
@@ -243,9 +248,14 @@ public class SimulationController {
         started.set(true);
     }
 
+    private void processStep() {
+        StepReport report = simulation.step();
+        statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
+    }
+
     public void doStepTask() {
         if (!isFinished.get()) {
-            StepReport report = simulation.step();
+            processStep();
 
             if (isFinished.get()) {
                 System.out.println("Finished");
@@ -254,8 +264,9 @@ public class SimulationController {
     }
 
     private void liveTask() {
-        while (!isFinished.get()) {
-            StepReport report = simulation.step();
+        while(!isFinished.get()) {
+            processStep();
+
             if (paused.get()) {
                 return;
             }
@@ -265,8 +276,8 @@ public class SimulationController {
 
     private void instantFinishTask() {
         simulation.allowAnimations(false);
-        while (!isFinished.get()) {
-            StepReport report = simulation.step();
+        while(!isFinished.get()) {
+            processStep();
         }
         System.out.println("Finished");
     }
