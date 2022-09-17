@@ -1,7 +1,10 @@
 package com.example.model;
 
 import com.brunomnsilva.smartgraph.graph.*;
+import com.example.command.CommandRegistry;
+import com.example.command.DeleteEdgeCommand;
 import javafx.beans.property.BooleanProperty;
+import lombok.Setter;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -10,6 +13,8 @@ public class MyGraph<V,E> implements Graph<V,E> {
     private Map<V, Vertex<V>> vertices = new LinkedHashMap<>();
     private Map<Vertex<V>, List<Vertex<V>>> adjacency = new LinkedHashMap<>();
     private List<Edge<E, V>> edges = new ArrayList<>();
+    @Setter
+    CommandRegistry commandRegistry;
 
     public boolean checkConsensus(){
         if(numVertices() == 0){

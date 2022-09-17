@@ -10,9 +10,10 @@ import java.util.List;
 @Component
 public class CommandRegistry {
     private ObservableList<Command> commandStack = FXCollections.observableArrayList();
-    private List<Command> abortedCommandStack = new ArrayList<>();
+    private ObservableList<Command> abortedCommandStack = FXCollections.observableArrayList();
 
     public void executeCommand(Command command) {
+        System.out.println();
         command.execute();
         commandStack.add(command);
         abortedCommandStack.clear();
@@ -38,5 +39,8 @@ public class CommandRegistry {
 
     public ObservableList<Command> getCommandStack() {
         return commandStack;
+    }
+    public ObservableList<Command> getAbortedCommandStack() {
+        return abortedCommandStack;
     }
 }

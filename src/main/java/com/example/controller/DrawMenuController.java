@@ -4,6 +4,8 @@ import com.example.draw.CreationHelper;
 import com.example.draw.DrawMode;
 import com.example.draw.TraitorsGenerator;
 import com.example.model.MyGraph;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -29,6 +31,10 @@ public class DrawMenuController {
     @FXML
     private MenuItem noneItem;
     @FXML
+    private MenuItem undoItem;
+    @FXML
+    private MenuItem redoItem;
+    @FXML
     private MenuItem generateTraitorsItem;
     @FXML
     private MenuItem generateGraphItem;
@@ -36,7 +42,6 @@ public class DrawMenuController {
     @Autowired
     private FxWeaver fxWeaver;
 
-    @Setter
     private CreationHelper drawHelper;
 
     public void selectMode(DrawMode mode){
@@ -50,6 +55,8 @@ public class DrawMenuController {
         edgeItem.setOnAction(e -> selectMode(DrawMode.EDGE));
         deleteItem.setOnAction(e -> selectMode(DrawMode.DELETE));
         noneItem.setOnAction(e -> selectMode(DrawMode.NONE));
+        undoItem.setOnAction(e -> undo());
+        redoItem.setOnAction(e -> redo());
         generateTraitorsItem.setOnAction(e -> openGenerateTraitorsDialog());
         generateGraphItem.setOnAction(e -> openGenerateGraphDialog());
     }
@@ -59,7 +66,17 @@ public class DrawMenuController {
         edgeItem.setDisable(!enabled);
         deleteItem.setDisable(!enabled);
         noneItem.setDisable(!enabled);
+        undoItem.setDisable(!enabled);
+        redoItem.setDisable(!enabled);
         generateTraitorsItem.setDisable(!enabled);
+    }
+
+    public void undo() {
+        drawHelper.getCommandRegistry().undo();
+    }
+
+    public void redo() {
+        drawHelper.getCommandRegistry().redo();
     }
 
     private void openGenerateTraitorsDialog(){
@@ -84,5 +101,19 @@ public class DrawMenuController {
         if (result.get() == ButtonType.OK){
             controllerAndView.getController().generateGraph(drawHelper.getGraphController());
         }
+    }
+
+    public void setDrawHelper(CreationHelper drawHelper) {
+        undoItem.disableProperty().bind(Bindings.size(drawHelper.getCommandRegistry().getCommandStack()).isEqualTo(0));
+        redoItem.disableProperty().bind(Bindings.size(drawHelper.getCommandRegistry().getAbortedCommandStack()).isEqualTo(0));
+        this.drawHelper = drawHelper;
+    }
+
+    public BooleanProperty undoItemDisableProperty() {
+        return undoItem.disableProperty();
+    }
+
+    public BooleanProperty redoItemDisableProperty() {
+        return redoItem.disableProperty();
     }
 }
