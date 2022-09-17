@@ -66,8 +66,6 @@ public class DrawMenuController {
         edgeItem.setDisable(!enabled);
         deleteItem.setDisable(!enabled);
         noneItem.setDisable(!enabled);
-        undoItem.setDisable(!enabled);
-        redoItem.setDisable(!enabled);
         generateTraitorsItem.setDisable(!enabled);
     }
 
