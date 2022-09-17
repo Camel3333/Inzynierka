@@ -13,8 +13,6 @@ public class MyGraph<V,E> implements Graph<V,E> {
     private Map<V, Vertex<V>> vertices = new LinkedHashMap<>();
     private Map<Vertex<V>, List<Vertex<V>>> adjacency = new LinkedHashMap<>();
     private List<Edge<E, V>> edges = new ArrayList<>();
-    @Setter
-    CommandRegistry commandRegistry;
 
     public boolean checkConsensus(){
         if(numVertices() == 0){
