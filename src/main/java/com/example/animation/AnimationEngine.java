@@ -7,6 +7,7 @@ import com.example.algorithm.operations.ChooseOperation;
 import com.example.algorithm.operations.Operation;
 import com.example.algorithm.operations.OperationType;
 import com.example.algorithm.operations.SendOperation;
+import com.example.algorithm.report.OperationsBatch;
 import com.example.algorithm.report.StepReport;
 import com.example.animation.choose.ChooseAnimationFactory;
 import com.example.animation.send.SendAnimationFactory;
@@ -39,7 +40,11 @@ public class AnimationEngine {
 
     public void animate(StepReport report) {
         highlightRoles(report.getRoles());
-        Map<OperationType, List<Operation>> operationsPerType = groupOperationsByType(report.getOperations());
+        report.getOperationsBatches().forEach(this::animateBatch);
+    }
+
+    private void animateBatch(OperationsBatch batch){
+        Map<OperationType, List<Operation>> operationsPerType = groupOperationsByType(batch.getOperations());
         List<List<Animation>> animationsPertType = operationsPerType.entrySet()
                 .stream()
                 .map(e -> getAnimationsPerOperationType(e.getKey(), e.getValue()))
