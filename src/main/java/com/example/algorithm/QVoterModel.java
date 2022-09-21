@@ -84,6 +84,9 @@ public class QVoterModel implements Algorithm{
         }
         report.getOperations().add(new ChooseOperation(selectedAgent, selectedAgent.getIsSupporting()));
 
+        report.setNumSupporting(graph.getSupportingOpinionCount());
+        report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
+
         return report;
     }
 

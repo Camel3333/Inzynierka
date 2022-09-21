@@ -9,7 +9,6 @@ import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
-import lombok.Setter;
 
 
 public class KingAlgorithm implements Algorithm{
@@ -89,6 +88,8 @@ public class KingAlgorithm implements Algorithm{
             ((MyVertex<Integer>) v).chooseMajorityWithTieBreaker(king.getNextOpinion((MyVertex<Integer>) v), condition);
             report.getOperations().add(new ChooseOperation(v, ((MyVertex<Integer>) v).getIsSupporting()));
         }
+        report.setNumSupporting(graph.getSupportingOpinionCount());
+        report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
         return report;
     }
 

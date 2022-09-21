@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import lombok.Getter;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -69,10 +70,13 @@ public class SimulationController {
     @Setter
     private Simulation simulation;
 
-    private final BooleanProperty paused = new SimpleBooleanProperty(true);
-    private final BooleanProperty started = new SimpleBooleanProperty(false);
-    private final BooleanProperty idle = new SimpleBooleanProperty(true);
-    private final BooleanProperty isFinished = new SimpleBooleanProperty(false);
+    @Autowired
+    private StatisticsController statisticsController;
+
+    private BooleanProperty paused = new SimpleBooleanProperty(true);
+    private BooleanProperty started = new SimpleBooleanProperty(false);
+    private BooleanProperty idle = new SimpleBooleanProperty(true);
+    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
 
     public void show() {
         parent.setVisible(true);
@@ -234,6 +238,7 @@ public class SimulationController {
     }
 
     public void initSimulation() {
+        statisticsController.clear();
         simulation.allowAnimations(true);
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), algorithmSettings);
@@ -242,9 +247,14 @@ public class SimulationController {
         started.set(true);
     }
 
+    private void processStep() {
+        StepReport report = simulation.step();
+        statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
+    }
+
     public void doStepTask() {
         if (!isFinished.get()) {
-            StepReport report = simulation.step();
+            processStep();
 
             if (isFinished.get()) {
                 System.out.println("Finished");
@@ -253,8 +263,9 @@ public class SimulationController {
     }
 
     private void liveTask() {
-        while (!isFinished.get()) {
-            StepReport report = simulation.step();
+        while(!isFinished.get()) {
+            processStep();
+
             if (paused.get()) {
                 return;
             }
@@ -264,8 +275,8 @@ public class SimulationController {
 
     private void instantFinishTask() {
         simulation.allowAnimations(false);
-        while (!isFinished.get()) {
-            StepReport report = simulation.step();
+        while(!isFinished.get()) {
+            processStep();
         }
         System.out.println("Finished");
     }
