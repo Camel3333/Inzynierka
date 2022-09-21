@@ -56,15 +56,15 @@ public class SimulationController {
     private final Map<AlgorithmType, List<Node>> options = new HashMap<>();
 
     @Getter
-    private final BooleanProperty startProperty = new SimpleBooleanProperty();
+    private final BooleanProperty startDisabledProperty = new SimpleBooleanProperty();
     @Getter
-    private final BooleanProperty nextStepProperty = new SimpleBooleanProperty();
+    private final BooleanProperty nextStepDisabledProperty = new SimpleBooleanProperty();
     @Getter
-    private final BooleanProperty liveProperty = new SimpleBooleanProperty();
+    private final BooleanProperty liveDisabledProperty = new SimpleBooleanProperty();
     @Getter
-    private final BooleanProperty instantFinishProperty = new SimpleBooleanProperty();
+    private final BooleanProperty instantFinishDisabledProperty = new SimpleBooleanProperty();
     @Getter
-    private final BooleanProperty pauseProperty = new SimpleBooleanProperty();
+    private final BooleanProperty pauseDisabledProperty = new SimpleBooleanProperty();
 
     @Setter
     private Simulation simulation;
@@ -127,10 +127,10 @@ public class SimulationController {
         time.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("time"));
 
 
-        nextStepProperty.setValue(true);
-        liveProperty.setValue(true);
-        instantFinishProperty.setValue(true);
-        pauseProperty.setValue(true);
+        nextStepDisabledProperty.setValue(true);
+        liveDisabledProperty.setValue(true);
+        instantFinishDisabledProperty.setValue(true);
+        pauseDisabledProperty.setValue(true);
 
         List<Observable> dependenciesList = new ArrayList<>();
         dependenciesList.add(paused);
@@ -139,19 +139,19 @@ public class SimulationController {
         dependenciesList.add(isFinished);
         Observable[] dependencies = dependenciesList.toArray(new Observable[0]);
 
-        nextStepProperty.bind(Bindings.createBooleanBinding(() -> {
+        nextStepDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
             return !(idle.get() && started.get() && !isFinished.get());
         }, dependencies));
 
-        liveProperty.bind(Bindings.createBooleanBinding(() -> {
+        liveDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
             return !(idle.get() && started.get() && !isFinished.get());
         }, dependencies));
 
-        instantFinishProperty.bind(Bindings.createBooleanBinding(() -> {
+        instantFinishDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
             return !(idle.get() && started.get() && !isFinished.get());
         }, dependencies));
 
-        pauseProperty.bind(Bindings.createBooleanBinding(() -> {
+        pauseDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
             return !(!paused.get() && started.get() && !isFinished.get());
         }, dependencies));
     }
@@ -194,8 +194,8 @@ public class SimulationController {
 
         List<Node> algorithmNodes = options.get(algorithmsBox.getSelectionModel().selectedItemProperty().get());
 
-        startProperty.unbind();
-        startProperty.bind(Bindings.createBooleanBinding(() -> {
+        startDisabledProperty.unbind();
+        startDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
                     if (isFinished.get() && idle.get()) {
                         return false;
                     }

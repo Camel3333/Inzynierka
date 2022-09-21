@@ -34,7 +34,6 @@ public class MainMenuController implements ChangeListener<ApplicationState> {
         graphToolsController.setDrawMenuController(drawMenuController);
         graphToolsController.setSimulationMenuController(simulationMenuController);
         graphToolsController.setSimulationController(simulationController);
-        graphToolsController.bindButtons();
     }
 
     @FXML

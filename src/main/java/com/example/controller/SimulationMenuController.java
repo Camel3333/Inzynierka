@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.ApplicationState;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
@@ -73,16 +74,12 @@ public class SimulationMenuController {
     public void bindItems() {
         SimulationController simulationController = appController.getSimulationController();
         ObjectProperty<ApplicationState> applicationState = appController.getApplicationStateProperty();
+        BooleanBinding isNotSimulation = applicationState.isEqualTo(ApplicationState.SIMULATING).not();
 
-        startItem.disableProperty().bind(simulationController.getStartProperty()
-                .or(applicationState.isEqualTo(ApplicationState.DRAWING)));
-        nextStepItem.disableProperty().bind(simulationController.getNextStepProperty()
-                .or(applicationState.isEqualTo(ApplicationState.DRAWING)));
-        liveItem.disableProperty().bind(simulationController.getLiveProperty()
-                .or(applicationState.isEqualTo(ApplicationState.DRAWING)));
-        instantFinishItem.disableProperty().bind(simulationController.getInstantFinishProperty()
-                .or(applicationState.isEqualTo(ApplicationState.DRAWING)));
-        pauseItem.disableProperty().bind(simulationController.getPauseProperty()
-                .or(applicationState.isEqualTo(ApplicationState.DRAWING)));
+        startItem.disableProperty().bind(simulationController.getStartDisabledProperty().or(isNotSimulation));
+        nextStepItem.disableProperty().bind(simulationController.getNextStepDisabledProperty().or(isNotSimulation));
+        liveItem.disableProperty().bind(simulationController.getLiveDisabledProperty().or(isNotSimulation));
+        instantFinishItem.disableProperty().bind(simulationController.getInstantFinishDisabledProperty().or(isNotSimulation));
+        pauseItem.disableProperty().bind(simulationController.getPauseDisabledProperty().or(isNotSimulation));
     }
 }

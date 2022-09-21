@@ -56,11 +56,11 @@ public class GraphEditController {
     }
 
     private void initializeSimulationButtons() {
-        startButton.setOnAction(e -> simulationController.initSimulation());
-        nextStepButton.setOnAction(e -> simulationController.doStep());
-        liveButton.setOnAction(e -> simulationController.live());
-        instantFinishButton.setOnAction(e -> simulationController.instantFinish());
-        pauseButton.setOnAction(e -> simulationController.pause());
+        startButton.setOnAction(e -> simulationMenuController.startItem.fire());
+        nextStepButton.setOnAction(e -> simulationMenuController.nextStepItem.fire());
+        liveButton.setOnAction(e -> simulationMenuController.liveItem.fire());
+        instantFinishButton.setOnAction(e -> simulationMenuController.instantFinishItem.fire());
+        pauseButton.setOnAction(e -> simulationMenuController.pauseItem.fire());
         simulateButton.setOnAction(e -> simulationMenuController.changeApplicationState(ApplicationState.SIMULATING));
         drawButton.setOnAction(e -> simulationMenuController.changeApplicationState(ApplicationState.DRAWING));
         buttons.put(ApplicationState.SIMULATING,
@@ -83,6 +83,7 @@ public class GraphEditController {
 
     public void setSimulationController(SimulationController simulationController) {
         this.simulationController = simulationController;
+        bindButtons();
     }
 
     public void setEnabled(boolean enabled, ApplicationState applicationState) {
@@ -98,10 +99,10 @@ public class GraphEditController {
     }
 
     public void bindButtons() {
-        startButton.disableProperty().bind(simulationController.getStartProperty());
-        nextStepButton.disableProperty().bind(simulationController.getNextStepProperty());
-        liveButton.disableProperty().bind(simulationController.getLiveProperty());
-        instantFinishButton.disableProperty().bind(simulationController.getInstantFinishProperty());
-        pauseButton.disableProperty().bind(simulationController.getPauseProperty());
+        startButton.disableProperty().bind(simulationController.getStartDisabledProperty());
+        nextStepButton.disableProperty().bind(simulationController.getNextStepDisabledProperty());
+        liveButton.disableProperty().bind(simulationController.getLiveDisabledProperty());
+        instantFinishButton.disableProperty().bind(simulationController.getInstantFinishDisabledProperty());
+        pauseButton.disableProperty().bind(simulationController.getPauseDisabledProperty());
     }
 }
