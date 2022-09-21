@@ -58,6 +58,9 @@ public class LamportIterAlgorithm implements Algorithm{
             }
         }
 
+        stepReport.setNumSupporting(graph.getSupportingOpinionCount());
+        stepReport.setNumNotSupporting(graph.getNotSupportingOpinionCount());
+
         return stepReport;
     }
 
