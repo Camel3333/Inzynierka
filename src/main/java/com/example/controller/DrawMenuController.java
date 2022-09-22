@@ -60,6 +60,7 @@ public class DrawMenuController {
         deleteItem.setDisable(!enabled);
         noneItem.setDisable(!enabled);
         generateTraitorsItem.setDisable(!enabled);
+        generateGraphItem.setDisable(!enabled);
     }
 
     private void openGenerateTraitorsDialog(){

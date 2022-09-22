@@ -7,7 +7,7 @@ import javafx.scene.control.Button;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.Map;
 @FxmlView("/view/graphEditView.fxml")
 public class GraphEditController {
 
-    Map<ApplicationState, List<Button>> buttons = new HashMap<>();
+    private final Map<ApplicationState, List<Button>> buttons = new HashMap<>();
 
     @FXML
     private Button vertexButton;
@@ -28,9 +28,6 @@ public class GraphEditController {
     private Button noneButton;
     @FXML
     private Button simulateButton;
-    @FXML
-    private Button drawButton;
-
 
     private DrawMenuController drawMenuController;
     private SimulationMenuController simulationMenuController;
@@ -41,20 +38,22 @@ public class GraphEditController {
         deleteButton.setOnAction(e -> drawMenuController.selectMode(DrawMode.DELETE));
         noneButton.setOnAction(e -> drawMenuController.selectMode(DrawMode.NONE));
         buttons.put(ApplicationState.DRAWING,
-                new ArrayList<>(List.of(vertexButton, edgeButton, deleteButton, noneButton)));
+                List.of(vertexButton, edgeButton, deleteButton, noneButton));
     }
 
     private void initializeSimulationButtons() {
-        simulateButton.setOnAction(e -> simulationMenuController.changeApplicationState(ApplicationState.SIMULATING));
-        drawButton.setOnAction(e -> simulationMenuController.changeApplicationState(ApplicationState.DRAWING));
-        buttons.put(ApplicationState.SIMULATING,
-                new ArrayList<>(List.of(drawButton)));
+        buttons.put(ApplicationState.SIMULATING, Collections.emptyList());
+    }
+
+    private void initializeAlwaysDisplayedButtons() {
+        simulateButton.setOnAction(e -> simulationMenuController.changeApplicationState());
     }
 
     @FXML
     public void initialize(){
         initializeDrawingButtons();
         initializeSimulationButtons();
+        initializeAlwaysDisplayedButtons();
     }
 
     public void setDrawMenuController(DrawMenuController controller){
@@ -70,10 +69,5 @@ public class GraphEditController {
             button.setManaged(enabled);
             button.setVisible(enabled);
         });
-    }
-
-    public void setChaneStateToSimulationEnabled(boolean enabled) {
-        simulateButton.setManaged(enabled);
-        simulateButton.setVisible(enabled);
     }
 }

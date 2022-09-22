@@ -1,7 +1,6 @@
 package com.example.controller;
 
 
-import com.brunomnsilva.smartgraph.graph.Graph;
 import com.example.ApplicationState;
 import com.example.algorithm.AlgorithmType;
 import com.example.draw.CreationHelper;
@@ -80,6 +79,10 @@ public class AppController {
                 simulationController.show();
             }
         }
+    }
+
+    public ApplicationState getApplicationState(){
+        return applicationStateProperty.get();
     }
 
     public SimulationController getSimulationController() {

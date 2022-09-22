@@ -11,12 +11,8 @@ import org.springframework.stereotype.Component;
 @FxmlView("/view/simulationMenuView.fxml")
 public class SimulationMenuController {
 
-    private int i = 0;
-
     @FXML
     private MenuItem simulateItem;
-    @FXML
-    private MenuItem drawItem;
 
     private final AppController appController;
 
@@ -25,33 +21,16 @@ public class SimulationMenuController {
         this.appController = appController;
     }
 
-
-    @FXML
-    public void initialize(){
-        simulateItem.setOnAction(e -> {
-            if(i % 2 == 0) {
-                changeApplicationState(ApplicationState.SIMULATING);
-            }
-            else {
-                changeApplicationState(ApplicationState.DRAWING);
-            }
-            i++;
-        });
-        drawItem.setOnAction(e -> {
-            changeApplicationState(ApplicationState.DRAWING);
-        });
+    public void changeApplicationState() {
+        switch (appController.getApplicationState()){
+            case DRAWING -> changeApplicationState(ApplicationState.SIMULATING);
+            case SIMULATING -> changeApplicationState(ApplicationState.DRAWING);
+        }
     }
 
     public void changeApplicationState(ApplicationState applicationState) {
         appController.setApplicationState(applicationState);
     }
 
-    public void setEnabled(boolean enabled) {
-//        simulateItem.setDisable(!enabled);
-        drawItem.setDisable(!enabled);
-    }
-
-    public void setChaneStateToSimulationEnabled(boolean enabled) {
-        simulateItem.setDisable(!enabled);
-    }
+    public void setEnabled(boolean enabled) {}
 }

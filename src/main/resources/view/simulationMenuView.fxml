@@ -9,7 +9,6 @@
       text="Simulate">
 
     <items>
-        <MenuItem text="Simulate" fx:id = "simulateItem"/>
-        <MenuItem text="Draw" fx:id = "drawItem"/>
+        <MenuItem text="Simulate" fx:id = "simulateItem" onAction="#changeApplicationState"/>
     </items>
 </Menu>
