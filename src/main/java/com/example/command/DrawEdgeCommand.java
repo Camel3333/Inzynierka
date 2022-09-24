@@ -4,6 +4,8 @@ import com.brunomnsilva.smartgraph.graph.Edge;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.controller.GraphController;
 
+import java.util.Collection;
+
 public class DrawEdgeCommand implements Command {
 
     private GraphController graphController;
@@ -24,17 +26,9 @@ public class DrawEdgeCommand implements Command {
 
     @Override
     public void undo() {
-        var edges = graphController.getGraph().edges();
-        Edge<Integer, Integer> foundEdge = null;
-        for(Edge<Integer, Integer> edge : edges) {
-            var vertices = edge.vertices();
-            if ((vertices[0].element().equals(firstVertexIndex) && vertices[1].element().equals(secondVertexIndex))
-                    || (vertices[0].element().equals(secondVertexIndex) && vertices[1].element().equals(firstVertexIndex))) {
-                foundEdge = edge;
-                break;
-            }
-        }
-        graphController.getGraph().removeEdge(foundEdge);
+        Collection<Edge<Integer, Integer>> foundEdges =
+                graphController.getGraph().edgesBetween(firstVertexIndex, secondVertexIndex);
+        graphController.getGraph().removeEdge(foundEdges.iterator().next());
         graphController.update();
     }
 

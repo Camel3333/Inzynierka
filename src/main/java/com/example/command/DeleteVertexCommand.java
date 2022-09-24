@@ -23,10 +23,8 @@ public class DeleteVertexCommand implements Command {
 
     @Override
     public void execute() {
-        Vertex<Integer> foundVertex = graphController.getGraph().vertices().stream()
-                .filter(v -> v.element().equals(vertexIndex)).toList().get(0);
+        Vertex<Integer> foundVertex = graphController.getGraph().getVertexByKey(vertexIndex);
         var edges = graphController.getGraph().incidentEdges(foundVertex);
-        removedEdgesVertexIndexes.clear();
         for (var edge : edges) {
             var vertices = edge.vertices();
             if (vertices[0].element().equals(vertexIndex)) {
@@ -45,6 +43,7 @@ public class DeleteVertexCommand implements Command {
         for (var secondVertexIndex : removedEdgesVertexIndexes) {
             graphController.getGraph().insertEdge(vertexIndex, secondVertexIndex, 1);
         }
+        removedEdgesVertexIndexes.clear();
         graphController.update();
         graphController.setVertexPosition(vertex, x, y);
         graphController.colorVertex(vertex);

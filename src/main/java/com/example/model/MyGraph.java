@@ -41,6 +41,13 @@ public class MyGraph<V,E> implements Graph<V,E> {
                 .count();
     }
 
+    public Vertex<V> getVertexByKey(V key) {
+        if (vertices.containsKey(key)) {
+            return vertices.get(key);
+        }
+        return null;
+    }
+
     @Override
     public int numVertices() {
         return adjacency.keySet().size();
@@ -92,6 +99,16 @@ public class MyGraph<V,E> implements Graph<V,E> {
         return edges.stream()
                 .filter(e -> ((MyEdge) e).contains(v1) && ((MyEdge) e).contains(v2))
                 .collect(Collectors.toList());
+    }
+
+    public Collection<Edge<E,V>> edgesBetween(V v1, V v2){
+        Vertex<V> firstVertex = vertices.get(v1);
+        Vertex<V> secondVertex = vertices.get(v2);
+
+        if(firstVertex == null || secondVertex == null) {
+            return new ArrayList<>();
+        }
+        return edgesBetween(firstVertex, secondVertex);
     }
 
     public Collection<Vertex<V>> vertexNeighbours(Vertex<V> v){

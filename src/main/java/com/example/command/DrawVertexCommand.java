@@ -28,8 +28,7 @@ public class DrawVertexCommand implements Command {
 
     @Override
     public void undo() {
-        Vertex<Integer> foundVertex = graphController.getGraph().vertices().stream()
-                .filter(v -> v.element().equals(vertexIndex)).toList().get(0);
+        Vertex<Integer> foundVertex = graphController.getGraph().getVertexByKey(vertexIndex);
         graphController.getGraph().removeVertex(foundVertex);
         graphController.update();
     }
