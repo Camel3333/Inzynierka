@@ -75,6 +75,8 @@ public class KingAlgorithm implements Algorithm{
                 report.getOperations().add(new SendOperation(v, u, opinion));
             }
         }
+        report.setNumSupporting(graph.getSupportingOpinionCount());
+        report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
         return report;
     }
 
