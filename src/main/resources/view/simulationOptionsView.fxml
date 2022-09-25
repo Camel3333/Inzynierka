@@ -3,13 +3,24 @@
 <?import com.example.settings.IntegerSettingTextField?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.controller.SimulationController"
       fx:id="parent"
       style="-fx-background-color: #f4f4f4; -fx-padding: 15px">
 
-    <ComboBox fx:id="algorithmsBox"/>
+    <HBox>
+        <ComboBox fx:id="algorithmsBox"/>
+        <ToggleButton fx:id="documentationButton" onAction="#openDocumentation" style="-fx-margin: 10px;">
+            <graphic>
+                <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@/view/images/circle-info-solid.png"/>
+                </ImageView>
+            </graphic>
+        </ToggleButton>
+    </HBox>
     <GridPane>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Depth" fx:id="depthLabel"/>
         <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="depth"/>
