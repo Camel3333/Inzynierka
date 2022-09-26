@@ -70,7 +70,9 @@ public class AppController {
         this.applicationStateProperty.set(applicationState);
         switch (applicationState) {
             case DRAWING -> {
+                simulationController.stop();
                 initDrawingHelper();
+                simulationController.stop();
                 simulationController.hide();
             }
             case SIMULATING -> {
@@ -81,7 +83,7 @@ public class AppController {
         }
     }
 
-    public ApplicationState getApplicationState(){
+    public ApplicationState getApplicationState() {
         return applicationStateProperty.get();
     }
 

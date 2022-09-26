@@ -67,6 +67,8 @@ public class SimulationController {
 
     private ObservableList<AlgorithmType> availableAlgorithms = FXCollections.emptyObservableList();
 
+    private Service<?> activeService;
+
     @Setter
     private Simulation simulation;
 
@@ -160,6 +162,13 @@ public class SimulationController {
         }, dependencies));
     }
 
+    private void setSimulationFlagsToNotStartedState() {
+        paused.set(true);
+        started.set(false);
+        idle.set(true);
+        isFinished.set(false);
+    }
+
     private void showAlgorithmSettings(AlgorithmType algorithmType) {
         hideAlgorithmSettings();
         options.get(algorithmType).forEach(node -> {
@@ -224,20 +233,6 @@ public class SimulationController {
         animationSpeedSlider.valueProperty().addListener(observable -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()));
     }
 
-    private boolean verifySettings(AlgorithmType algorithmType) {
-        List<SettingNode<?>> settingNodes = (options.get(algorithmType)
-                .stream()
-                .filter(node -> node instanceof SettingNode<?>)
-                .map(node -> (SettingNode<?>) node)
-                .collect(Collectors.toList()));
-        for (SettingNode<?> settingNode : settingNodes) {
-            if (!settingNode.getIsValidProperty().get()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public void initSimulation() {
         statisticsController.clear();
         simulation.allowAnimations(true);
@@ -264,7 +259,7 @@ public class SimulationController {
     }
 
     private void liveTask() {
-        while(!isFinished.get()) {
+        while (!isFinished.get()) {
             processStep();
 
             if (paused.get()) {
@@ -276,7 +271,7 @@ public class SimulationController {
 
     private void instantFinishTask() {
         simulation.allowAnimations(false);
-        while(!isFinished.get()) {
+        while (!isFinished.get()) {
             processStep();
         }
         System.out.println("Finished");
@@ -287,15 +282,31 @@ public class SimulationController {
     }
 
     public void live() {
-        new SimulationLiveService().start();
+        runService(new SimulationLiveService());
     }
 
     public void instantFinish() {
-        new SimulationInstantFinishService().start();
+        runService(new SimulationInstantFinishService());
     }
 
     public void doStep() {
-        new SimulationStepService().start();
+        runService(new SimulationStepService());
+    }
+
+    private void runService(Service<?> service) {
+        activeService = service;
+        service.start();
+    }
+
+    public void stop() {
+        pause();
+        if (activeService != null && activeService.isRunning()) {
+            activeService.cancel();
+        }
+        isFinished.unbind();
+        if (simulation != null)
+            simulation.stop();
+        setSimulationFlagsToNotStartedState();
     }
 
     public class SimulationLiveService extends Service<Boolean> {
