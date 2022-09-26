@@ -72,7 +72,6 @@ public class AppController {
             case DRAWING -> {
                 simulationController.stop();
                 initDrawingHelper();
-                simulationController.stop();
                 simulationController.hide();
             }
             case SIMULATING -> {
