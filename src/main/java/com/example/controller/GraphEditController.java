@@ -4,6 +4,7 @@ import com.example.ApplicationState;
 import com.example.draw.DrawMode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,7 @@ public class GraphEditController {
     @FXML
     private Button noneButton;
     @FXML
-    private Button simulateButton;
+    private ToggleButton simulateButton;
 
     private DrawMenuController drawMenuController;
     private SimulationMenuController simulationMenuController;

@@ -3,13 +3,14 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ToggleButton?>
 <HBox xmlns="http://javafx.com/javafx"
-        xmlns:fx="http://javafx.com/fxml"
-        fx:controller="com.example.controller.GraphEditController">
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.controller.GraphEditController">
 
     <Button text = "Vertex" fx:id = "vertexButton"/>
     <Button text = "Edge" fx:id = "edgeButton"/>
     <Button text = "Delete" fx:id = "deleteButton"/>
     <Button text = "None" fx:id = "noneButton"/>
-    <Button text = "Simulate" fx:id = "simulateButton"/>
+    <ToggleButton text = "Simulate" fx:id = "simulateButton"/>
 </HBox>
