@@ -74,7 +74,8 @@ public class QVoterModel implements Algorithm {
             operationsBatch.add(new SendOperation(neighbour, selectedAgent, opinion));
         }
         report.addBatch(operationsBatch);
-
+        report.setNumSupporting(graph.getSupportingOpinionCount());
+        report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
         return report;
     }
 
@@ -92,7 +93,6 @@ public class QVoterModel implements Algorithm {
         report.addBatch(operationsBatch);
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
-
         return report;
     }
 
