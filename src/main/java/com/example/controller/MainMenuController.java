@@ -14,6 +14,10 @@ import org.springframework.stereotype.Component;
 public class MainMenuController implements ChangeListener<ApplicationState> {
     @Autowired
     GraphController graphController;
+
+    @Autowired
+    SimulationController simulationController;
+
     // Toolbars
     @FXML
     GraphEditController graphToolsController;
@@ -29,6 +33,7 @@ public class MainMenuController implements ChangeListener<ApplicationState> {
     private void bindToolbars(){
         graphToolsController.setDrawMenuController(drawMenuController);
         graphToolsController.setSimulationMenuController(simulationMenuController);
+        graphToolsController.setSimulationController(simulationController);
     }
 
     @FXML

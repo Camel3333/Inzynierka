@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
+import lombok.Getter;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,7 @@ public class AppController {
     private StatisticsController statisticsController;
 
     @Setter
+    @Getter
     private ObjectProperty<ApplicationState> applicationStateProperty =
             new SimpleObjectProperty<>();
 

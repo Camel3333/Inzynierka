@@ -9,7 +9,6 @@ import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -17,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import lombok.Getter;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,26 +46,26 @@ public class SimulationController {
     private IntegerSettingTextField q;
     @FXML
     private IntegerSettingTextField time;
-    @FXML
-    private Button startButton;
-    @FXML
-    private Button nextStepButton;
-    @FXML
-    private Button liveButton;
-    @FXML
-    private Button instantFinishButton;
-    @FXML
-    private Button pauseButton;
+
     @FXML
     private ComboBox<AlgorithmType> algorithmsBox;
     @FXML
     private Slider animationSpeedSlider;
 
-    private AlgorithmSettings algorithmSettings = new AlgorithmSettings();
+    private final AlgorithmSettings algorithmSettings = new AlgorithmSettings();
 
     private final Map<AlgorithmType, List<Node>> options = new HashMap<>();
 
-    private ObservableList<AlgorithmType> availableAlgorithms = FXCollections.emptyObservableList();
+    @Getter
+    private final BooleanProperty startDisabledProperty = new SimpleBooleanProperty();
+    @Getter
+    private final BooleanProperty nextStepDisabledProperty = new SimpleBooleanProperty();
+    @Getter
+    private final BooleanProperty liveDisabledProperty = new SimpleBooleanProperty();
+    @Getter
+    private final BooleanProperty instantFinishDisabledProperty = new SimpleBooleanProperty();
+    @Getter
+    private final BooleanProperty pauseDisabledProperty = new SimpleBooleanProperty();
 
     private Service<?> activeService;
 
@@ -133,10 +133,10 @@ public class SimulationController {
         time.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("time"));
 
 
-        nextStepButton.setDisable(true);
-        liveButton.setDisable(true);
-        instantFinishButton.setDisable(true);
-        pauseButton.setDisable(true);
+        nextStepDisabledProperty.setValue(true);
+        liveDisabledProperty.setValue(true);
+        instantFinishDisabledProperty.setValue(true);
+        pauseDisabledProperty.setValue(true);
 
         List<Observable> dependenciesList = new ArrayList<>();
         dependenciesList.add(paused);
@@ -145,19 +145,19 @@ public class SimulationController {
         dependenciesList.add(isFinished);
         Observable[] dependencies = dependenciesList.toArray(new Observable[0]);
 
-        nextStepButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+        nextStepDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
             return !(idle.get() && started.get() && !isFinished.get());
         }, dependencies));
 
-        liveButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+        liveDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
             return !(idle.get() && started.get() && !isFinished.get());
         }, dependencies));
 
-        instantFinishButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+        instantFinishDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
             return !(idle.get() && started.get() && !isFinished.get());
         }, dependencies));
 
-        pauseButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+        pauseDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
             return !(!paused.get() && started.get() && !isFinished.get());
         }, dependencies));
     }
@@ -187,8 +187,7 @@ public class SimulationController {
     }
 
     public void setAvailableAlgorithms(ObservableList<AlgorithmType> algorithmTypes) {
-        availableAlgorithms = algorithmTypes;
-        algorithmsBox.setItems(availableAlgorithms);
+        algorithmsBox.setItems(algorithmTypes);
         algorithmsBox.getSelectionModel().select(0);
 
         List<Observable> inputDependencies = options.values()
@@ -208,8 +207,8 @@ public class SimulationController {
 
         List<Node> algorithmNodes = options.get(algorithmsBox.getSelectionModel().selectedItemProperty().get());
 
-        startButton.disableProperty().unbind();
-        startButton.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+        startDisabledProperty.unbind();
+        startDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
                     if (isFinished.get() && idle.get()) {
                         return false;
                     }

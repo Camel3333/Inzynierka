@@ -8,7 +8,6 @@ import javafx.scene.control.ToggleButton;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +28,20 @@ public class GraphEditController {
     private Button noneButton;
     @FXML
     private ToggleButton simulateButton;
+    @FXML
+    private Button startButton;
+    @FXML
+    private Button nextStepButton;
+    @FXML
+    private Button liveButton;
+    @FXML
+    private Button instantFinishButton;
+    @FXML
+    private Button pauseButton;
 
     private DrawMenuController drawMenuController;
     private SimulationMenuController simulationMenuController;
+    private SimulationController simulationController;
 
     private void initializeDrawingButtons() {
         vertexButton.setOnAction(e -> drawMenuController.selectMode(DrawMode.VERTEX));
@@ -43,7 +53,13 @@ public class GraphEditController {
     }
 
     private void initializeSimulationButtons() {
-        buttons.put(ApplicationState.SIMULATING, Collections.emptyList());
+        startButton.setOnAction(e -> simulationMenuController.startItem.fire());
+        nextStepButton.setOnAction(e -> simulationMenuController.nextStepItem.fire());
+        liveButton.setOnAction(e -> simulationMenuController.liveItem.fire());
+        instantFinishButton.setOnAction(e -> simulationMenuController.instantFinishItem.fire());
+        pauseButton.setOnAction(e -> simulationMenuController.pauseItem.fire());
+        buttons.put(ApplicationState.SIMULATING,
+                List.of(startButton, nextStepButton, liveButton, instantFinishButton, pauseButton));
     }
 
     private void initializeAlwaysDisplayedButtons() {
@@ -51,18 +67,23 @@ public class GraphEditController {
     }
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         initializeDrawingButtons();
         initializeSimulationButtons();
         initializeAlwaysDisplayedButtons();
     }
 
-    public void setDrawMenuController(DrawMenuController controller){
+    public void setDrawMenuController(DrawMenuController controller) {
         drawMenuController = controller;
     }
 
-    public void setSimulationMenuController(SimulationMenuController controller){
+    public void setSimulationMenuController(SimulationMenuController controller) {
         simulationMenuController = controller;
+    }
+
+    public void setSimulationController(SimulationController simulationController) {
+        this.simulationController = simulationController;
+        bindButtons();
     }
 
     public void setEnabled(boolean enabled, ApplicationState applicationState) {
@@ -70,5 +91,13 @@ public class GraphEditController {
             button.setManaged(enabled);
             button.setVisible(enabled);
         });
+    }
+
+    public void bindButtons() {
+        startButton.disableProperty().bind(simulationController.getStartDisabledProperty());
+        nextStepButton.disableProperty().bind(simulationController.getNextStepDisabledProperty());
+        liveButton.disableProperty().bind(simulationController.getLiveDisabledProperty());
+        instantFinishButton.disableProperty().bind(simulationController.getInstantFinishDisabledProperty());
+        pauseButton.disableProperty().bind(simulationController.getPauseDisabledProperty());
     }
 }
