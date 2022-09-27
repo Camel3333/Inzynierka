@@ -133,12 +133,6 @@ public class QVoterModel implements Algorithm{
        return false;
     }
 
-    private enum ProbabilityType {
-        LINEAR,
-        NON_LINEAR,
-        BOLTZMANN
-    }
-
     private class QVoterStepReport extends StepReport{
         public void fillRoles(Vertex<Integer> agent, List<Vertex<Integer>> neighbours){
             for(Vertex<Integer> v : graph.vertices()){
