@@ -1,7 +1,6 @@
 package com.example.model;
 
 import com.brunomnsilva.smartgraph.graph.*;
-import javafx.beans.property.BooleanProperty;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -11,13 +10,17 @@ public class MyGraph<V,E> implements Graph<V,E> {
     private Map<Vertex<V>, List<Vertex<V>>> adjacency = new LinkedHashMap<>();
     private List<Edge<E, V>> edges = new ArrayList<>();
 
-    public boolean checkConsensus(){
-        if(numVertices() == 0){
-            return true;
-        }
-        BooleanProperty expectedOpinion = ((MyVertex<V>) vertices().stream().toList().get(0)).getIsSupporting();
-        return vertices().stream().allMatch(v -> ((MyVertex<V>) v).
-                getIsSupporting().getValue() == expectedOpinion.getValue());
+    public boolean checkConsensus() {
+        List<MyVertex<V>> loyalVertices = vertices().stream()
+                .map(v -> (MyVertex<V>) v)
+                .filter(v -> !v.getIsTraitor().getValue())
+                .collect(Collectors.toList());
+
+        return loyalVertices.stream()
+                .findFirst()
+                .map(u -> loyalVertices.stream()
+                            .allMatch(v -> v.getIsSupporting().getValue() == u.isSupportingOpinion().getValue()))
+                .orElse(true);
     }
 
     public int getTraitorsCount(){
