@@ -43,4 +43,9 @@ public class CommandRegistry {
     public ObservableList<Command> getAbortedCommandStack() {
         return abortedCommandStack;
     }
+
+    public void clearStacks() {
+        commandStack.clear();
+        abortedCommandStack.clear();
+    }
 }

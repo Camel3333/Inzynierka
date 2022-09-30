@@ -1,6 +1,7 @@
 package com.example.draw;
 
 import com.brunomnsilva.smartgraph.graph.Edge;
+import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.command.*;
 import com.example.controller.GraphController;
@@ -79,5 +80,10 @@ public class CreationHelper implements GraphObserver<Integer, Integer> {
                 commandRegistry.executeCommand(new DrawVertexCommand(graphController, x, y));
             }
         }
+    }
+
+    @Override
+    public void setGraph(Graph<Integer, Integer> newGraph) {
+        commandRegistry.clearStacks();
     }
 }

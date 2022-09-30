@@ -69,6 +69,7 @@ public class GraphController {
         initGraphView();
 
         colorGraphView();
+        observers.forEach(observer -> observer.setGraph(graph));
     }
 
     private void buildGraphContainers() {
