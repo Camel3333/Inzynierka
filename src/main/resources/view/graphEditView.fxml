@@ -7,12 +7,17 @@
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="com.example.controller.GraphEditController">
 
-    <Button text = "Vertex" fx:id = "vertexButton"/>
-    <Button text = "Edge" fx:id = "edgeButton"/>
-    <Button text = "Delete" fx:id = "deleteButton"/>
-    <Button text = "None" fx:id = "noneButton"/>
-    <Button text = "Undo" fx:id = "undoButton"/>
-    <Button text = "Redo" fx:id = "redoButton"/>
-    <Button text = "Simulate" fx:id = "simulateButton"/>
-    <Button text = "Draw" fx:id = "drawButton"/>
+    <Button text="Vertex" fx:id="vertexButton"/>
+    <Button text="Edge" fx:id="edgeButton"/>
+    <Button text="Delete" fx:id="deleteButton"/>
+    <Button text="None" fx:id="noneButton"/>
+    <Button text="Undo" fx:id = "undoButton"/>
+    <Button text="Redo" fx:id = "redoButton"/>
+    <Button text="Simulate" fx:id="simulateButton"/>
+    <Button text="Start" fx:id="startButton" />
+    <Button text="Next Step" fx:id="nextStepButton" />
+    <Button text="Live" fx:id="liveButton" />
+    <Button text="Instant finish" fx:id="instantFinishButton" />
+    <Button text="Pause" fx:id="pauseButton" />
+    <Button text="Draw" fx:id="drawButton"/>
 </HBox>
