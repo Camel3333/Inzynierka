@@ -4,9 +4,11 @@ import com.example.draw.DefinedGraph;
 import com.example.draw.GraphGenerator;
 import com.example.settings.AlgorithmSetting;
 import com.example.settings.IntegerSettingTextField;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Slider;
@@ -27,6 +29,9 @@ public class GenerateGraphController {
     @FXML
     private IntegerSettingTextField vertices;
 
+    @FXML
+    private ButtonType ok;
+
     @Autowired
     private GraphGenerator graphGenerator;
 
@@ -37,8 +42,10 @@ public class GenerateGraphController {
     }
 
     public void generateGraph(GraphController graphController) {
-        graphGenerator.generateGraph(graphController, selectedDefinedGraph,
-                vertices.getContainedSetting().get().getValue());
+        if (vertices.getIsValidProperty().get()) {
+            graphGenerator.generateGraph(graphController, selectedDefinedGraph,
+                    vertices.getContainedSetting().get().getValue());
+        }
     }
 
     @FXML
@@ -80,6 +87,5 @@ public class GenerateGraphController {
                 verticesSlider.setValue(newValue);
             }
         });
-
     }
 }
