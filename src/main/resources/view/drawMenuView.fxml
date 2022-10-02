@@ -12,6 +12,8 @@
         <MenuItem text="Edge" fx:id = "edgeItem"/>
         <MenuItem text="Delete" fx:id = "deleteItem"/>
         <MenuItem text="None" fx:id = "noneItem"/>
+        <MenuItem text="Undo" fx:id = "undoItem"/>
+        <MenuItem text="Redo" fx:id = "redoItem"/>
         <MenuItem text="Generate traitors" fx:id = "generateTraitorsItem"/>
         <MenuItem text="Generate graph" fx:id = "generateGraphItem"/>
     </items>
