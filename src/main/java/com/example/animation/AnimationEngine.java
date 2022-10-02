@@ -5,8 +5,8 @@ import com.brunomnsilva.smartgraph.graphview.SmartGraphVertexNode;
 import com.example.algorithm.VertexRole;
 import com.example.algorithm.operations.ChooseOperation;
 import com.example.algorithm.operations.Operation;
-import com.example.algorithm.operations.OperationType;
 import com.example.algorithm.operations.SendOperation;
+import com.example.algorithm.report.OperationsBatch;
 import com.example.algorithm.report.StepReport;
 import com.example.animation.choose.ChooseAnimationFactory;
 import com.example.animation.send.SendAnimationFactory;
@@ -19,36 +19,37 @@ import javafx.util.Duration;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
-import java.util.stream.Collectors;
 
 @Service
 public class AnimationEngine {
     @Setter
     protected GraphController graphController;
     private final AnimationRunner animationRunner = new AnimationRunner();
-    private SendAnimationFactory sendAnimationFactory = new SendAnimationFactory(new Duration(1500));
-    private ChooseAnimationFactory chooseAnimationFactory = new ChooseAnimationFactory(new Duration(3000));
+    private final SendAnimationFactory sendAnimationFactory = new SendAnimationFactory(new Duration(1500));
+    private final ChooseAnimationFactory chooseAnimationFactory = new ChooseAnimationFactory(new Duration(3000));
 
     public AnimationEngine(GraphController graphController) {
         this.graphController = graphController;
     }
 
-    public void animate(StepReport report) {
-        highlightRoles(report.getRoles());
-        Map<OperationType, List<Operation>> operationsPerType = groupOperationsByType(report.getOperations());
-        List<List<Animation>> animationsPertType = operationsPerType.entrySet()
-                .stream()
-                .map(e -> getAnimationsPerOperationType(e.getKey(), e.getValue()))
-                .toList();
-        animationsPertType.forEach(animationRunner::runAnimationsConcurrently);
+    public void animate(Operation operation) {
+        animationRunner.runAnimation(getAnimation(operation));
     }
 
-    private Map<OperationType, List<Operation>> groupOperationsByType(List<Operation> operations) {
-        return operations.stream().collect(Collectors.groupingBy(Operation::getType));
+    public void animate(StepReport report) {
+        highlightRoles(report.getRoles());
+        report.getOperationsBatches().forEach(this::animateBatch);
+    }
+
+    private void animateBatch(OperationsBatch batch) {
+        List<Animation> animations = batch.getOperations()
+                .stream()
+                .map(this::getAnimation)
+                .toList();
+        animationRunner.runAnimationsConcurrently(animations);
     }
 
     private void highlightRoles(Map<Vertex<Integer>, VertexRole> roles) {
@@ -57,38 +58,20 @@ public class AnimationEngine {
         }
     }
 
-    public void animateSend(SendOperation operation) {
-        List<Animation> sendAnimations = getAnimationsPerOperationType(OperationType.SEND, List.of(operation));
-        animationRunner.runAnimationsConcurrently(sendAnimations);
-    }
-
-    public void animateOpinionChange(ChooseOperation operation) {
-        List<Animation> chooseAnimations = getAnimationsPerOperationType(OperationType.CHOOSE, List.of(operation));
-        animationRunner.runAnimationsConcurrently(chooseAnimations);
-    }
-
-    private List<Animation> getAnimationsPerOperationType(OperationType operationType, List<Operation> operations) {
-        switch (operationType) {
+    private Animation getAnimation(Operation operation) {
+        switch (operation.getType()) {
             case SEND -> {
-                return operations
-                        .stream()
-                        .map(operation -> (SendOperation) operation)
-                        .map(sendOperation -> {
-                            Point2D fromPosition = graphController.getVertexPosition(sendOperation.getFrom());
-                            Point2D toPosition = graphController.getVertexPosition(sendOperation.getTo());
-                            return getSendAnimation(fromPosition, toPosition, sendOperation.getSentOpinion().get());
-                        })
-                        .toList();
+                SendOperation sendOperation = (SendOperation) operation;
+                Point2D fromPosition = graphController.getVertexPosition(sendOperation.getFrom());
+                Point2D toPosition = graphController.getVertexPosition(sendOperation.getTo());
+                return getSendAnimation(fromPosition, toPosition, sendOperation.getSentOpinion().get());
             }
             case CHOOSE -> {
-                return operations
-                        .stream()
-                        .map(operation -> (ChooseOperation) operation)
-                        .map(chooseOperation -> getChooseOpinionAnimation((SmartGraphVertexNode<Integer>) graphController.getGraphView().getStylableVertex(chooseOperation.getVertex().element())))
-                        .toList();
+                ChooseOperation chooseOperation = (ChooseOperation) operation;
+                return getChooseOpinionAnimation((SmartGraphVertexNode<Integer>) graphController.getGraphView().getStylableVertex(chooseOperation.getVertex().element()));
             }
         }
-        return Collections.emptyList();
+        throw new IllegalArgumentException(operation.getType() + " is not allowed");
     }
 
     private Animation getSendAnimation(Point2D from, Point2D to, boolean attack) {
@@ -120,7 +103,7 @@ public class AnimationEngine {
         return chooseAnimationFactory.getChooseOpinionAnimation(vertex, e -> graphController.changeVertexFillStyle(vertex.getUnderlyingVertex()));
     }
 
-    public void setAnimationsSpeed(Double multiplier){
+    public void setAnimationsSpeed(Double multiplier) {
         sendAnimationFactory.setDuration(sendAnimationFactory.getBaseDuration().divide(multiplier));
         chooseAnimationFactory.setDuration(chooseAnimationFactory.getBaseDuration().divide(multiplier));
     }
