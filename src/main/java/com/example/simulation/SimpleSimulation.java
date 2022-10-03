@@ -4,15 +4,21 @@ import com.example.algorithm.Algorithm;
 import com.example.algorithm.VertexRole;
 import com.example.algorithm.report.StepReport;
 import com.example.animation.AnimationEngine;
+import com.example.controller.SimulationResultController;
 import com.example.settings.AlgorithmSettings;
 import com.example.controller.GraphController;
-import com.example.model.MyGraph;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import lombok.Setter;
 
+import java.io.IOException;
 
-public class SimpleSimulation implements Simulation{
+
+public class SimpleSimulation implements Simulation {
 
     /*
     STEP -> zwraca klasę reprezentująca zmiany
@@ -32,7 +38,7 @@ public class SimpleSimulation implements Simulation{
         this.animationEngine = new AnimationEngine(graphController);
     }
 
-    public void setEnvironment(Algorithm algorithm, AlgorithmSettings settings){
+    public void setEnvironment(Algorithm algorithm, AlgorithmSettings settings) {
         this.algorithm = algorithm;
         this.settings = settings;
         this.animationEngine.setGraphController(graphController);
@@ -58,9 +64,30 @@ public class SimpleSimulation implements Simulation{
         }
         if (algorithm.isFinished()){
             removeSimulationRelatedColoring();
+            openResultDialog();
         }
         graphController.update();
         return report;
+    }
+
+    public void openResultDialog() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader();
+                    fxmlLoader.setLocation(getClass().getResource("/view/simulationResultView.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load());
+                    ((SimulationResultController)fxmlLoader.getController()).setMessage(graphController.getGraph().checkConsensus());
+                    Stage stage = new Stage();
+                    stage.setTitle("Result");
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -69,7 +96,7 @@ public class SimpleSimulation implements Simulation{
         animationEngine.setAnimationsSpeed(speedMultiplier);
     }
 
-    private void removeSimulationRelatedColoring(){
+    private void removeSimulationRelatedColoring() {
         graphController.getGraph()
                 .vertices()
                 .forEach(v -> graphController.highlightRole(v, VertexRole.NONE));
