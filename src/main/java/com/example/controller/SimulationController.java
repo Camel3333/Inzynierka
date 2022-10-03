@@ -73,10 +73,10 @@ public class SimulationController {
     @Autowired
     private StatisticsController statisticsController;
 
-    private BooleanProperty paused = new SimpleBooleanProperty(true);
-    private BooleanProperty started = new SimpleBooleanProperty(false);
-    private BooleanProperty idle = new SimpleBooleanProperty(true);
-    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
+    private final BooleanProperty paused = new SimpleBooleanProperty(true);
+    private final BooleanProperty started = new SimpleBooleanProperty(false);
+    private final BooleanProperty idle = new SimpleBooleanProperty(true);
+    private final BooleanProperty isFinished = new SimpleBooleanProperty(false);
 
     public void show() {
         parent.setVisible(true);
@@ -97,6 +97,13 @@ public class SimulationController {
                 new AlgorithmSetting<>("q", 1, Integer.class, (value) -> value >= 0));
         algorithmSettings.getSettings().put("time",
                 new AlgorithmSetting<>("time", 1, Integer.class, (value) -> value >= 0));
+    }
+
+    public void setSettingsValidation(GraphController graphController) {
+        int minDegree = graphController.getGraph().getMinDegree();
+        int maxDepth = graphController.getGraph().getMaxPath();
+        algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer)value >= 0 && (Integer)value <= maxDepth);
+        algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value >= 0 && (Integer)value < minDegree);
     }
 
     @FXML

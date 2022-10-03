@@ -1,10 +1,6 @@
 package com.example.model;
 
 import com.brunomnsilva.smartgraph.graph.*;
-import com.example.command.CommandRegistry;
-import com.example.command.DeleteEdgeCommand;
-import javafx.beans.property.BooleanProperty;
-import lombok.Setter;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,19 +23,30 @@ public class MyGraph<V,E> implements Graph<V,E> {
                 .orElse(true);
     }
 
-    public int getTraitorsCount(){
+    public int getMinDegree() {
+        return vertices().stream()
+                .mapToInt(v -> vertexNeighbours(v).size())
+                .min()
+                .orElse(0);
+    }
+
+    public int getMaxPath() {
+        return numVertices() - 1; //todo longest path algorithm
+    }
+
+    public int getTraitorsCount() {
         return (int) vertices().stream()
                 .filter(v -> ((MyVertex<Integer>) v).isTraitor().getValue())
                 .count();
     }
 
-    public int getSupportingOpinionCount(){
+    public int getSupportingOpinionCount() {
         return (int) vertices().stream()
                 .filter(v -> ((MyVertex<Integer>) v).isSupportingOpinion().getValue())
                 .count();
     }
 
-    public int getNotSupportingOpinionCount(){
+    public int getNotSupportingOpinionCount() {
         return (int) vertices().stream()
                 .filter(v -> !((MyVertex<Integer>) v).isSupportingOpinion().getValue())
                 .count();

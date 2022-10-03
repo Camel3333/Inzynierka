@@ -6,7 +6,6 @@ import com.example.algorithm.report.StepReport;
 import com.example.animation.AnimationEngine;
 import com.example.settings.AlgorithmSettings;
 import com.example.controller.GraphController;
-import com.example.model.MyGraph;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Setter;
