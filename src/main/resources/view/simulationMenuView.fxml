@@ -6,14 +6,14 @@
       fx:controller="com.example.controller.SimulationMenuController"
       text="Simulate">
 
-    <MenuItem text="Start" fx:id="startItem"/>
-    <MenuItem text="Next Step" fx:id="nextStepItem"/>
-    <MenuItem text="Live" fx:id="liveItem"/>
-    <MenuItem text="Instant finish" fx:id="instantFinishItem"/>
-    <MenuItem text="Pause" fx:id="pauseItem"/>
     <CustomMenuItem>
         <content>
             <ToggleButton text="Simulate" fx:id="simulateItem" onAction="#changeApplicationState"/>
         </content>
     </CustomMenuItem>
+    <MenuItem text="Start" fx:id="startItem"/>
+    <MenuItem text="Next Step" fx:id="nextStepItem"/>
+    <MenuItem text="Live" fx:id="liveItem"/>
+    <MenuItem text="Instant finish" fx:id="instantFinishItem"/>
+    <MenuItem text="Pause" fx:id="pauseItem"/>
 </Menu>
