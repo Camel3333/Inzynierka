@@ -83,6 +83,8 @@ public class SimulationController {
     private BooleanProperty idle = new SimpleBooleanProperty(true);
     private BooleanProperty isFinished = new SimpleBooleanProperty(false);
 
+    private Stage documentationStage = null;
+
     public void show() {
         parent.setVisible(true);
         parent.setManaged(true);
@@ -304,13 +306,23 @@ public class SimulationController {
     }
 
     public void openDocumentation(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("/view/documentation.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        Stage stage = new Stage();
-        stage.setTitle("Documentation");
-        stage.setScene(scene);
-        stage.show();
+        if (documentationStage == null) {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/view/documentationView.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setResizable(false);
+            stage.setTitle("Documentation");
+            stage.setScene(scene);
+            stage.show();
+            documentationStage = stage;
+        }
+        else {
+            if (!documentationStage.isShowing()) documentationStage.show();
+            if (documentationStage.isIconified()) documentationStage.setIconified(false);
+            documentationStage.toFront();
+        }
+
 
     }
 
