@@ -5,6 +5,7 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ToggleButton;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,8 +25,8 @@ public class SimulationMenuController {
     @FXML
     public MenuItem pauseItem;
     @FXML
-    private MenuItem simulateItem;
-
+    public ToggleButton simulateItem;
+    
     private final AppController appController;
 
     @Autowired

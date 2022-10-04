@@ -79,6 +79,8 @@ public class GraphEditController {
 
     public void setSimulationMenuController(SimulationMenuController controller) {
         simulationMenuController = controller;
+        simulateButton.selectedProperty().unbind();
+        simulateButton.selectedProperty().bindBidirectional(simulationMenuController.simulateItem.selectedProperty());
     }
 
     public void setSimulationController(SimulationController simulationController) {
