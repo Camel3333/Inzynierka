@@ -10,11 +10,12 @@ import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
-import lombok.Setter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
-public class QVoterModel implements Algorithm{
+public class QVoterModel implements Algorithm {
     private MyGraph<Integer, Integer> graph;
     private MyVertex<Integer> selectedAgent;
     private List<Boolean> opinionsReceived;
@@ -35,20 +36,21 @@ public class QVoterModel implements Algorithm{
     @Override
     public void loadEnvironment(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
         this.graph = graph;
-        maxTime = (int)settings.getSettings().get("time").getValue();
-        q = (int)settings.getSettings().get("q").getValue();
+        maxTime = (int) settings.getSettings().get("time").getValue();
+        q = (int) settings.getSettings().get("q").getValue();
+        probabilityType = (ProbabilityType) settings.getSettings().get("probability").getValue();
     }
 
     @Override
     public StepReport step() {
-        switch (algorithmPhase){
+        switch (algorithmPhase) {
             case SEND -> {
                 algorithmPhase = AlgorithmPhase.CHOOSE;
                 return sendOpinions();
             }
             case CHOOSE -> {
                 algorithmPhase = AlgorithmPhase.SEND;
-                time ++;
+                time++;
                 checkIsFinished();
                 return makeDecision();
             }
@@ -65,7 +67,7 @@ public class QVoterModel implements Algorithm{
         report.fillRoles(selectedAgent, agentNeighbours);
 
         opinionsReceived = new ArrayList<>();
-        for(Vertex<Integer> neighbour : agentNeighbours){
+        for (Vertex<Integer> neighbour : agentNeighbours) {
             BooleanProperty opinion = ((MyVertex<Integer>) neighbour).getNextOpinion(selectedAgent);
             opinionsReceived.add(opinion.getValue());
             report.getOperations().add(new SendOperation(neighbour, selectedAgent, opinion));
@@ -82,7 +84,7 @@ public class QVoterModel implements Algorithm{
 
         report.fillRoles(selectedAgent, null);
 
-        if(shouldAcceptNeighboursOpinion()){
+        if (shouldAcceptNeighboursOpinion()) {
             selectedAgent.setIsSupporting(opinionsReceived.get(0));
         }
         report.getOperations().add(new ChooseOperation(selectedAgent, selectedAgent.getIsSupporting()));
@@ -93,7 +95,7 @@ public class QVoterModel implements Algorithm{
         return report;
     }
 
-    private boolean shouldAcceptNeighboursOpinion(){
+    private boolean shouldAcceptNeighboursOpinion() {
         return opinionsReceived.stream().distinct().count() <= 1 || checkProbability();
     }
 
@@ -108,12 +110,12 @@ public class QVoterModel implements Algorithm{
     }
 
     private void checkIsFinished() {
-        if(time == maxTime){
+        if (time == maxTime) {
             isFinished.setValue(true);
         }
     }
 
-    private List<Vertex<Integer>> getNeighbours(Vertex<Integer> vertex){
+    private List<Vertex<Integer>> getNeighbours(Vertex<Integer> vertex) {
         Random rand = new Random();
         List<Vertex<Integer>> neighbours = new ArrayList<>(graph.vertexNeighbours(vertex));
         List<Vertex<Integer>> selectedNeighbours = new ArrayList<>();
@@ -124,25 +126,26 @@ public class QVoterModel implements Algorithm{
         return selectedNeighbours;
     }
 
-    private boolean checkProbability(){
-        switch (probabilityType){
+    private boolean checkProbability() {
+        switch (probabilityType) {
             case LINEAR -> {
                 return new Random().nextInt(maxTime) <= time;
             }
+            case BOLTZMANN -> {
+                return new Random().nextDouble() <= Math.sqrt(time / (double) maxTime);
+            }
         }
-       return false;
+        return false;
     }
 
-    private class QVoterStepReport extends StepReport{
-        public void fillRoles(Vertex<Integer> agent, List<Vertex<Integer>> neighbours){
-            for(Vertex<Integer> v : graph.vertices()){
-                if(v.equals(agent)){
+    private class QVoterStepReport extends StepReport {
+        public void fillRoles(Vertex<Integer> agent, List<Vertex<Integer>> neighbours) {
+            for (Vertex<Integer> v : graph.vertices()) {
+                if (v.equals(agent)) {
                     getRoles().put(v, VertexRole.VOTER);
-                }
-                else if(neighbours != null && neighbours.contains(v)){
+                } else if (neighbours != null && neighbours.contains(v)) {
                     getRoles().put(v, VertexRole.NEIGHBOUR);
-                }
-                else{
+                } else {
                     getRoles().put(v, VertexRole.NONE);
                 }
             }
