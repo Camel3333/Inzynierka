@@ -4,7 +4,6 @@ import com.brunomnsilva.smartgraph.graph.InvalidVertexException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -295,6 +294,73 @@ public class MyGraphTest {
         // Then
         assertEquals(startElement, oldElement);
         assertEquals(newElement, e1.element());
+    }
+
+    @Test
+    public void consensusReachedWhenGraphEmpty(){
+        // Given
+
+        // When
+
+        // Then
+        assertTrue(graph.checkConsensus());
+    }
+
+    @Test
+    public void consensusReachedWhenAllTraitor(){
+        // Given
+        var v1 = (MyVertex<Integer>) graph.insertVertex(1);
+        var v2 = (MyVertex<Integer>) graph.insertVertex(2);
+
+        // When
+        v1.setIsTraitor(true);
+        v2.setIsTraitor(true);
+
+        v1.setIsSupporting(true);
+        v2.setIsSupporting(false);
+
+        // Then
+        assertTrue(graph.checkConsensus());
+    }
+
+    @Test
+    public void consensusReachedWhenTraitorsDisagree(){
+        // Given
+        var v1 = (MyVertex<Integer>) graph.insertVertex(1);
+        var v2 = (MyVertex<Integer>) graph.insertVertex(2);
+        var v3 = (MyVertex<Integer>) graph.insertVertex(3);
+        var v4 = (MyVertex<Integer>) graph.insertVertex(4);
+
+        // When
+        v1.setIsTraitor(true);
+        v2.setIsTraitor(true);
+        v3.setIsTraitor(false);
+        v4.setIsTraitor(false);
+
+        v1.setIsSupporting(true);
+        v2.setIsSupporting(false);
+        v3.setIsSupporting(true);
+        v4.setIsSupporting(true);
+
+        // Then
+        assertTrue(graph.checkConsensus());
+    }
+
+    @Test
+    public void consensusNotReachedWhenLoyalGeneralsDisagree(){
+        // Given
+        var v1 = (MyVertex<Integer>) graph.insertVertex(1);
+        var v2 = (MyVertex<Integer>) graph.insertVertex(2);
+
+        // When
+        v1.setIsTraitor(false);
+        v2.setIsTraitor(false);
+
+        v1.setIsSupporting(true);
+        v2.setIsSupporting(false);
+
+        // Then
+        assertFalse(graph.checkConsensus());
     }
 
 }

@@ -3,6 +3,7 @@ package com.example.algorithm;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.algorithm.operations.ChooseOperation;
 import com.example.algorithm.operations.SendOperation;
+import com.example.algorithm.report.OperationsBatch;
 import com.example.algorithm.report.StepReport;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
@@ -66,16 +67,16 @@ public class QVoterModel implements Algorithm {
         List<Vertex<Integer>> agentNeighbours = getNeighbours(selectedAgent);
         report.fillRoles(selectedAgent, agentNeighbours);
 
+        OperationsBatch operationsBatch = new OperationsBatch();
         opinionsReceived = new ArrayList<>();
         for (Vertex<Integer> neighbour : agentNeighbours) {
             BooleanProperty opinion = ((MyVertex<Integer>) neighbour).getNextOpinion(selectedAgent);
             opinionsReceived.add(opinion.getValue());
-            report.getOperations().add(new SendOperation(neighbour, selectedAgent, opinion));
+            operationsBatch.add(new SendOperation(neighbour, selectedAgent, opinion));
         }
-
+        report.addBatch(operationsBatch);
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
-
         return report;
     }
 
@@ -87,11 +88,12 @@ public class QVoterModel implements Algorithm {
         if (shouldAcceptNeighboursOpinion()) {
             selectedAgent.setIsSupporting(opinionsReceived.get(0));
         }
-        report.getOperations().add(new ChooseOperation(selectedAgent, selectedAgent.getIsSupporting()));
+        OperationsBatch operationsBatch = new OperationsBatch();
+        operationsBatch.add(new ChooseOperation(selectedAgent, selectedAgent.getIsSupporting()));
 
+        report.addBatch(operationsBatch);
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
-
         return report;
     }
 
