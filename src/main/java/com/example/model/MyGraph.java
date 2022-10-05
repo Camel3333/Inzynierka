@@ -3,6 +3,7 @@ package com.example.model;
 import com.brunomnsilva.smartgraph.graph.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class MyGraph<V,E> implements Graph<V,E> {
@@ -30,8 +31,28 @@ public class MyGraph<V,E> implements Graph<V,E> {
                 .orElse(0);
     }
 
-    public int getMaxPath() {
-        return numVertices() - 1; //todo longest path algorithm
+    public int getLongestPath() {
+        AtomicInteger maxPathLength = new AtomicInteger();
+        vertices().forEach(v -> DFS(v, 0, new ArrayList<>(), maxPathLength));
+        return maxPathLength.get();
+    }
+
+    public int getLongestPathFor(Vertex<V> vertex) {
+        AtomicInteger maxPathLength = new AtomicInteger();
+        DFS(vertex, 0, new ArrayList<>(), maxPathLength);
+        return maxPathLength.get();
+    }
+
+    private void DFS(Vertex<V> vertex, int previousLength, ArrayList<Vertex<V>> visited, AtomicInteger maxLength) {
+        visited.add(vertex);
+        for(Vertex<V> neighbour : vertexNeighbours(vertex)) {
+            if (!visited.contains(neighbour)) {
+                DFS(neighbour, previousLength + 1, visited, maxLength);
+                if (maxLength.get() < previousLength + 1) {
+                    maxLength.set(previousLength + 1);
+                }
+            }
+        }
     }
 
     public int getTraitorsCount() {

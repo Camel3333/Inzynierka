@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.algorithm.AlgorithmType;
 import com.example.algorithm.report.StepReport;
 import com.example.settings.*;
@@ -100,9 +101,11 @@ public class SimulationController {
     }
 
     public void setSettingsValidation(GraphController graphController) {
-        int minDegree = graphController.getGraph().getMinDegree();
-        int maxDepth = graphController.getGraph().getMaxPath();
+        Vertex<Integer> commander = graphController.getGraph().vertices().stream().toList().get(0);
+        int maxDepth = graphController.getGraph().getLongestPathFor(commander);
         algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer)value >= 0 && (Integer)value <= maxDepth);
+
+        int minDegree = graphController.getGraph().getMinDegree();
         algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value >= 0 && (Integer)value < minDegree);
     }
 
