@@ -55,8 +55,6 @@ public class SimulationMenuController {
         pauseItem.setOnAction(e -> appController.getSimulationController().pause());
     }
 
-    public void setEnabled(boolean enabled) {}
-
     public void bindItems() {
         SimulationController simulationController = appController.getSimulationController();
         ObjectProperty<ApplicationState> applicationState = appController.getApplicationStateProperty();
