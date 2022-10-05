@@ -1,7 +1,10 @@
 package com.example.model;
 
 import com.brunomnsilva.smartgraph.graph.*;
+import com.example.command.CommandRegistry;
+import com.example.command.DeleteEdgeCommand;
 import javafx.beans.property.BooleanProperty;
+import lombok.Setter;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -11,13 +14,17 @@ public class MyGraph<V,E> implements Graph<V,E> {
     private Map<Vertex<V>, List<Vertex<V>>> adjacency = new LinkedHashMap<>();
     private List<Edge<E, V>> edges = new ArrayList<>();
 
-    public boolean checkConsensus(){
-        if(numVertices() == 0){
-            return true;
-        }
-        BooleanProperty expectedOpinion = ((MyVertex<V>) vertices().stream().toList().get(0)).getIsSupporting();
-        return vertices().stream().allMatch(v -> ((MyVertex<V>) v).
-                getIsSupporting().getValue() == expectedOpinion.getValue());
+    public boolean checkConsensus() {
+        List<MyVertex<V>> loyalVertices = vertices().stream()
+                .map(v -> (MyVertex<V>) v)
+                .filter(v -> !v.getIsTraitor().getValue())
+                .collect(Collectors.toList());
+
+        return loyalVertices.stream()
+                .findFirst()
+                .map(u -> loyalVertices.stream()
+                            .allMatch(v -> v.getIsSupporting().getValue() == u.isSupportingOpinion().getValue()))
+                .orElse(true);
     }
 
     public int getTraitorsCount(){
@@ -36,6 +43,13 @@ public class MyGraph<V,E> implements Graph<V,E> {
         return (int) vertices().stream()
                 .filter(v -> !((MyVertex<Integer>) v).isSupportingOpinion().getValue())
                 .count();
+    }
+
+    public Vertex<V> getVertexByKey(V key) {
+        if (vertices.containsKey(key)) {
+            return vertices.get(key);
+        }
+        return null;
     }
 
     @Override
@@ -89,6 +103,16 @@ public class MyGraph<V,E> implements Graph<V,E> {
         return edges.stream()
                 .filter(e -> ((MyEdge) e).contains(v1) && ((MyEdge) e).contains(v2))
                 .collect(Collectors.toList());
+    }
+
+    public Collection<Edge<E,V>> edgesBetween(V v1, V v2){
+        Vertex<V> firstVertex = vertices.get(v1);
+        Vertex<V> secondVertex = vertices.get(v2);
+
+        if(firstVertex == null || secondVertex == null) {
+            return new ArrayList<>();
+        }
+        return edgesBetween(firstVertex, secondVertex);
     }
 
     public Collection<Vertex<V>> vertexNeighbours(Vertex<V> v){

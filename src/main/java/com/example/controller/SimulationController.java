@@ -209,6 +209,9 @@ public class SimulationController {
 
         startDisabledProperty.unbind();
         startDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
+                    if (simulation.isGraphEmpty()) {
+                        return true;
+                    }
                     if (isFinished.get() && idle.get()) {
                         return false;
                     }

@@ -1,11 +1,14 @@
 package com.example.draw;
 
 import com.brunomnsilva.smartgraph.graph.Edge;
+import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import com.example.command.*;
 import com.example.controller.GraphController;
 import com.example.util.GraphObserver;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class CreationHelper implements GraphObserver<Integer, Integer> {
     @Setter
@@ -14,6 +17,8 @@ public class CreationHelper implements GraphObserver<Integer, Integer> {
     @Getter
     private DrawMode currentDrawMode = DrawMode.NONE;
     private Vertex<Integer> selectedToEdge;
+    @Getter
+    private CommandRegistry commandRegistry = new CommandRegistry();
 
     public void setDrawMode(DrawMode mode){
         if (currentDrawMode != mode){
@@ -39,14 +44,12 @@ public class CreationHelper implements GraphObserver<Integer, Integer> {
                     selectedToEdge = vertex;
                 }
                 else {
-                    graphController.getGraph().insertEdge(selectedToEdge, vertex, 1);
+                    commandRegistry.executeCommand(new DrawEdgeCommand(graphController, selectedToEdge, vertex));
                     selectedToEdge = null;
-                    graphController.update();
                 }
             }
             case DELETE -> {
-                graphController.getGraph().removeVertex(vertex);
-                graphController.update();
+                commandRegistry.executeCommand(new DeleteVertexCommand(graphController, vertex));
             }
         }
     }
@@ -55,10 +58,7 @@ public class CreationHelper implements GraphObserver<Integer, Integer> {
     public void edgeClicked(Edge<Integer, Integer> edge) {
         System.out.println("SELECT EDGE WAS CALLED");
         switch (currentDrawMode){
-            case DELETE -> {
-                graphController.getGraph().removeEdge(edge);
-                graphController.update();
-            }
+            case DELETE -> commandRegistry.executeCommand(new DeleteEdgeCommand(graphController, edge));
         }
     }
 
@@ -77,12 +77,13 @@ public class CreationHelper implements GraphObserver<Integer, Integer> {
         switch (currentDrawMode){
             case VERTEX -> {
                 // add vertex at clicked position
-                var vertex = graphController.getGraph().insertVertex(graphController.getNextVertexId());
-                graphController.update();
-                graphController.setVertexPosition(vertex, x, y);
-                graphController.colorVertex(vertex);
-                graphController.addVertexListeners(vertex);
+                commandRegistry.executeCommand(new DrawVertexCommand(graphController, x, y));
             }
         }
+    }
+
+    @Override
+    public void setGraph(Graph<Integer, Integer> newGraph) {
+        commandRegistry.clearStacks();
     }
 }

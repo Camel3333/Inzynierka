@@ -29,6 +29,10 @@ public class GraphEditController {
     @FXML
     private ToggleButton simulateButton;
     @FXML
+    private Button undoButton;
+    @FXML
+    private Button redoButton;
+    @FXML
     private Button startButton;
     @FXML
     private Button nextStepButton;
@@ -48,8 +52,10 @@ public class GraphEditController {
         edgeButton.setOnAction(e -> drawMenuController.selectMode(DrawMode.EDGE));
         deleteButton.setOnAction(e -> drawMenuController.selectMode(DrawMode.DELETE));
         noneButton.setOnAction(e -> drawMenuController.selectMode(DrawMode.NONE));
+        undoButton.setOnAction(e -> drawMenuController.undo());
+        redoButton.setOnAction(e -> drawMenuController.redo());
         buttons.put(ApplicationState.DRAWING,
-                List.of(vertexButton, edgeButton, deleteButton, noneButton));
+                List.of(vertexButton, edgeButton, deleteButton, noneButton, undoButton, redoButton));
     }
 
     private void initializeSimulationButtons() {
@@ -75,6 +81,8 @@ public class GraphEditController {
 
     public void setDrawMenuController(DrawMenuController controller) {
         drawMenuController = controller;
+        undoButton.disableProperty().bind(drawMenuController.undoItemDisableProperty());
+        redoButton.disableProperty().bind(drawMenuController.redoItemDisableProperty());
     }
 
     public void setSimulationMenuController(SimulationMenuController controller) {

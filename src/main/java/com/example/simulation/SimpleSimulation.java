@@ -73,4 +73,8 @@ public class SimpleSimulation implements Simulation {
                 .vertices()
                 .forEach(v -> graphController.highlightRole(v, VertexRole.NONE));
     }
+
+    public boolean isGraphEmpty() {
+        return graphController.getGraph().vertices().isEmpty();
+    }
 }
