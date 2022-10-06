@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.algorithm.AlgorithmType;
+import com.example.algorithm.operations.Operation;
 import com.example.algorithm.report.StepReport;
 import com.example.settings.*;
 import com.example.simulation.SimpleSimulation;
@@ -77,6 +78,9 @@ public class SimulationController {
 
     @Autowired
     private StatisticsController statisticsController;
+
+    @Autowired
+    private LoggerController loggerController;
 
     private BooleanProperty paused = new SimpleBooleanProperty(true);
     private BooleanProperty started = new SimpleBooleanProperty(false);
@@ -252,11 +256,15 @@ public class SimulationController {
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), algorithmSettings);
         ((SimpleSimulation) simulation).loadEnvironment();
         isFinished.bind(((SimpleSimulation) simulation).getIsFinishedProperty());
+        loggerController.addItem("[Start] Simulation started with " + selectedAlgorithm + " algorithm.");
         started.set(true);
     }
 
     private void processStep() {
         StepReport report = simulation.step();
+        for (Operation operation : report.getOperations()) {
+            loggerController.addItem("[Event] " + operation.getDescription());
+        }
         statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
     }
 
@@ -265,6 +273,7 @@ public class SimulationController {
             processStep();
 
             if (isFinished.get()) {
+                loggerController.addItem("[Finished] Simulation finished");
                 System.out.println("Finished");
             }
         }
@@ -278,6 +287,7 @@ public class SimulationController {
                 return;
             }
         }
+        loggerController.addItem("[Finished] Simulation finished");
         System.out.println("Finished");
     }
 
@@ -286,6 +296,7 @@ public class SimulationController {
         while(!isFinished.get()) {
             processStep();
         }
+        loggerController.addItem("[Finished] Simulation finished");
         System.out.println("Finished");
     }
 

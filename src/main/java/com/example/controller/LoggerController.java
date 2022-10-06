@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -13,17 +14,10 @@ public class LoggerController {
 
     @FXML
     public void initialize() {
-        addItem("test1");
-        addItem("test2");
     }
 
     public void addItem(String item) {
-        listView.getItems().add(item);
+        Platform.runLater(() -> listView.getItems().add(item));
     }
-
-    public void showAll() {
-
-    }
-
 
 }
