@@ -12,6 +12,7 @@ import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;
 import com.example.util.GraphObserver;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -225,5 +226,15 @@ public class GraphController {
 
     public int getNextVertexId() {
         return vertexIdCounter++;
+    }
+
+    public void enableGraphInteractions(boolean enable)
+    {
+        graphView.setDisable(!enable);
+    }
+
+    public BooleanProperty getGraphInteractionsProperty()
+    {
+        return graphView.disableProperty();
     }
 }
