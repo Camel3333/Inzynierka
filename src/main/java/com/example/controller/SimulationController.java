@@ -106,7 +106,7 @@ public class SimulationController {
         algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer)value >= 0 && (Integer)value <= maxDepth);
 
         int minDegree = graphController.getGraph().getMinDegree();
-        algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value >= 0 && (Integer)value < minDegree);
+        algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value >= 0 && (Integer)value <= minDegree);
     }
 
     @FXML
