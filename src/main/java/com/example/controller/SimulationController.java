@@ -5,6 +5,7 @@ import com.example.algorithm.report.StepReport;
 import com.example.settings.*;
 import com.example.simulation.SimpleSimulation;
 import com.example.simulation.Simulation;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -13,15 +14,19 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -72,6 +77,9 @@ public class SimulationController {
 
     @Autowired
     private StatisticsController statisticsController;
+
+    @Autowired
+    private GraphController graphController;
 
     private BooleanProperty paused = new SimpleBooleanProperty(true);
     private BooleanProperty started = new SimpleBooleanProperty(false);
@@ -252,12 +260,33 @@ public class SimulationController {
         statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
     }
 
+    public void openResultDialog() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader();
+                    fxmlLoader.setLocation(getClass().getResource("/view/simulationResultView.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load());
+                    ((SimulationResultController)fxmlLoader.getController()).setMessage(graphController.getGraph().checkConsensus());
+                    Stage stage = new Stage();
+                    stage.setTitle("Result");
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        });
+    }
+
     public void doStepTask() {
         if (!isFinished.get()) {
             processStep();
 
             if (isFinished.get()) {
                 System.out.println("Finished");
+                openResultDialog();
             }
         }
     }
@@ -271,6 +300,7 @@ public class SimulationController {
             }
         }
         System.out.println("Finished");
+        openResultDialog();
     }
 
     private void instantFinishTask() {
@@ -279,6 +309,7 @@ public class SimulationController {
             processStep();
         }
         System.out.println("Finished");
+        openResultDialog();
     }
 
     public void pause() {
