@@ -8,8 +8,11 @@
       fx:controller="com.example.controller.SimulationMenuController"
       text="Simulate">
 
-    <items>
-        <MenuItem text="Simulate" fx:id = "simulateItem"/>
-        <MenuItem text="Draw" fx:id = "drawItem"/>
-    </items>
+    <MenuItem text="Start" fx:id="startItem"/>
+    <MenuItem text="Next Step" fx:id="nextStepItem"/>
+    <MenuItem text="Live" fx:id="liveItem"/>
+    <MenuItem text="Instant finish" fx:id="instantFinishItem"/>
+    <MenuItem text="Pause" fx:id="pauseItem"/>
+    <MenuItem text="Simulate" fx:id="simulateItem"/>
+    <MenuItem text="Draw" fx:id="drawItem"/>
 </Menu>

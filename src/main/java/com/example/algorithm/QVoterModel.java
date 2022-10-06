@@ -3,6 +3,7 @@ package com.example.algorithm;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.algorithm.operations.ChooseOperation;
 import com.example.algorithm.operations.SendOperation;
+import com.example.algorithm.report.OperationsBatch;
 import com.example.algorithm.report.StepReport;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
@@ -10,11 +11,12 @@ import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
-import lombok.Setter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
-public class QVoterModel implements Algorithm{
+public class QVoterModel implements Algorithm {
     private MyGraph<Integer, Integer> graph;
     private MyVertex<Integer> selectedAgent;
     private List<Boolean> opinionsReceived;
@@ -35,20 +37,20 @@ public class QVoterModel implements Algorithm{
     @Override
     public void loadEnvironment(MyGraph<Integer, Integer> graph, AlgorithmSettings settings) {
         this.graph = graph;
-        maxTime = (int)settings.getSettings().get("time").getValue();
-        q = (int)settings.getSettings().get("q").getValue();
+        maxTime = (int) settings.getSettings().get("time").getValue();
+        q = (int) settings.getSettings().get("q").getValue();
     }
 
     @Override
     public StepReport step() {
-        switch (algorithmPhase){
+        switch (algorithmPhase) {
             case SEND -> {
                 algorithmPhase = AlgorithmPhase.CHOOSE;
                 return sendOpinions();
             }
             case CHOOSE -> {
                 algorithmPhase = AlgorithmPhase.SEND;
-                time ++;
+                time++;
                 checkIsFinished();
                 return makeDecision();
             }
@@ -64,16 +66,16 @@ public class QVoterModel implements Algorithm{
         List<Vertex<Integer>> agentNeighbours = getNeighbours(selectedAgent);
         report.fillRoles(selectedAgent, agentNeighbours);
 
+        OperationsBatch operationsBatch = new OperationsBatch();
         opinionsReceived = new ArrayList<>();
-        for(Vertex<Integer> neighbour : agentNeighbours){
+        for (Vertex<Integer> neighbour : agentNeighbours) {
             BooleanProperty opinion = ((MyVertex<Integer>) neighbour).getNextOpinion(selectedAgent);
             opinionsReceived.add(opinion.getValue());
-            report.getOperations().add(new SendOperation(neighbour, selectedAgent, opinion));
+            operationsBatch.add(new SendOperation(neighbour, selectedAgent, opinion));
         }
-
+        report.addBatch(operationsBatch);
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
-
         return report;
     }
 
@@ -82,18 +84,19 @@ public class QVoterModel implements Algorithm{
 
         report.fillRoles(selectedAgent, null);
 
-        if(shouldAcceptNeighboursOpinion()){
+        if (shouldAcceptNeighboursOpinion()) {
             selectedAgent.setIsSupporting(opinionsReceived.get(0));
         }
-        report.getOperations().add(new ChooseOperation(selectedAgent, selectedAgent.getIsSupporting()));
+        OperationsBatch operationsBatch = new OperationsBatch();
+        operationsBatch.add(new ChooseOperation(selectedAgent, selectedAgent.getIsSupporting()));
 
+        report.addBatch(operationsBatch);
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
-
         return report;
     }
 
-    private boolean shouldAcceptNeighboursOpinion(){
+    private boolean shouldAcceptNeighboursOpinion() {
         return opinionsReceived.stream().distinct().count() <= 1 || checkProbability();
     }
 
@@ -108,12 +111,12 @@ public class QVoterModel implements Algorithm{
     }
 
     private void checkIsFinished() {
-        if(time == maxTime){
+        if (time == maxTime) {
             isFinished.setValue(true);
         }
     }
 
-    private List<Vertex<Integer>> getNeighbours(Vertex<Integer> vertex){
+    private List<Vertex<Integer>> getNeighbours(Vertex<Integer> vertex) {
         Random rand = new Random();
         List<Vertex<Integer>> neighbours = new ArrayList<>(graph.vertexNeighbours(vertex));
         List<Vertex<Integer>> selectedNeighbours = new ArrayList<>();
@@ -124,13 +127,13 @@ public class QVoterModel implements Algorithm{
         return selectedNeighbours;
     }
 
-    private boolean checkProbability(){
-        switch (probabilityType){
+    private boolean checkProbability() {
+        switch (probabilityType) {
             case LINEAR -> {
                 return new Random().nextInt(maxTime) <= time;
             }
         }
-       return false;
+        return false;
     }
 
     private enum ProbabilityType {
@@ -139,16 +142,14 @@ public class QVoterModel implements Algorithm{
         BOLTZMANN
     }
 
-    private class QVoterStepReport extends StepReport{
-        public void fillRoles(Vertex<Integer> agent, List<Vertex<Integer>> neighbours){
-            for(Vertex<Integer> v : graph.vertices()){
-                if(v.equals(agent)){
+    private class QVoterStepReport extends StepReport {
+        public void fillRoles(Vertex<Integer> agent, List<Vertex<Integer>> neighbours) {
+            for (Vertex<Integer> v : graph.vertices()) {
+                if (v.equals(agent)) {
                     getRoles().put(v, VertexRole.VOTER);
-                }
-                else if(neighbours != null && neighbours.contains(v)){
+                } else if (neighbours != null && neighbours.contains(v)) {
                     getRoles().put(v, VertexRole.NEIGHBOUR);
-                }
-                else{
+                } else {
                     getRoles().put(v, VertexRole.NONE);
                 }
             }

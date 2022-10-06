@@ -9,5 +9,6 @@ public interface Simulation {
     void allowAnimations(boolean allow);
     StepReport step();
     void setAnimationsSpeed(double speedMultiplier);
+    boolean isGraphEmpty();
 }
 
