@@ -91,22 +91,28 @@ public class SimulationController {
 
     private void setDefaultSettings() {
         algorithmSettings.getSettings().put("depth",
-                new AlgorithmSetting<>("depth", 1, Integer.class, (value) -> value >= 0));
+                new AlgorithmSetting<>("depth", 1, Integer.class, (value) -> value > 0));
         algorithmSettings.getSettings().put("phase",
-                new AlgorithmSetting<>("phase", 1, Integer.class, (value) -> value >= 0));
+                new AlgorithmSetting<>("phase", 1, Integer.class, (value) -> value > 0));
         algorithmSettings.getSettings().put("q",
                 new AlgorithmSetting<>("q", 1, Integer.class, (value) -> value >= 0));
         algorithmSettings.getSettings().put("time",
-                new AlgorithmSetting<>("time", 1, Integer.class, (value) -> value >= 0));
+                new AlgorithmSetting<>("time", 1, Integer.class, (value) -> value > 0));
     }
 
     public void setSettingsValidation(GraphController graphController) {
-        Vertex<Integer> commander = graphController.getGraph().vertices().stream().toList().get(0);
-        int maxDepth = graphController.getGraph().getLongestPathFor(commander);
-        algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer)value >= 0 && (Integer)value <= maxDepth);
+        if(graphController.getGraph().numVertices() == 0) {
+            algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer)value == 0);
+            algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer)value == 0);
+        }
+        else {
+            Vertex<Integer> commander = graphController.getGraph().vertices().stream().toList().get(0);
+            int maxDepth = graphController.getGraph().getLongestPathFor(commander);
+            algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer)value > 0 && (Integer)value <= maxDepth);
 
-        int minDegree = graphController.getGraph().getMinDegree();
-        algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value >= 0 && (Integer)value <= minDegree);
+            int minDegree = graphController.getGraph().getMinDegree();
+            algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value >= 0 && (Integer)value <= minDegree);
+        }
     }
 
     @FXML
@@ -153,21 +159,17 @@ public class SimulationController {
         dependenciesList.add(isFinished);
         Observable[] dependencies = dependenciesList.toArray(new Observable[0]);
 
-        nextStepDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-            return !(idle.get() && started.get() && !isFinished.get());
-        }, dependencies));
+        nextStepDisabledProperty.bind(Bindings.createBooleanBinding(() ->
+                !(idle.get() && started.get() && !isFinished.get()), dependencies));
 
-        liveDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-            return !(idle.get() && started.get() && !isFinished.get());
-        }, dependencies));
+        liveDisabledProperty.bind(Bindings.createBooleanBinding(() ->
+                !(idle.get() && started.get() && !isFinished.get()), dependencies));
 
-        instantFinishDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-            return !(idle.get() && started.get() && !isFinished.get());
-        }, dependencies));
+        instantFinishDisabledProperty.bind(Bindings.createBooleanBinding(() ->
+                !(idle.get() && started.get() && !isFinished.get()), dependencies));
 
-        pauseDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-            return !(!paused.get() && started.get() && !isFinished.get());
-        }, dependencies));
+        pauseDisabledProperty.bind(Bindings.createBooleanBinding(() ->
+                !(!paused.get() && started.get() && !isFinished.get()), dependencies));
     }
 
     private void showAlgorithmSettings(AlgorithmType algorithmType) {
