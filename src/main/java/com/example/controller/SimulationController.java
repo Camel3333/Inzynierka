@@ -266,7 +266,7 @@ public class SimulationController {
     private void processStep() {
         StepReport report = simulation.step();
         for (OperationsBatch operationBatch : report.getOperationsBatches()) {
-            loggerController.addItem("Next batch");
+            loggerController.addItem("");
             for (Operation operation : operationBatch.getOperations()) loggerController.addItem("[Event] " + operation.getDescription());
         }
         statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
