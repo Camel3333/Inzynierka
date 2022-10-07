@@ -48,7 +48,9 @@ public class SimpleSimulation implements Simulation {
     public StepReport step() {
         StepReport report = algorithm.step();
         if (allowAnimations.get()) {
+            graphController.enableGraphInteractions(false);
             animationEngine.animate(report);
+            graphController.enableGraphInteractions(true);
         }
         if (algorithm.isFinished()) {
             removeSimulationRelatedColoring();
