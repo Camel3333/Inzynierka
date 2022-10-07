@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.algorithm.AlgorithmType;
 import com.example.algorithm.operations.Operation;
+import com.example.algorithm.report.OperationsBatch;
 import com.example.algorithm.report.StepReport;
 import com.example.settings.*;
 import com.example.simulation.SimpleSimulation;
@@ -264,8 +265,9 @@ public class SimulationController {
 
     private void processStep() {
         StepReport report = simulation.step();
-        for (Operation operation : report.getOperations()) {
-            loggerController.addItem("[Event] " + operation.getDescription());
+        for (OperationsBatch operationBatch : report.getOperationsBatches()) {
+            loggerController.addItem("Next batch");
+            for (Operation operation : operationBatch.getOperations()) loggerController.addItem("[Event] " + operation.getDescription());
         }
         statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
     }
