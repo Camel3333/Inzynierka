@@ -51,15 +51,11 @@ public class MainMenuController implements ChangeListener<ApplicationState> {
             case SIMULATING -> {
                 drawMenuController.setEnabled(false);
                 graphToolsController.setEnabled(false, ApplicationState.DRAWING);
-
-                simulationMenuController.setEnabled(true);
                 graphToolsController.setEnabled(true, ApplicationState.SIMULATING);
             }
             case DRAWING -> {
                 drawMenuController.setEnabled(true);
                 graphToolsController.setEnabled(true, ApplicationState.DRAWING);
-
-                simulationMenuController.setEnabled(false);
                 graphToolsController.setEnabled(false, ApplicationState.SIMULATING);
             }
         }
