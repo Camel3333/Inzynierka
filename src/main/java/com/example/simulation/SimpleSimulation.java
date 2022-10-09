@@ -4,21 +4,13 @@ import com.example.algorithm.Algorithm;
 import com.example.algorithm.VertexRole;
 import com.example.algorithm.report.StepReport;
 import com.example.animation.AnimationEngine;
-import com.example.settings.AlgorithmSettings;
 import com.example.controller.GraphController;
+import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Setter;
 
-import java.io.IOException;
-
-
 public class SimpleSimulation implements Simulation {
-
-    /*
-    STEP -> zwraca klasę reprezentująca zmiany
-    Po wykonaniu kroku wizualizujemy zmiany - tylko jeśli aktulany tryb symulacji tego wymaga
-     */
 
     private Algorithm algorithm;
     private AlgorithmSettings settings;
@@ -54,16 +46,21 @@ public class SimpleSimulation implements Simulation {
 
     public StepReport step() {
         StepReport report = algorithm.step();
-        if (allowAnimations.get()){
+        if (allowAnimations.get()) {
             graphController.enableGraphInteractions(false);
             animationEngine.animate(report);
             graphController.enableGraphInteractions(true);
         }
-        if (algorithm.isFinished()){
+        if (algorithm.isFinished()) {
             removeSimulationRelatedColoring();
         }
         graphController.update();
         return report;
+    }
+
+    @Override
+    public void stop() {
+        removeSimulationRelatedColoring();
     }
 
     @Override
