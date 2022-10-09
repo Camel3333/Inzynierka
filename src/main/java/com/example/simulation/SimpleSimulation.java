@@ -10,7 +10,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Setter;
 
-
 public class SimpleSimulation implements Simulation {
 
     private Algorithm algorithm;
