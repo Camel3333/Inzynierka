@@ -5,6 +5,7 @@ import com.example.algorithm.report.StepReport;
 import com.example.settings.*;
 import com.example.simulation.SimpleSimulation;
 import com.example.simulation.Simulation;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -223,7 +224,12 @@ public class SimulationController {
                 }, dependencies
         ));
 
-        animationSpeedSlider.valueProperty().addListener(observable -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()));
+        animationSpeedSlider.valueProperty().addListener(
+                observable -> Platform.runLater(
+                        () -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()
+                        )
+                )
+        );
     }
 
     private boolean verifySettings(AlgorithmType algorithmType) {
