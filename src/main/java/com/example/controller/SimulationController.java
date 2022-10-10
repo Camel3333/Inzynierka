@@ -240,7 +240,12 @@ public class SimulationController {
                 }, dependencies
         ));
 
-        animationSpeedSlider.valueProperty().addListener(observable -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()));
+        animationSpeedSlider.valueProperty().addListener(
+                observable -> Platform.runLater(
+                        () -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()
+                        )
+                )
+        );
     }
 
     public void initSimulation() {
