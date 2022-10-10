@@ -5,6 +5,7 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ToggleButton;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,8 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 @FxmlView("/view/simulationMenuView.fxml")
 public class SimulationMenuController {
-
-    private int i = 0;
 
     @FXML
     public MenuItem startItem;
@@ -26,10 +25,8 @@ public class SimulationMenuController {
     @FXML
     public MenuItem pauseItem;
     @FXML
-    private MenuItem simulateItem;
-    @FXML
-    private MenuItem drawItem;
-
+    public ToggleButton simulateItem;
+    
     private final AppController appController;
 
     @Autowired
@@ -37,6 +34,16 @@ public class SimulationMenuController {
         this.appController = appController;
     }
 
+    public void changeApplicationState() {
+        switch (appController.getApplicationState()) {
+            case DRAWING -> changeApplicationState(ApplicationState.SIMULATING);
+            case SIMULATING -> changeApplicationState(ApplicationState.DRAWING);
+        }
+    }
+
+    public void changeApplicationState(ApplicationState applicationState) {
+        appController.setApplicationState(applicationState);
+    }
 
     @FXML
     public void initialize(){
@@ -46,29 +53,6 @@ public class SimulationMenuController {
         liveItem.setOnAction(e -> appController.getSimulationController().live());
         instantFinishItem.setOnAction(e -> appController.getSimulationController().instantFinish());
         pauseItem.setOnAction(e -> appController.getSimulationController().pause());
-        simulateItem.setOnAction(e -> {
-            if(i % 2 == 0) {
-                changeApplicationState(ApplicationState.SIMULATING);
-            }
-            else {
-                changeApplicationState(ApplicationState.DRAWING);
-            }
-            i++;
-        });
-        drawItem.setOnAction(e -> changeApplicationState(ApplicationState.DRAWING));
-    }
-
-    public void changeApplicationState(ApplicationState applicationState) {
-        appController.setApplicationState(applicationState);
-    }
-
-    public void setEnabled(boolean enabled) {
-//        simulateItem.setDisable(!enabled);
-        drawItem.setDisable(!enabled);
-    }
-
-    public void setChaneStateToSimulationEnabled(boolean enabled) {
-        simulateItem.setDisable(!enabled);
     }
 
     public void bindItems() {

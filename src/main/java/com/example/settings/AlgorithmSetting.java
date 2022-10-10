@@ -1,5 +1,7 @@
 package com.example.settings;
 
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import lombok.Setter;
 
 import java.util.function.Function;
@@ -11,7 +13,7 @@ public class AlgorithmSetting<T> implements Setting<T>{
     private final T defaultValue;
     @Setter
     private String additionalErrorMessage = "";
-    private T value;
+    private Property<T> value = new SimpleObjectProperty<>();
 
     public AlgorithmSetting(String name, T defaultValue, Class<T> valueType, Function<T, Boolean> validateArgument) {
         this.name = name;
@@ -33,7 +35,7 @@ public class AlgorithmSetting<T> implements Setting<T>{
     @Override
     public void setValue(T value) {
         if (isProperValue(value))
-            this.value = valueType.cast(value);
+            this.value.setValue(valueType.cast(value));
         else
             throw new IllegalArgumentException("Given value doesn't match setting requirements. "+additionalErrorMessage);
     }
@@ -45,6 +47,10 @@ public class AlgorithmSetting<T> implements Setting<T>{
 
     @Override
     public T getValue(){
-        return value == null ? defaultValue : value;
+        return value.getValue() == null ? defaultValue : value.getValue();
+    }
+
+    public Property<T> getValueProperty() {
+        return value;
     }
 }

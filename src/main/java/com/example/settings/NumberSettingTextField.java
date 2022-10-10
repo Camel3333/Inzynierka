@@ -33,6 +33,9 @@ public abstract class NumberSettingTextField<T extends Number> extends TextField
     public void setContainedSetting(Setting<T> setting) {
         containedSetting = setting;
         setText(containedSetting.getValue().toString());
+        containedSetting.getValueProperty().addListener((observable, oldValue, newValue) -> {
+            setText(containedSetting.getValue().toString());
+        });
     }
 
     private void validateInput(){
