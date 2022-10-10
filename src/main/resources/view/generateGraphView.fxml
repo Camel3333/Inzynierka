@@ -4,15 +4,17 @@
 
 <?import javafx.scene.layout.VBox?>
 
+<?import com.example.settings.IntegerSettingTextField?>
 <DialogPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.controller.GenerateGraphController">
 
     <content>
-        <VBox>
+        <VBox spacing="5">
             <Label text="Select type of graph to be generated"/>
             <ComboBox fx:id ="graphBox"/>
             <Label text="Select number of vertices"/>
+            <IntegerSettingTextField fx:id="vertices"/>
             <Slider fx:id="verticesSlider"
                     blockIncrement="1.0"
                     cache="true"
@@ -23,7 +25,7 @@
                     showTickLabels="true"
                     showTickMarks="true"
                     snapToTicks="true"
-                    value="5.0" />
+                    value="5.0"/>
         </VBox>
     </content>
 

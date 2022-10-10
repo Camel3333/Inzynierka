@@ -7,6 +7,7 @@ import com.example.algorithm.report.StepReport;
 import com.example.settings.*;
 import com.example.simulation.SimpleSimulation;
 import com.example.simulation.Simulation;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -74,6 +75,8 @@ public class SimulationController {
     @Getter
     private final BooleanProperty pauseDisabledProperty = new SimpleBooleanProperty();
 
+    private Service<?> activeService;
+
     @Setter
     private Simulation simulation;
 
@@ -82,6 +85,9 @@ public class SimulationController {
 
     @Autowired
     private LoggerController loggerController;
+
+    @Autowired
+    private GraphController graphController;
 
     private BooleanProperty paused = new SimpleBooleanProperty(true);
     private BooleanProperty started = new SimpleBooleanProperty(false);
@@ -172,6 +178,13 @@ public class SimulationController {
         }, dependencies));
     }
 
+    private void setSimulationFlagsToNotStartedState() {
+        paused.set(true);
+        started.set(false);
+        idle.set(true);
+        isFinished.set(false);
+    }
+
     private void showAlgorithmSettings(AlgorithmType algorithmType) {
         hideAlgorithmSettings();
         options.get(algorithmType).forEach(node -> {
@@ -238,20 +251,6 @@ public class SimulationController {
         animationSpeedSlider.valueProperty().addListener(observable -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()));
     }
 
-    private boolean verifySettings(AlgorithmType algorithmType) {
-        List<SettingNode<?>> settingNodes = (options.get(algorithmType)
-                .stream()
-                .filter(node -> node instanceof SettingNode<?>)
-                .map(node -> (SettingNode<?>) node)
-                .collect(Collectors.toList()));
-        for (SettingNode<?> settingNode : settingNodes) {
-            if (!settingNode.getIsValidProperty().get()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public void initSimulation() {
         statisticsController.clear();
         simulation.allowAnimations(true);
@@ -272,6 +271,26 @@ public class SimulationController {
         statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
     }
 
+    public void openResultDialog() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader();
+                    fxmlLoader.setLocation(getClass().getResource("/view/simulationResultView.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load());
+                    ((SimulationResultController)fxmlLoader.getController()).setMessage(graphController.getGraph().checkConsensus());
+                    Stage stage = new Stage();
+                    stage.setTitle("Result");
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        });
+    }
+
     public void doStepTask() {
         if (!isFinished.get()) {
             processStep();
@@ -279,12 +298,13 @@ public class SimulationController {
             if (isFinished.get()) {
                 loggerController.addItem("[Finished] Simulation finished");
                 System.out.println("Finished");
+                openResultDialog();
             }
         }
     }
 
     private void liveTask() {
-        while(!isFinished.get()) {
+        while (!isFinished.get()) {
             processStep();
 
             if (paused.get()) {
@@ -293,15 +313,17 @@ public class SimulationController {
         }
         loggerController.addItem("[Finished] Simulation finished");
         System.out.println("Finished");
+        openResultDialog();
     }
 
     private void instantFinishTask() {
         simulation.allowAnimations(false);
-        while(!isFinished.get()) {
+        while (!isFinished.get()) {
             processStep();
         }
         loggerController.addItem("[Finished] Simulation finished");
         System.out.println("Finished");
+        openResultDialog();
     }
 
     public void pause() {
@@ -309,15 +331,31 @@ public class SimulationController {
     }
 
     public void live() {
-        new SimulationLiveService().start();
+        runService(new SimulationLiveService());
     }
 
     public void instantFinish() {
-        new SimulationInstantFinishService().start();
+        runService(new SimulationInstantFinishService());
     }
 
     public void doStep() {
-        new SimulationStepService().start();
+        runService(new SimulationStepService());
+    }
+
+    private void runService(Service<?> service) {
+        activeService = service;
+        service.start();
+    }
+
+    public void stop() {
+        pause();
+        if (activeService != null && activeService.isRunning()) {
+            activeService.cancel();
+        }
+        isFinished.unbind();
+        if (simulation != null)
+            simulation.stop();
+        setSimulationFlagsToNotStartedState();
     }
 
     public void openDocumentation(ActionEvent actionEvent) throws IOException {

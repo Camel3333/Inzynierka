@@ -4,10 +4,10 @@ import com.example.ApplicationState;
 import com.example.draw.DrawMode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.Map;
 @FxmlView("/view/graphEditView.fxml")
 public class GraphEditController {
 
-    Map<ApplicationState, List<Button>> buttons = new HashMap<>();
+    private final Map<ApplicationState, List<Button>> buttons = new HashMap<>();
 
     @FXML
     private Button vertexButton;
@@ -27,11 +27,11 @@ public class GraphEditController {
     @FXML
     private Button noneButton;
     @FXML
+    private ToggleButton simulateButton;
+    @FXML
     private Button undoButton;
     @FXML
     private Button redoButton;
-    @FXML
-    private Button simulateButton;
     @FXML
     private Button startButton;
     @FXML
@@ -42,9 +42,6 @@ public class GraphEditController {
     private Button instantFinishButton;
     @FXML
     private Button pauseButton;
-    @FXML
-    private Button drawButton;
-
 
     private DrawMenuController drawMenuController;
     private SimulationMenuController simulationMenuController;
@@ -58,7 +55,7 @@ public class GraphEditController {
         undoButton.setOnAction(e -> drawMenuController.undo());
         redoButton.setOnAction(e -> drawMenuController.redo());
         buttons.put(ApplicationState.DRAWING,
-                new ArrayList<>(List.of(vertexButton, edgeButton, deleteButton, noneButton, undoButton, redoButton)));
+                List.of(vertexButton, edgeButton, deleteButton, noneButton, undoButton, redoButton));
     }
 
     private void initializeSimulationButtons() {
@@ -67,26 +64,31 @@ public class GraphEditController {
         liveButton.setOnAction(e -> simulationMenuController.liveItem.fire());
         instantFinishButton.setOnAction(e -> simulationMenuController.instantFinishItem.fire());
         pauseButton.setOnAction(e -> simulationMenuController.pauseItem.fire());
-        simulateButton.setOnAction(e -> simulationMenuController.changeApplicationState(ApplicationState.SIMULATING));
-        drawButton.setOnAction(e -> simulationMenuController.changeApplicationState(ApplicationState.DRAWING));
         buttons.put(ApplicationState.SIMULATING,
-                new ArrayList<>(List.of(startButton, nextStepButton, liveButton, instantFinishButton, pauseButton, drawButton)));
+                List.of(startButton, nextStepButton, liveButton, instantFinishButton, pauseButton));
+    }
+
+    private void initializeAlwaysDisplayedButtons() {
+        simulateButton.setOnAction(e -> simulationMenuController.changeApplicationState());
     }
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         initializeDrawingButtons();
         initializeSimulationButtons();
+        initializeAlwaysDisplayedButtons();
     }
 
-    public void setDrawMenuController(DrawMenuController controller){
+    public void setDrawMenuController(DrawMenuController controller) {
         drawMenuController = controller;
         undoButton.disableProperty().bind(drawMenuController.undoItemDisableProperty());
         redoButton.disableProperty().bind(drawMenuController.redoItemDisableProperty());
     }
 
-    public void setSimulationMenuController(SimulationMenuController controller){
+    public void setSimulationMenuController(SimulationMenuController controller) {
         simulationMenuController = controller;
+        simulateButton.selectedProperty().unbind();
+        simulateButton.selectedProperty().bindBidirectional(simulationMenuController.simulateItem.selectedProperty());
     }
 
     public void setSimulationController(SimulationController simulationController) {
@@ -99,11 +101,6 @@ public class GraphEditController {
             button.setManaged(enabled);
             button.setVisible(enabled);
         });
-    }
-
-    public void setChaneStateToSimulationEnabled(boolean enabled) {
-        simulateButton.setManaged(enabled);
-        simulateButton.setVisible(enabled);
     }
 
     public void bindButtons() {
