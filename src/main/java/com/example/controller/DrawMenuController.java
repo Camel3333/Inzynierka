@@ -75,6 +75,7 @@ public class DrawMenuController {
             redoItem.setDisable(true);
         }
         generateTraitorsItem.setDisable(!enabled);
+        generateGraphItem.setDisable(!enabled);
     }
 
     public void undo() {

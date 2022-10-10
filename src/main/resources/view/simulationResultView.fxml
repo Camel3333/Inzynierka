@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.controller.SimulationResultController"
+            prefHeight="100.0" prefWidth="250.0"
+            style="-fx-alignment: center">
+    <Text fx:id="simulationText" style="-fx-font-size: 15px"/>
+    <Text fx:id="consensusText" style="-fx-font-size: 12px"/>
+</VBox>
