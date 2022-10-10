@@ -39,6 +39,7 @@ public class QVoterModel implements Algorithm {
         this.graph = graph;
         maxTime = (int) settings.getSettings().get("time").getValue();
         q = (int) settings.getSettings().get("q").getValue();
+        probabilityType = (ProbabilityType) settings.getSettings().get("probability").getValue();
     }
 
     @Override
@@ -132,14 +133,11 @@ public class QVoterModel implements Algorithm {
             case LINEAR -> {
                 return new Random().nextInt(maxTime) <= time;
             }
+            case BOLTZMANN -> {
+                return new Random().nextDouble() <= Math.sqrt(time / (double) maxTime);
+            }
         }
         return false;
-    }
-
-    private enum ProbabilityType {
-        LINEAR,
-        NON_LINEAR,
-        BOLTZMANN
     }
 
     private class QVoterStepReport extends StepReport {

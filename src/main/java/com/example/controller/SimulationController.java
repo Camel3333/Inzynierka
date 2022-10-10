@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.algorithm.AlgorithmType;
+import com.example.algorithm.ProbabilityType;
 import com.example.algorithm.report.StepReport;
 import com.example.settings.*;
 import com.example.simulation.SimpleSimulation;
@@ -10,6 +11,7 @@ import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -42,6 +44,8 @@ public class SimulationController {
     @FXML
     public Label timeLabel;
     @FXML
+    public Label probabilityLabel;
+    @FXML
     private VBox parent;
     @FXML
     private IntegerSettingTextField depth;
@@ -51,6 +55,8 @@ public class SimulationController {
     private IntegerSettingTextField q;
     @FXML
     private IntegerSettingTextField time;
+    @FXML
+    private SettingComboBox<ProbabilityType> probabilityBox;
 
     @FXML
     private ComboBox<AlgorithmType> algorithmsBox;
@@ -107,14 +113,16 @@ public class SimulationController {
                 new AlgorithmSetting<>("q", 1, Integer.class, (value) -> value >= 0));
         algorithmSettings.getSettings().put("time",
                 new AlgorithmSetting<>("time", 1, Integer.class, (value) -> value >= 0));
+        algorithmSettings.getSettings().put("probability",
+                new AlgorithmSetting<>("probability", ProbabilityType.LINEAR, ProbabilityType.class, (value) -> true));
     }
 
     @FXML
     public void initialize() {
         setDefaultSettings();
-        options.put(AlgorithmType.LAMPORT, new ArrayList<>(List.of(depth, depthLabel)));
-        options.put(AlgorithmType.KING, new ArrayList<>(List.of(phase, phaseLabel)));
-        options.put(AlgorithmType.QVOTER, new ArrayList<>(List.of(q, qLabel, time, timeLabel)));
+        options.put(AlgorithmType.LAMPORT, List.of(depth, depthLabel));
+        options.put(AlgorithmType.KING, List.of(phase, phaseLabel));
+        options.put(AlgorithmType.QVOTER, List.of(q, qLabel, time, timeLabel, probabilityBox, probabilityLabel));
         hideAlgorithmSettings();
         algorithmsBox.setCellFactory(param -> new ListCell<>() {
             @Override
@@ -139,7 +147,9 @@ public class SimulationController {
         phase.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("phase"));
         q.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("q"));
         time.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("time"));
+        probabilityBox.setContainedSetting((Setting<ProbabilityType>) algorithmSettings.getSettings().get("probability"));
 
+        initializeProbabilityBox();
 
         nextStepDisabledProperty.setValue(true);
         liveDisabledProperty.setValue(true);
@@ -168,6 +178,23 @@ public class SimulationController {
         pauseDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
             return !(!paused.get() && started.get() && !isFinished.get());
         }, dependencies));
+    }
+
+    private void initializeProbabilityBox() {
+        probabilityBox.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(ProbabilityType probabilityType, boolean empty) {
+                super.updateItem(probabilityType, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(probabilityType.toString());
+                }
+            }
+        });
+
+        probabilityBox.setItems(FXCollections.observableArrayList(List.of(ProbabilityType.LINEAR, ProbabilityType.BOLTZMANN)));
+        probabilityBox.getSelectionModel().select(0);
     }
 
     private void setSimulationFlagsToNotStartedState() {
