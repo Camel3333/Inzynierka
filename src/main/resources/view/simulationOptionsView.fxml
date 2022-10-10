@@ -5,6 +5,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import com.example.settings.SettingComboBox?>
+
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.controller.SimulationController"
@@ -30,6 +32,8 @@
         <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="q"/>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Time" fx:id="timeLabel"/>
         <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="time"/>
+        <Label GridPane.columnIndex="0" GridPane.rowIndex="2" text="Probability" fx:id="probabilityLabel"/>
+        <SettingComboBox GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="probabilityBox"/>
     </GridPane>
     <VBox>
         <Label text="Animation speed"/>
