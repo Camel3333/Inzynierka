@@ -120,8 +120,8 @@ public class SimulationController {
 
     public void setSettingsValidation(GraphController graphController) {
         if(graphController.getGraph().numVertices() == 0) {
-            algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer)value == 0);
-            algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer)value == 0);
+            algorithmSettings.getSettings().get("depth").setValidateArgument((value) -> false);
+            algorithmSettings.getSettings().get("q").setValidateArgument((value) -> false);
         }
         else {
             Vertex<Integer> commander = graphController.getGraph().vertices().stream().toList().get(0);
