@@ -111,7 +111,7 @@ public class SimulationController {
         algorithmSettings.getSettings().put("phase",
                 new AlgorithmSetting<>("phase", 1, Integer.class, (value) -> value > 0));
         algorithmSettings.getSettings().put("q",
-                new AlgorithmSetting<>("q", 1, Integer.class, (value) -> value >= 0));
+                new AlgorithmSetting<>("q", 1, Integer.class, (value) -> value > 0));
         algorithmSettings.getSettings().put("time",
                 new AlgorithmSetting<>("time", 1, Integer.class, (value) -> value > 0));
         algorithmSettings.getSettings().put("probability",
@@ -122,14 +122,19 @@ public class SimulationController {
         if(graphController.getGraph().numVertices() == 0) {
             algorithmSettings.getSettings().get("depth").setValidateArgument((value) -> false);
             algorithmSettings.getSettings().get("q").setValidateArgument((value) -> false);
+            algorithmSettings.getSettings().get("phase").setValidateArgument((value) -> false);
+            algorithmSettings.getSettings().get("time").setValidateArgument((value) -> false);
         }
         else {
             Vertex<Integer> commander = graphController.getGraph().vertices().stream().toList().get(0);
             int maxDepth = graphController.getGraph().getLongestPathFor(commander);
-            algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer)value > 0 && (Integer)value <= maxDepth);
+            algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer) value > 0 && (Integer) value <= maxDepth);
 
             int minDegree = graphController.getGraph().getMinDegree();
-            algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value >= 0 && (Integer)value <= minDegree);
+            algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value > 0 && (Integer) value <= minDegree);
+
+            algorithmSettings.getSettings().get("phase").setValidateArgument((value) -> (Integer) value > 0);
+            algorithmSettings.getSettings().get("time").setValidateArgument((value) -> (Integer) value > 0);
         }
     }
 
