@@ -90,12 +90,16 @@ public class KingAlgorithm implements Algorithm {
         MyVertex<Integer> king = (MyVertex<Integer>) graph.vertices().stream().toList().get(phase % graph.numVertices());
         report.fillRoles(king);
         int condition = graph.numVertices() / 2 + graph.getTraitorsCount();
-        OperationsBatch operationsBatch = new OperationsBatch();
-        for (Vertex<Integer> v : graph.vertices()) {
-            ((MyVertex<Integer>) v).chooseMajorityWithTieBreaker(king.getNextOpinion((MyVertex<Integer>) v), condition);
-            operationsBatch.add(new ChooseOperation(v, ((MyVertex<Integer>) v).getIsSupporting()));
+        OperationsBatch firstOperationsBatch = new OperationsBatch();
+        OperationsBatch secondOperationBatch = new OperationsBatch();
+        for (Vertex<Integer> v : graph.vertexNeighbours(king)) {
+            BooleanProperty kingOpinion = king.getNextOpinion((MyVertex<Integer>) v);
+            firstOperationsBatch.add(new SendOperation(king, v, kingOpinion));
+            ((MyVertex<Integer>) v).chooseMajorityWithTieBreaker(kingOpinion, condition);
+            secondOperationBatch.add(new ChooseOperation(v, ((MyVertex<Integer>) v).getIsSupporting()));
         }
-        report.addBatch(operationsBatch);
+        report.addBatch(firstOperationsBatch);
+        report.addBatch(secondOperationBatch);
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
         return report;
