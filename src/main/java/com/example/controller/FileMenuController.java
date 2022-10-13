@@ -1,6 +1,9 @@
 package com.example.controller;
 
+import com.example.ApplicationState;
 import com.example.util.GraphConverter;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
@@ -18,12 +21,26 @@ import java.io.IOException;
 public class FileMenuController {
     @Autowired
     GraphController graphController;
+    @Autowired
+    AppController appController;
+    @FXML
+    MenuItem newFileButton;
     @FXML
     MenuItem importButton;
     @FXML
     MenuItem exportButton;
 
     private void bindButtons() {
+        ObjectProperty<ApplicationState> applicationState = appController.getApplicationStateProperty();
+        BooleanBinding isSimulation = applicationState.isEqualTo(ApplicationState.SIMULATING);
+
+        newFileButton.disableProperty().bind(isSimulation);
+
+        newFileButton.setOnAction(e -> {
+            graphController.getGraph().vertices().clear();
+            graphController.getGraph().edges().clear();
+            graphController.update();
+        });
         exportButton.setOnAction(e -> {
             try {
                 exportGraph();
