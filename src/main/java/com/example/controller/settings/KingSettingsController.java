@@ -1,5 +1,6 @@
 package com.example.controller.settings;
 
+import com.example.model.MyGraph;
 import com.example.settings.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
@@ -43,8 +44,13 @@ public class KingSettingsController implements AlgorithmSettingsController {
         return settingNodesGroup.getAllNodes().stream().map(settingNode -> (Node) settingNode).collect(Collectors.toList());
     }
 
+    @Override
+    public void adjustSettingsConditions(MyGraph<Integer, Integer> graph) {
+        // intentionally do nothing - settings do not depend on graph
+    }
+
     private void setDefaultSettings() {
-        AlgorithmSetting<Integer> phaseSetting = new AlgorithmSetting<>("phase", 1, Integer.class, (value) -> value >= 0);
+        AlgorithmSetting<Integer> phaseSetting = new AlgorithmSetting<>("phase", 1, Integer.class, (value) -> value > 0);
         algorithmSettings.getSettings().put("phase", phaseSetting);
         phase.setContainedSetting(phaseSetting);
     }

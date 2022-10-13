@@ -50,7 +50,9 @@ public class LamportIterAlgorithm implements Algorithm {
 
                     for (MyVertex<Integer> vertex : record.lieutenants) {
                         List<MyVertex<Integer>> lieutenants = getLieutenants(vertex, record.previous_commanders);
-                        stack.push(new StackRecord(vertex, new ArrayList<>(record.previous_commanders), lieutenants, record.m - 1, AlgorithmPhase.SEND));
+                        if(!lieutenants.isEmpty()) {
+                            stack.push(new StackRecord(vertex, new ArrayList<>(record.previous_commanders), lieutenants, record.m - 1, AlgorithmPhase.SEND));
+                        }
                     }
                 }
             }

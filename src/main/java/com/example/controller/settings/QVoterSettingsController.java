@@ -1,6 +1,7 @@
 package com.example.controller.settings;
 
 import com.example.algorithm.ProbabilityType;
+import com.example.model.MyGraph;
 import com.example.settings.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
@@ -54,9 +55,15 @@ public class QVoterSettingsController implements AlgorithmSettingsController {
         return settingNodesGroup.getAllNodes().stream().map(settingNode -> (Node) settingNode).collect(Collectors.toList());
     }
 
+    @Override
+    public void adjustSettingsConditions(MyGraph<Integer, Integer> graph) {
+        int minDegree = graph.getMinDegree();
+        algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value > 0 && (Integer) value <= minDegree);
+    }
+
     private void setDefaultSettings() {
-        AlgorithmSetting<Integer> qSetting = new AlgorithmSetting<>("q", 1, Integer.class, (value) -> value >= 0);
-        AlgorithmSetting<Integer> timeSetting = new AlgorithmSetting<>("time", 1, Integer.class, (value) -> value >= 0);
+        AlgorithmSetting<Integer> qSetting = new AlgorithmSetting<>("q", 1, Integer.class, (value) -> value > 0);
+        AlgorithmSetting<Integer> timeSetting = new AlgorithmSetting<>("time", 1, Integer.class, (value) -> value > 0);
         AlgorithmSetting<ProbabilityType> probabilitySetting = new AlgorithmSetting<>("probability", ProbabilityType.LINEAR, ProbabilityType.class, (value) -> true);
         q.setContainedSetting(qSetting);
         time.setContainedSetting(timeSetting);

@@ -75,11 +75,11 @@ public class SimulationController {
     @Autowired
     private GraphController graphController;
 
-    private BooleanProperty paused = new SimpleBooleanProperty(true);
-    private BooleanProperty started = new SimpleBooleanProperty(false);
-    private BooleanProperty idle = new SimpleBooleanProperty(true);
-    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
-    private BooleanProperty areAlgorithmSettingsValid = new SimpleBooleanProperty(true);
+    private final BooleanProperty paused = new SimpleBooleanProperty(true);
+    private final BooleanProperty started = new SimpleBooleanProperty(false);
+    private final BooleanProperty idle = new SimpleBooleanProperty(true);
+    private final BooleanProperty isFinished = new SimpleBooleanProperty(false);
+    private final BooleanProperty areAlgorithmSettingsValid = new SimpleBooleanProperty(true);
 
     public void show() {
         parent.setVisible(true);
@@ -89,6 +89,12 @@ public class SimulationController {
     public void hide() {
         parent.setVisible(false);
         parent.setManaged(false);
+    }
+
+    public void setSettingsValidation(GraphController graphController) {
+        lamportSettingsController.adjustSettingsConditions(graphController.getGraph());
+        kingSettingsController.adjustSettingsConditions(graphController.getGraph());
+        qVoterSettingsController.adjustSettingsConditions(graphController.getGraph());
     }
 
     @FXML
@@ -127,21 +133,17 @@ public class SimulationController {
         dependenciesList.add(isFinished);
         Observable[] dependencies = dependenciesList.toArray(new Observable[0]);
 
-        nextStepDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-            return !(idle.get() && started.get() && !isFinished.get());
-        }, dependencies));
+        nextStepDisabledProperty.bind(Bindings.createBooleanBinding(() ->
+                !(idle.get() && started.get() && !isFinished.get()), dependencies));
 
-        liveDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-            return !(idle.get() && started.get() && !isFinished.get());
-        }, dependencies));
+        liveDisabledProperty.bind(Bindings.createBooleanBinding(() ->
+                !(idle.get() && started.get() && !isFinished.get()), dependencies));
 
-        instantFinishDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-            return !(idle.get() && started.get() && !isFinished.get());
-        }, dependencies));
+        instantFinishDisabledProperty.bind(Bindings.createBooleanBinding(() ->
+                !(idle.get() && started.get() && !isFinished.get()), dependencies));
 
-        pauseDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-            return !(!paused.get() && started.get() && !isFinished.get());
-        }, dependencies));
+        pauseDisabledProperty.bind(Bindings.createBooleanBinding(() ->
+                !(!paused.get() && started.get() && !isFinished.get()), dependencies));
     }
 
     private AlgorithmSettingsController getAlgorithmController(AlgorithmType algorithmType) {
