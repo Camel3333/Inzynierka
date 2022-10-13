@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.draw.OpinionGenerator;
 import com.example.draw.TraitorsGenerator;
 import com.example.model.MyGraph;
 import javafx.fxml.FXML;
@@ -17,7 +18,14 @@ public class GenerateTraitorsController {
     @Autowired
     private TraitorsGenerator traitorsGenerator;
 
+    @Autowired
+    private OpinionGenerator opinionGenerator;
+
     public void generateTraitors(MyGraph<Integer, Integer> graph) {
         traitorsGenerator.generateTraitors(graph, distributionSlider.getValue()/100);
+    }
+
+    public void generateAttackers(MyGraph<Integer, Integer> graph) {
+        opinionGenerator.generateAttackers(graph, distributionSlider.getValue()/100);
     }
 }
