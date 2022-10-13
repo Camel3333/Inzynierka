@@ -8,7 +8,8 @@ import java.util.function.Function;
 
 public class AlgorithmSetting<T> implements Setting<T>{
     private final String name;
-    private final Function<T, Boolean> validateArgument;
+    @Setter
+    private Function<T, Boolean> validateArgument;
     private final Class<T> valueType;
     private final T defaultValue;
     @Setter

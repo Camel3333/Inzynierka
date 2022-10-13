@@ -57,6 +57,8 @@ public class MainMenuController implements ChangeListener<ApplicationState> {
                 fileMenuController.setImportEnabled(false);
                 graphToolsController.setEnabled(false, ApplicationState.DRAWING);
                 graphToolsController.setEnabled(true, ApplicationState.SIMULATING);
+
+                simulationController.setSettingsValidation(graphController);
             }
             case DRAWING -> {
                 drawMenuController.setEnabled(true);
