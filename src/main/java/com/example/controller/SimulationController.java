@@ -26,7 +26,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
-import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,14 +39,12 @@ import java.util.List;
 public class SimulationController {
     @FXML
     private VBox parent;
-
     @FXML
     private LamportSettingsController lamportSettingsController;
     @FXML
     private KingSettingsController kingSettingsController;
     @FXML
     private QVoterSettingsController qVoterSettingsController;
-
     @FXML
     private ComboBox<AlgorithmType> algorithmsBox;
     @FXML
@@ -65,8 +62,6 @@ public class SimulationController {
     private final BooleanProperty pauseDisabledProperty = new SimpleBooleanProperty();
 
     private Service<?> activeService;
-
-    @Setter
     private Simulation simulation;
 
     @Autowired
@@ -95,6 +90,16 @@ public class SimulationController {
         lamportSettingsController.adjustSettingsConditions(graphController.getGraph());
         kingSettingsController.adjustSettingsConditions(graphController.getGraph());
         qVoterSettingsController.adjustSettingsConditions(graphController.getGraph());
+    }
+
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
+        animationSpeedSlider.valueProperty().addListener(
+                observable -> Platform.runLater(
+                        () -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()
+                        )
+                )
+        );
     }
 
     @FXML
@@ -177,10 +182,7 @@ public class SimulationController {
     }
 
     private void showAlgorithmSettings(AlgorithmType algorithmType) {
-        AlgorithmSettingsController algorithmSettingsController = getAlgorithmController(algorithmType);
-        Node settingsParent = algorithmSettingsController.getParent();
-        settingsParent.setManaged(true);
-        settingsParent.setVisible(true);
+        setSettingsManagedAndVisible(algorithmType, true);
     }
 
     private void hideAlgorithmSettings() {
@@ -190,10 +192,14 @@ public class SimulationController {
     }
 
     private void hideAlgorithmSettings(AlgorithmType algorithmType) {
+        setSettingsManagedAndVisible(algorithmType, false);
+    }
+
+    private void setSettingsManagedAndVisible(AlgorithmType algorithmType, boolean enable) {
         AlgorithmSettingsController algorithmSettingsController = getAlgorithmController(algorithmType);
         Node settingsParent = algorithmSettingsController.getParent();
-        settingsParent.setManaged(false);
-        settingsParent.setVisible(false);
+        settingsParent.setManaged(enable);
+        settingsParent.setVisible(enable);
     }
 
     public void setAvailableAlgorithms(ObservableList<AlgorithmType> algorithmTypes) {
@@ -211,13 +217,6 @@ public class SimulationController {
                     return false;
                 }, dependencies
         ));
-
-        animationSpeedSlider.valueProperty().addListener(
-                observable -> Platform.runLater(
-                        () -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()
-                        )
-                )
-        );
     }
 
     public void initSimulation() {
