@@ -45,6 +45,10 @@ public class FileMenuController {
         bindButtons();
     }
 
+    public void setImportEnabled(boolean enabled) {
+        importButton.setDisable(!enabled);
+    }
+
     private void exportGraph() throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Graph");
