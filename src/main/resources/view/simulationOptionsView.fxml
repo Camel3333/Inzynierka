@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.example.settings.IntegerSettingTextField?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import com.example.settings.SettingComboBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.controller.SimulationController"
@@ -11,19 +11,10 @@
       style="-fx-background-color: #f4f4f4; -fx-padding: 15px">
 
     <ComboBox fx:id="algorithmsBox"/>
-    <GridPane>
-        <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Depth" fx:id="depthLabel"/>
-        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="depth"/>
-        <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Phase" fx:id="phaseLabel"/>
-        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="phase"/>
-        <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Q" fx:id="qLabel"/>
-        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="q"/>
-        <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Time" fx:id="timeLabel"/>
-        <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="time"/>
-        <Label GridPane.columnIndex="0" GridPane.rowIndex="2" text="Probability" fx:id="probabilityLabel"/>
-        <SettingComboBox GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="probabilityBox"/>
-    </GridPane>
     <VBox>
+        <fx:include fx:id="lamportSettings" source="settings/lamportSettingsView.fxml"/>
+        <fx:include fx:id="kingSettings" source="settings/kingSettingsView.fxml"/>
+        <fx:include fx:id="qVoterSettings" source="settings/qVoterSettingsView.fxml"/>
         <Label text="Animation speed"/>
         <Slider fx:id="animationSpeedSlider"
                 showTickLabels="true"
