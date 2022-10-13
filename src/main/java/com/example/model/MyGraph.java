@@ -1,12 +1,9 @@
 package com.example.model;
 
 import com.brunomnsilva.smartgraph.graph.*;
-import com.example.command.CommandRegistry;
-import com.example.command.DeleteEdgeCommand;
-import javafx.beans.property.BooleanProperty;
-import lombok.Setter;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class MyGraph<V,E> implements Graph<V,E> {
@@ -27,19 +24,50 @@ public class MyGraph<V,E> implements Graph<V,E> {
                 .orElse(true);
     }
 
-    public int getTraitorsCount(){
+    public int getMinDegree() {
+        return vertices().stream()
+                .mapToInt(v -> vertexNeighbours(v).size())
+                .min()
+                .orElse(0);
+    }
+
+    public int getLongestPath() {
+        AtomicInteger maxPathLength = new AtomicInteger();
+        vertices().forEach(v -> DFS(v, 0, new ArrayList<>(), maxPathLength));
+        return maxPathLength.get();
+    }
+
+    public int getLongestPathFor(Vertex<V> vertex) {
+        AtomicInteger maxPathLength = new AtomicInteger();
+        DFS(vertex, 0, new ArrayList<>(), maxPathLength);
+        return maxPathLength.get();
+    }
+
+    private void DFS(Vertex<V> vertex, int previousLength, ArrayList<Vertex<V>> visited, AtomicInteger maxLength) {
+        visited.add(vertex);
+        for(Vertex<V> neighbour : vertexNeighbours(vertex)) {
+            if (!visited.contains(neighbour)) {
+                DFS(neighbour, previousLength + 1, visited, maxLength);
+                if (maxLength.get() < previousLength + 1) {
+                    maxLength.set(previousLength + 1);
+                }
+            }
+        }
+    }
+
+    public int getTraitorsCount() {
         return (int) vertices().stream()
                 .filter(v -> ((MyVertex<Integer>) v).isTraitor().getValue())
                 .count();
     }
 
-    public int getSupportingOpinionCount(){
+    public int getSupportingOpinionCount() {
         return (int) vertices().stream()
                 .filter(v -> ((MyVertex<Integer>) v).isSupportingOpinion().getValue())
                 .count();
     }
 
-    public int getNotSupportingOpinionCount(){
+    public int getNotSupportingOpinionCount() {
         return (int) vertices().stream()
                 .filter(v -> !((MyVertex<Integer>) v).isSupportingOpinion().getValue())
                 .count();

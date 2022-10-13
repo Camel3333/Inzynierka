@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.algorithm.AlgorithmType;
 import com.example.algorithm.ProbabilityType;
 import com.example.algorithm.report.StepReport;
@@ -89,10 +90,10 @@ public class SimulationController {
     @Autowired
     private GraphController graphController;
 
-    private BooleanProperty paused = new SimpleBooleanProperty(true);
-    private BooleanProperty started = new SimpleBooleanProperty(false);
-    private BooleanProperty idle = new SimpleBooleanProperty(true);
-    private BooleanProperty isFinished = new SimpleBooleanProperty(false);
+    private final BooleanProperty paused = new SimpleBooleanProperty(true);
+    private final BooleanProperty started = new SimpleBooleanProperty(false);
+    private final BooleanProperty idle = new SimpleBooleanProperty(true);
+    private final BooleanProperty isFinished = new SimpleBooleanProperty(false);
 
     public void show() {
         parent.setVisible(true);
@@ -106,15 +107,35 @@ public class SimulationController {
 
     private void setDefaultSettings() {
         algorithmSettings.getSettings().put("depth",
-                new AlgorithmSetting<>("depth", 1, Integer.class, (value) -> value >= 0));
+                new AlgorithmSetting<>("depth", 1, Integer.class, (value) -> value > 0));
         algorithmSettings.getSettings().put("phase",
-                new AlgorithmSetting<>("phase", 1, Integer.class, (value) -> value >= 0));
+                new AlgorithmSetting<>("phase", 1, Integer.class, (value) -> value > 0));
         algorithmSettings.getSettings().put("q",
-                new AlgorithmSetting<>("q", 1, Integer.class, (value) -> value >= 0));
+                new AlgorithmSetting<>("q", 1, Integer.class, (value) -> value > 0));
         algorithmSettings.getSettings().put("time",
-                new AlgorithmSetting<>("time", 1, Integer.class, (value) -> value >= 0));
+                new AlgorithmSetting<>("time", 1, Integer.class, (value) -> value > 0));
         algorithmSettings.getSettings().put("probability",
                 new AlgorithmSetting<>("probability", ProbabilityType.LINEAR, ProbabilityType.class, (value) -> true));
+    }
+
+    public void setSettingsValidation(GraphController graphController) {
+        if(graphController.getGraph().numVertices() == 0) {
+            algorithmSettings.getSettings().get("depth").setValidateArgument((value) -> false);
+            algorithmSettings.getSettings().get("q").setValidateArgument((value) -> false);
+            algorithmSettings.getSettings().get("phase").setValidateArgument((value) -> false);
+            algorithmSettings.getSettings().get("time").setValidateArgument((value) -> false);
+        }
+        else {
+            Vertex<Integer> commander = graphController.getGraph().vertices().stream().toList().get(0);
+            int maxDepth = graphController.getGraph().getLongestPathFor(commander);
+            algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer) value > 0 && (Integer) value <= maxDepth);
+
+            int minDegree = graphController.getGraph().getMinDegree();
+            algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value > 0 && (Integer) value <= minDegree);
+
+            algorithmSettings.getSettings().get("phase").setValidateArgument((value) -> (Integer) value > 0);
+            algorithmSettings.getSettings().get("time").setValidateArgument((value) -> (Integer) value > 0);
+        }
     }
 
     @FXML
@@ -163,21 +184,17 @@ public class SimulationController {
         dependenciesList.add(isFinished);
         Observable[] dependencies = dependenciesList.toArray(new Observable[0]);
 
-        nextStepDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-            return !(idle.get() && started.get() && !isFinished.get());
-        }, dependencies));
+        nextStepDisabledProperty.bind(Bindings.createBooleanBinding(() ->
+                !(idle.get() && started.get() && !isFinished.get()), dependencies));
 
-        liveDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-            return !(idle.get() && started.get() && !isFinished.get());
-        }, dependencies));
+        liveDisabledProperty.bind(Bindings.createBooleanBinding(() ->
+                !(idle.get() && started.get() && !isFinished.get()), dependencies));
 
-        instantFinishDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-            return !(idle.get() && started.get() && !isFinished.get());
-        }, dependencies));
+        instantFinishDisabledProperty.bind(Bindings.createBooleanBinding(() ->
+                !(idle.get() && started.get() && !isFinished.get()), dependencies));
 
-        pauseDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-            return !(!paused.get() && started.get() && !isFinished.get());
-        }, dependencies));
+        pauseDisabledProperty.bind(Bindings.createBooleanBinding(() ->
+                !(!paused.get() && started.get() && !isFinished.get()), dependencies));
     }
 
     private void initializeProbabilityBox() {

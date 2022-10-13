@@ -30,6 +30,7 @@ public class AppController {
     private MainMenuController menuController;
 
     @FXML
+    @Getter
     private SimulationController simulationController;
 
     @FXML
@@ -86,9 +87,5 @@ public class AppController {
 
     public ApplicationState getApplicationState() {
         return applicationStateProperty.get();
-    }
-
-    public SimulationController getSimulationController() {
-        return simulationController;
     }
 }
