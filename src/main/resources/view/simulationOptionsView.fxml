@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.example.settings.IntegerSettingTextField?>
+<?import com.example.settings.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import com.example.settings.SettingComboBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.controller.SimulationController"
@@ -34,4 +35,12 @@
                 minorTickCount="0"
                 snapToTicks="true"/>
     </VBox>
+
+    <TextFlow style="-fx-max-width: 150px; -fx-wrap-text: true; -fx-text-overrun: clip; -fx-alignment: bottom" fx:id="warning">
+        <Text style="-fx-fill: red" text="Note!&#32;"/>
+        <Text style="-fx-fill: gray;">
+            Algorithms used in this simulation have no standardized way of dealing with non-complete graphs.
+        </Text>
+    </TextFlow>
+    
 </VBox>

@@ -120,6 +120,20 @@ public class MyGraph<V,E> implements Graph<V,E> {
         return adjacency.get(v);
     }
 
+    public boolean isComplete() {
+        for (Vertex<V> vertex : vertices()) {
+            for (Vertex<V> neighbour : vertices()) {
+                if (!vertex.equals(neighbour)) {
+                    if (!this.vertexNeighbours(vertex).contains(neighbour)) {
+                        return false;
+                    }
+                }
+
+            }
+        }
+        return true;
+    }
+
     @Override
     public Vertex<V> insertVertex(V v) throws InvalidVertexException {
         if (this.existsVertexWith(v)) {

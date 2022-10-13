@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.algorithm.AlgorithmType;
 import com.example.algorithm.ProbabilityType;
 import com.example.algorithm.report.StepReport;
+import com.example.model.MyGraph;
 import com.example.settings.*;
 import com.example.simulation.SimpleSimulation;
 import com.example.simulation.Simulation;
@@ -21,6 +22,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,6 +47,8 @@ public class SimulationController {
     public Label timeLabel;
     @FXML
     public Label probabilityLabel;
+    @FXML
+    public TextFlow warning;
     @FXML
     private VBox parent;
     @FXML
@@ -97,6 +101,7 @@ public class SimulationController {
     public void show() {
         parent.setVisible(true);
         parent.setManaged(true);
+        initWarning();
     }
 
     public void hide() {
@@ -115,6 +120,13 @@ public class SimulationController {
                 new AlgorithmSetting<>("time", 1, Integer.class, (value) -> value >= 0));
         algorithmSettings.getSettings().put("probability",
                 new AlgorithmSetting<>("probability", ProbabilityType.LINEAR, ProbabilityType.class, (value) -> true));
+    }
+
+    private void initWarning() {
+        MyGraph<Integer, Integer> graph = graphController.getGraph();
+        if (graph != null) warning.setVisible(
+                ! graph.isComplete()
+        );
     }
 
     @FXML
