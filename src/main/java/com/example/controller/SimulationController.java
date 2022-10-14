@@ -357,8 +357,6 @@ public class SimulationController {
     }
 
     private void instantFinishTask() {
-        simulation.allowAnimations(false);
-        paused.set(false);
         while (!isFinished.get()) {
             processStep();
 
@@ -398,7 +396,7 @@ public class SimulationController {
         }
         isFinished.unbind();
         if (simulation != null)
-            simulation.stop();
+            simulation.removeSimulationRelatedColoring();
         setSimulationFlagsToNotStartedState();
     }
 
@@ -440,7 +438,11 @@ public class SimulationController {
                 @Override
                 protected Boolean call() throws Exception {
                     idle.set(false);
+                    paused.set(false);
+                    simulation.allowAnimations(false);
+                    simulation.removeSimulationRelatedColoring();
                     instantFinishTask();
+                    simulation.allowAnimations(true);
                     idle.set(true);
                     return true;
                 }

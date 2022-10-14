@@ -11,9 +11,10 @@ public interface Simulation {
 
     StepReport step();
 
-    void stop();
-
     void setAnimationsSpeed(double speedMultiplier);
+
     boolean isGraphEmpty();
+
+    void removeSimulationRelatedColoring();
 }
 

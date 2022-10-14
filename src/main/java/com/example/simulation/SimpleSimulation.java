@@ -59,17 +59,12 @@ public class SimpleSimulation implements Simulation {
     }
 
     @Override
-    public void stop() {
-        removeSimulationRelatedColoring();
-    }
-
-    @Override
     public void setAnimationsSpeed(double speedMultiplier) {
         System.out.println("Changing animation speed to " + speedMultiplier);
         animationEngine.setAnimationsSpeed(speedMultiplier);
     }
 
-    private void removeSimulationRelatedColoring() {
+    public void removeSimulationRelatedColoring() {
         graphController.getGraph()
                 .vertices()
                 .forEach(v -> graphController.highlightRole(v, VertexRole.NONE));
