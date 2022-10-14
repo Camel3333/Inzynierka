@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.ApplicationState;
+import com.example.model.MyGraph;
 import com.example.util.GraphConverter;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
@@ -37,9 +38,7 @@ public class FileMenuController {
         newFileButton.disableProperty().bind(isSimulation);
 
         newFileButton.setOnAction(e -> {
-            graphController.getGraph().vertices().clear();
-            graphController.getGraph().edges().clear();
-            graphController.update();
+            graphController.setModelGraph(new MyGraph<>());
         });
         exportButton.setOnAction(e -> {
             try {
