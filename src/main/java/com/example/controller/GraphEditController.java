@@ -42,6 +42,8 @@ public class GraphEditController {
     private Button instantFinishButton;
     @FXML
     private Button pauseButton;
+    @FXML
+    public Button stopButton;
 
     private DrawMenuController drawMenuController;
     private SimulationMenuController simulationMenuController;
@@ -64,8 +66,9 @@ public class GraphEditController {
         liveButton.setOnAction(e -> simulationMenuController.liveItem.fire());
         instantFinishButton.setOnAction(e -> simulationMenuController.instantFinishItem.fire());
         pauseButton.setOnAction(e -> simulationMenuController.pauseItem.fire());
+        stopButton.setOnAction(e -> simulationMenuController.stopItem.fire());
         buttons.put(ApplicationState.SIMULATING,
-                List.of(startButton, nextStepButton, liveButton, instantFinishButton, pauseButton));
+                List.of(startButton, nextStepButton, liveButton, instantFinishButton, pauseButton, stopButton));
     }
 
     private void initializeAlwaysDisplayedButtons() {
@@ -109,5 +112,6 @@ public class GraphEditController {
         liveButton.disableProperty().bind(simulationController.getLiveDisabledProperty());
         instantFinishButton.disableProperty().bind(simulationController.getInstantFinishDisabledProperty());
         pauseButton.disableProperty().bind(simulationController.getPauseDisabledProperty());
+        stopButton.disableProperty().bind(simulationController.getStopDisableProperty());
     }
 }

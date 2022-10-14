@@ -16,6 +16,7 @@
     <Button text="Live" fx:id="liveButton"/>
     <Button text="Instant finish" fx:id="instantFinishButton"/>
     <Button text="Pause" fx:id="pauseButton"/>
+    <Button text="Stop" fx:id="stopButton"/>
     <Button text="Undo" fx:id = "undoButton"/>
     <Button text="Redo" fx:id = "redoButton"/>
 </HBox>

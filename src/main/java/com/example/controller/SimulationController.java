@@ -78,6 +78,8 @@ public class SimulationController {
     private final BooleanProperty instantFinishDisabledProperty = new SimpleBooleanProperty();
     @Getter
     private final BooleanProperty pauseDisabledProperty = new SimpleBooleanProperty();
+    @Getter
+    private final BooleanProperty stopDisableProperty = new SimpleBooleanProperty();
 
     private Service<?> activeService;
 
@@ -176,6 +178,7 @@ public class SimulationController {
         liveDisabledProperty.setValue(true);
         instantFinishDisabledProperty.setValue(true);
         pauseDisabledProperty.setValue(true);
+        stopDisableProperty.setValue(true);
 
         List<Observable> dependenciesList = new ArrayList<>();
         dependenciesList.add(paused);
@@ -195,6 +198,9 @@ public class SimulationController {
 
         pauseDisabledProperty.bind(Bindings.createBooleanBinding(() ->
                 !(!paused.get() && started.get() && !isFinished.get()), dependencies));
+
+        stopDisableProperty.bind(Bindings.createBooleanBinding(() ->
+                !(paused.get() && started.get() && !isFinished.get()), dependencies));
     }
 
     private void initializeProbabilityBox() {
@@ -352,8 +358,13 @@ public class SimulationController {
 
     private void instantFinishTask() {
         simulation.allowAnimations(false);
+        paused.set(false);
         while (!isFinished.get()) {
             processStep();
+
+            if (paused.get()) {
+                return;
+            }
         }
         System.out.println("Finished");
         openResultDialog();

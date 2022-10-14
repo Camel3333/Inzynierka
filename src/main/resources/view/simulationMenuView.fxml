@@ -16,4 +16,5 @@
     <MenuItem text="Live" fx:id="liveItem"/>
     <MenuItem text="Instant finish" fx:id="instantFinishItem"/>
     <MenuItem text="Pause" fx:id="pauseItem"/>
+    <MenuItem text="Stop" fx:id="stopItem"/>
 </Menu>
