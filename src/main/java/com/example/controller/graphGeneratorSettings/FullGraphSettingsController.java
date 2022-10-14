@@ -21,7 +21,6 @@ public class FullGraphSettingsController implements GraphSettings {
     private Slider verticesSlider;
 
     @FXML
-    @Getter
     private IntegerSettingTextField vertices;
 
     @FXML
