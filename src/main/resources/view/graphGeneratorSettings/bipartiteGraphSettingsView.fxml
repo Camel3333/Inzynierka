@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import com.example.settings.IntegerSettingTextField?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.controller.graphGeneratorSettings.BipartiteGraphSettingsController">
+
+    <VBox spacing="5" fx:id="container">
+        <Label text="Select number of vertices in first set"/>
+        <IntegerSettingTextField fx:id="firstVertices"/>
+        <Slider fx:id="firstVerticesSlider"
+                blockIncrement="1.0"
+                cache="true"
+                majorTickUnit="5.0"
+                max="15.0"
+                min="0.0"
+                minorTickCount="4"
+                showTickLabels="true"
+                showTickMarks="true"
+                snapToTicks="true"
+                value="5.0"/>
+        <Label text="Select number of vertices in second set"/>
+        <IntegerSettingTextField fx:id="secondVertices"/>
+        <Slider fx:id="secondVerticesSlider"
+                blockIncrement="1.0"
+                cache="true"
+                majorTickUnit="5.0"
+                max="15.0"
+                min="0.0"
+                minorTickCount="4"
+                showTickLabels="true"
+                showTickMarks="true"
+                snapToTicks="true"
+                value="5.0"/>
+    </VBox>
+</AnchorPane>

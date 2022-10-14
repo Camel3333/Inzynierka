@@ -1,36 +1,40 @@
 package com.example.controller;
 
+import com.example.controller.graphGeneratorSettings.*;
 import com.example.draw.DefinedGraph;
 import com.example.draw.GraphGenerator;
-import com.example.settings.AlgorithmSetting;
-import com.example.settings.IntegerSettingTextField;
-import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.Slider;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 @Component
+@DependsOn({"fullGraph", "cycleGraph", "treeGraph", "planarGraph", "bipartiteGraph"})
 @FxmlView("/view/generateGraphView.fxml")
 public class GenerateGraphController {
     @FXML
     private ComboBox<DefinedGraph> graphBox;
 
     @FXML
-    private Slider verticesSlider;
+    private FullGraphSettingsController fullGraphSettingsController;
 
     @FXML
-    private IntegerSettingTextField vertices;
+    private CycleGraphSettingsController cycleGraphSettingsController;
 
     @FXML
-    private ButtonType ok;
+    private TreeGraphSettingsController treeGraphSettingsController;
+
+    @FXML
+    private PlanarGraphSettingsController planarGraphSettingsController;
+
+    @FXML
+    private BipartiteGraphSettingsController bipartiteGraphSettingsController;
 
     @Autowired
     private GraphGenerator graphGenerator;
@@ -38,13 +42,15 @@ public class GenerateGraphController {
     @Setter
     private DefinedGraph selectedDefinedGraph;
 
-    public GenerateGraphController() {
-    }
+    @Setter
+    private GraphSettings selectedGraphSettings;
+
+    public GenerateGraphController() { }
 
     public void generateGraph(GraphController graphController) {
-        if (vertices.getIsValidProperty().get()) {
+        if (selectedGraphSettings.isValid()) {
             graphGenerator.generateGraph(graphController, selectedDefinedGraph,
-                    vertices.getContainedSetting().get().getValue());
+                    selectedGraphSettings.getSettings());
         }
     }
 
@@ -65,27 +71,31 @@ public class GenerateGraphController {
         graphBox.getSelectionModel().selectedItemProperty()
                 .addListener(((observable, oldValue, newValue) -> {
                     if (newValue != null) {
-                        setSelectedDefinedGraph(newValue);
+                        setGraphSettings(newValue);
                     }
                 }));
 
-        ObservableList<DefinedGraph> definedGraphs = FXCollections.observableArrayList(DefinedGraph.FULL);
+        ObservableList<DefinedGraph> definedGraphs = FXCollections.observableArrayList(DefinedGraph.FULL,
+                DefinedGraph.CYCLE, DefinedGraph.BIPARTITE, DefinedGraph.TREE, DefinedGraph.PLANAR);
         graphBox.setItems(definedGraphs);
         graphBox.getSelectionModel().select(0);
+    }
 
-        vertices.setContainedSetting(new AlgorithmSetting<>
-                ("vertices", (int) verticesSlider.getValue(), Integer.class,
-                        (value) -> value >= verticesSlider.getMin() && value <= verticesSlider.getMax()));
+    private void setGraphSettings(DefinedGraph definedGraph) {
+        setSelectedDefinedGraph(definedGraph);
 
-        verticesSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != oldValue) {
-                vertices.getContainedSetting().get().setValue(newValue.intValue());
-            }
-        });
-        vertices.getContainedSetting().get().getValueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != oldValue) {
-                verticesSlider.setValue(newValue);
-            }
-        });
+        switch (selectedDefinedGraph) {
+            case FULL -> selectedGraphSettings = fullGraphSettingsController;
+            case TREE -> selectedGraphSettings = treeGraphSettingsController;
+            case CYCLE -> selectedGraphSettings = cycleGraphSettingsController;
+            case PLANAR -> selectedGraphSettings = planarGraphSettingsController;
+            case BIPARTITE -> selectedGraphSettings = bipartiteGraphSettingsController;
+        }
+
+        fullGraphSettingsController.setVisible(definedGraph);
+        treeGraphSettingsController.setVisible(definedGraph);
+        cycleGraphSettingsController.setVisible(definedGraph);
+        planarGraphSettingsController.setVisible(definedGraph);
+        bipartiteGraphSettingsController.setVisible(definedGraph);
     }
 }

@@ -4,28 +4,20 @@
 
 <?import javafx.scene.layout.VBox?>
 
-<?import com.example.settings.IntegerSettingTextField?>
 <DialogPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.controller.GenerateGraphController">
+            fx:controller="com.example.controller.GenerateGraphController"
+            prefWidth="250" prefHeight="350">
 
     <content>
         <VBox spacing="5">
             <Label text="Select type of graph to be generated"/>
             <ComboBox fx:id ="graphBox"/>
-            <Label text="Select number of vertices"/>
-            <IntegerSettingTextField fx:id="vertices"/>
-            <Slider fx:id="verticesSlider"
-                    blockIncrement="1.0"
-                    cache="true"
-                    majorTickUnit="5.0"
-                    max="30.0"
-                    min="0.0"
-                    minorTickCount="4"
-                    showTickLabels="true"
-                    showTickMarks="true"
-                    snapToTicks="true"
-                    value="5.0"/>
+            <fx:include fx:id="fullGraphSettings" source="graphGeneratorSettings/fullGraphSettingsView.fxml"/>
+            <fx:include fx:id="cycleGraphSettings" source="graphGeneratorSettings/cycleGraphSettingsView.fxml"/>
+            <fx:include fx:id="treeGraphSettings" source="graphGeneratorSettings/treeGraphSettingsView.fxml"/>
+            <fx:include fx:id="planarGraphSettings" source="graphGeneratorSettings/planarGraphSettingsView.fxml"/>
+            <fx:include fx:id="bipartiteGraphSettings" source="graphGeneratorSettings/bipartiteGraphSettingsView.fxml"/>
         </VBox>
     </content>
 
