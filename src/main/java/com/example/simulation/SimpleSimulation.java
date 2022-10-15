@@ -82,6 +82,5 @@ public class SimpleSimulation implements Simulation {
     @Override
     public void clearData() {
         graphController.clearVerticesTooltips();
-        graphController.updateVerticesTooltips();
     }
 }

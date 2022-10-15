@@ -150,7 +150,7 @@ public class GraphController {
 
     public void clearVerticesTooltips() {
        graph.vertices().forEach(v -> ((MyVertex<Integer>) v).clearKnowledge());
-        updateVerticesTooltips();
+       updateVerticesTooltips();
     }
 
     public void updateVerticesTooltips() {
