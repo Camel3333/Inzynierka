@@ -157,9 +157,11 @@ public class GraphController {
     public void changeVertexFillStyle(Vertex<Integer> vertex) {
         if (((MyVertex<Integer>) vertex).getIsTraitor().get()) {
             removeVertexStyle(vertex.element(), "loyal");
+            removeVertexStyle(vertex.element(), "traitor");
             addVertexStyle(vertex.element(), "traitor");
         } else {
             removeVertexStyle(vertex.element(), "traitor");
+            removeVertexStyle(vertex.element(), "loyal");
             addVertexStyle(vertex.element(), "loyal");
         }
     }
@@ -167,9 +169,11 @@ public class GraphController {
     public void changeVertexStrokeStyle (Vertex<Integer> vertex) {
         if (((MyVertex<Integer>) vertex).isSupportingOpinion().get()) {
             removeVertexStyle(vertex.element(), "defense");
+            removeVertexStyle(vertex.element(), "attack");
             addVertexStyle(vertex.element(), "attack");
         } else {
             removeVertexStyle(vertex.element(), "attack");
+            removeVertexStyle(vertex.element(), "defense");
             addVertexStyle(vertex.element(), "defense");
         }
     }

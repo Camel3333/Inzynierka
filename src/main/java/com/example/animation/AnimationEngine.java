@@ -100,7 +100,7 @@ public class AnimationEngine {
     }
 
     private Animation getChooseOpinionAnimation(SmartGraphVertexNode<Integer> vertex) {
-        return chooseAnimationFactory.getChooseOpinionAnimation(vertex, e -> graphController.changeVertexFillStyle(vertex.getUnderlyingVertex()));
+        return chooseAnimationFactory.getChooseOpinionAnimation(vertex, e -> graphController.changeVertexStrokeStyle(vertex.getUnderlyingVertex()));
     }
 
     public void setAnimationsSpeed(Double multiplier) {
