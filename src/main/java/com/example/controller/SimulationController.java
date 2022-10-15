@@ -200,7 +200,7 @@ public class SimulationController {
                 !(!paused.get() && started.get() && !isFinished.get()), dependencies));
 
         stopDisableProperty.bind(Bindings.createBooleanBinding(() ->
-                !(paused.get() && started.get() && !isFinished.get()), dependencies));
+                !(started.get() && !isFinished.get()), dependencies));
     }
 
     private void initializeProbabilityBox() {
