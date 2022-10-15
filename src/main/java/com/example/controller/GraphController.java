@@ -148,6 +148,11 @@ public class GraphController {
                 });
     }
 
+    public void clearVerticesTooltips() {
+       graph.vertices().forEach(v -> ((MyVertex<Integer>) v).clearKnowledge());
+        updateVerticesTooltips();
+    }
+
     public void updateVerticesTooltips() {
         graph.vertices().forEach(v -> ((MyVertex<Integer>) v).updateKnowledgeInfo());
     }

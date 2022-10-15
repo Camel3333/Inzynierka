@@ -81,7 +81,7 @@ public class SimpleSimulation implements Simulation {
 
     @Override
     public void clearData() {
-        graphController.getGraph().vertices().forEach(v -> ((MyVertex<Integer>) v).clearKnowledge());
+        graphController.clearVerticesTooltips();
         graphController.updateVerticesTooltips();
     }
 }
