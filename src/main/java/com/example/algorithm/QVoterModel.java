@@ -51,9 +51,10 @@ public class QVoterModel implements Algorithm {
             }
             case CHOOSE -> {
                 algorithmPhase = AlgorithmPhase.SEND;
+                StepReport stepReport = makeDecision();
                 time++;
                 checkIsFinished();
-                return makeDecision();
+                return stepReport;
             }
         }
         return null;
@@ -77,6 +78,8 @@ public class QVoterModel implements Algorithm {
         report.addBatch(operationsBatch);
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
+        report.setAlgorithmPhase(AlgorithmPhase.SEND);
+        report.getProperties().put("time", String.valueOf(time));
         return report;
     }
 
@@ -94,6 +97,8 @@ public class QVoterModel implements Algorithm {
         report.addBatch(operationsBatch);
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
+        report.setAlgorithmPhase(AlgorithmPhase.CHOOSE);
+        report.getProperties().put("time", String.valueOf(time));
         return report;
     }
 

@@ -4,6 +4,8 @@ import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.algorithm.AlgorithmType;
 import com.example.algorithm.ProbabilityType;
 import com.example.algorithm.report.StepReport;
+import com.example.information.InformationEngineFactory;
+import com.example.information.LamportInformationEngine;
 import com.example.settings.*;
 import com.example.simulation.SimpleSimulation;
 import com.example.simulation.Simulation;
@@ -63,6 +65,8 @@ public class SimulationController {
     private ComboBox<AlgorithmType> algorithmsBox;
     @FXML
     private Slider animationSpeedSlider;
+    @FXML
+    private InformationController informationController;
 
     private final AlgorithmSettings algorithmSettings = new AlgorithmSettings();
 
@@ -128,7 +132,7 @@ public class SimulationController {
         else {
             Vertex<Integer> commander = graphController.getGraph().vertices().stream().toList().get(0);
             int maxDepth = graphController.getGraph().getLongestPathFor(commander);
-            algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer) value > 0 && (Integer) value <= maxDepth);
+            algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer) value >= 0 && (Integer) value <= maxDepth);
 
             int minDegree = graphController.getGraph().getMinDegree();
             algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value > 0 && (Integer) value <= minDegree);
@@ -294,9 +298,11 @@ public class SimulationController {
 
     public void initSimulation() {
         statisticsController.clear();
+        informationController.clearView();
         simulation.allowAnimations(true);
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), algorithmSettings);
+        simulation.setInformationEngine(InformationEngineFactory.createForAlgorithm(selectedAlgorithm, informationController));
         ((SimpleSimulation) simulation).loadEnvironment();
         isFinished.bind(((SimpleSimulation) simulation).getIsFinishedProperty());
         started.set(true);

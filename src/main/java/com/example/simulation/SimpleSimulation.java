@@ -5,6 +5,7 @@ import com.example.algorithm.VertexRole;
 import com.example.algorithm.report.StepReport;
 import com.example.animation.AnimationEngine;
 import com.example.controller.GraphController;
+import com.example.information.InformationEngine;
 import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -15,6 +16,8 @@ public class SimpleSimulation implements Simulation {
     private Algorithm algorithm;
     private AlgorithmSettings settings;
     private final AnimationEngine animationEngine;
+    @Setter
+    private InformationEngine informationEngine;
     private final BooleanProperty allowAnimations = new SimpleBooleanProperty(true);
 
     @Setter
@@ -48,6 +51,8 @@ public class SimpleSimulation implements Simulation {
         StepReport report = algorithm.step();
         if (allowAnimations.get()) {
             graphController.enableGraphInteractions(false);
+            if (informationEngine != null)
+                informationEngine.processReport(report);
             animationEngine.animate(report);
             graphController.enableGraphInteractions(true);
         }
