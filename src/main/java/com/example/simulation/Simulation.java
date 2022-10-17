@@ -14,6 +14,9 @@ public interface Simulation {
     void stop();
 
     void setAnimationsSpeed(double speedMultiplier);
+
     boolean isGraphEmpty();
+
+    void clearData();
 }
 

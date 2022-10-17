@@ -4,6 +4,9 @@ import com.brunomnsilva.smartgraph.graph.Vertex;
 import javafx.beans.binding.BooleanExpression;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableBooleanValue;
 import lombok.Getter;
 
 import java.util.*;
@@ -11,7 +14,7 @@ import java.util.*;
 public class MyVertex<V> implements Vertex<V>, Agent {
     private V id;
     @Getter
-    private BooleanProperty isTraitor = new SimpleBooleanProperty();
+    private final BooleanProperty isTraitor = new SimpleBooleanProperty();
 
     @Getter
     private BooleanProperty isSupporting;
@@ -19,9 +22,13 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     @Getter
     private List<BooleanProperty> knowledge = new ArrayList<>();
 
+    @Getter
+    private final StringProperty knowledgeInfo = new SimpleStringProperty("");
+
     public MyVertex(V id){
         isSupporting = new SimpleBooleanProperty(true);
         this.id = id;
+        updateKnowledgeInfo();
     }
 
     public void setElement(V element){
@@ -49,6 +56,21 @@ public class MyVertex<V> implements Vertex<V>, Agent {
 
     public void setIsSupporting(boolean isSupporting) {
         this.isSupporting.set(isSupporting);
+    }
+
+    public void updateKnowledgeInfo() {
+        int attackCount = (int) knowledge.stream().filter(ObservableBooleanValue::get).count();
+        int retreatAttack = knowledge.size() - attackCount;
+        if (knowledge.size() == 0) {
+            knowledgeInfo.set("attack: -\nretreat: -");
+        }
+        else {
+            knowledgeInfo.set("attack: " + attackCount + "\nretreat: " + retreatAttack);
+        }
+    }
+
+    public void clearKnowledge() {
+        knowledge = new ArrayList<>();
     }
 
     public BooleanProperty getNextOpinion(MyVertex<V> vertex){
