@@ -19,5 +19,7 @@ public interface Simulation {
     void setInformationEngine(InformationEngine informationEngine);
 
     boolean isGraphEmpty();
+
+    void clearData();
 }
 

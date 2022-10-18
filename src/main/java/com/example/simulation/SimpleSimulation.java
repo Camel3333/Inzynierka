@@ -70,7 +70,6 @@ public class SimpleSimulation implements Simulation {
 
     @Override
     public void setAnimationsSpeed(double speedMultiplier) {
-        System.out.println("Changing animation speed to " + speedMultiplier);
         animationEngine.setAnimationsSpeed(speedMultiplier);
     }
 
@@ -82,5 +81,10 @@ public class SimpleSimulation implements Simulation {
 
     public boolean isGraphEmpty() {
         return graphController.getGraph().vertices().isEmpty();
+    }
+
+    @Override
+    public void clearData() {
+        graphController.clearVerticesTooltips();
     }
 }

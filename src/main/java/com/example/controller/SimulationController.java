@@ -225,6 +225,7 @@ public class SimulationController {
     public void initSimulation() {
         statisticsController.clear();
         informationController.clearView();
+        simulation.clearData();
         simulation.allowAnimations(true);
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), getAlgorithmController(selectedAlgorithm).getAlgorithmSettings());
@@ -237,6 +238,7 @@ public class SimulationController {
     private void processStep() {
         StepReport report = simulation.step();
         statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
+        graphController.updateVerticesTooltips();
     }
 
     public void openResultDialog() {

@@ -2,9 +2,7 @@ package com.example.controller;
 
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graph.Vertex;
-import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
-import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
+import com.brunomnsilva.smartgraph.graphview.*;
 import com.example.algorithm.VertexRole;
 import com.example.draw.MySmartGraphPanel;
 import com.example.model.MyGraph;
@@ -16,6 +14,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
@@ -133,14 +132,29 @@ public class GraphController {
 
     public void addVertexListeners(Vertex<Integer> vertex) {
         ((MyVertex<Integer>) vertex).getIsTraitor().addListener(changed -> {
-            System.out.println("traitor changed");
             changeVertexFillStyle(vertex);
         });
 
         ((MyVertex<Integer>) vertex).isSupportingOpinion().addListener(changed -> {
-            System.out.println("opinion changed");
             changeVertexStrokeStyle(vertex);
         });
+        graphView.getChildren().stream()
+                .filter(n -> n instanceof SmartGraphVertexNode)
+                .filter(n -> ((SmartGraphVertexNode<?>) n).getUnderlyingVertex().element() == vertex.element())
+                .forEach(n -> {
+                    Tooltip t = new Tooltip();
+                    t.textProperty().bindBidirectional(((MyVertex<Integer>) vertex).getKnowledgeInfo());
+                    Tooltip.install(n, t);
+                });
+    }
+
+    public void clearVerticesTooltips() {
+       graph.vertices().forEach(v -> ((MyVertex<Integer>) v).clearKnowledge());
+       updateVerticesTooltips();
+    }
+
+    public void updateVerticesTooltips() {
+        graph.vertices().forEach(v -> ((MyVertex<Integer>) v).updateKnowledgeInfo());
     }
 
     public void colorGraphView () {
@@ -185,7 +199,7 @@ public class GraphController {
         addVertexStyle(vertex.element(), vertexRole.toString().toLowerCase(Locale.ROOT));
     }
 
-    public void setVertexPosition(Vertex vertex, double x, double y) {
+    public void setVertexPosition(Vertex<Integer> vertex, double x, double y) {
         graphView.setVertexPosition(vertex, x, y);
     }
 
@@ -204,20 +218,20 @@ public class GraphController {
         }
     }
 
-    public void addNodeToView(Node node){
+    public void addNodeToView(Node node) {
         graphView.getChildren().add(node);
     }
 
-    public Point2D getVertexPosition(Vertex<Integer> vertex){
+    public Point2D getVertexPosition(Vertex<Integer> vertex) {
         return new Point2D(graphView.getVertexPositionX(vertex), graphView.getVertexPositionY(vertex));
     }
 
-    public void removeNodeFromView(Node node){
+    public void removeNodeFromView(Node node) {
         graphView.getChildren().remove(node);
     }
 
     // TODO: implement update as listener to graph changes
-    public void update(){
+    public void update() {
         graphView.updateAndWait();
     }
 
@@ -232,13 +246,11 @@ public class GraphController {
         return vertexIdCounter++;
     }
 
-    public void enableGraphInteractions(boolean enable)
-    {
+    public void enableGraphInteractions(boolean enable) {
         graphView.setDisable(!enable);
     }
 
-    public BooleanProperty getGraphInteractionsProperty()
-    {
+    public BooleanProperty getGraphInteractionsProperty() {
         return graphView.disableProperty();
     }
 }

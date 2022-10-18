@@ -7,7 +7,7 @@
       fx:controller="com.example.controller.FileMenuController"
       text="File">
     <items>
-        <MenuItem text="Save as"></MenuItem>
+        <MenuItem text="New file" fx:id="newFileButton"/>
         <MenuItem text="Import" fx:id="importButton"/>
         <MenuItem text="Export" fx:id="exportButton"/>
     </items>
