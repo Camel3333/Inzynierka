@@ -16,5 +16,7 @@ public interface Simulation {
     boolean isGraphEmpty();
 
     void removeSimulationRelatedColoring();
+
+    void clearData();
 }
 

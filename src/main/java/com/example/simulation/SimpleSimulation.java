@@ -5,6 +5,7 @@ import com.example.algorithm.VertexRole;
 import com.example.algorithm.report.StepReport;
 import com.example.animation.AnimationEngine;
 import com.example.controller.GraphController;
+import com.example.model.MyVertex;
 import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -60,7 +61,6 @@ public class SimpleSimulation implements Simulation {
 
     @Override
     public void setAnimationsSpeed(double speedMultiplier) {
-        System.out.println("Changing animation speed to " + speedMultiplier);
         animationEngine.setAnimationsSpeed(speedMultiplier);
     }
 
@@ -72,5 +72,10 @@ public class SimpleSimulation implements Simulation {
 
     public boolean isGraphEmpty() {
         return graphController.getGraph().vertices().isEmpty();
+    }
+
+    @Override
+    public void clearData() {
+        graphController.clearVerticesTooltips();
     }
 }

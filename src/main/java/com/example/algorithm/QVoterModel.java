@@ -19,7 +19,6 @@ import java.util.Random;
 public class QVoterModel implements Algorithm {
     private MyGraph<Integer, Integer> graph;
     private MyVertex<Integer> selectedAgent;
-    private List<Boolean> opinionsReceived;
     private AlgorithmPhase algorithmPhase = AlgorithmPhase.SEND;
     private ProbabilityType probabilityType = ProbabilityType.LINEAR;
     private int q;
@@ -68,10 +67,9 @@ public class QVoterModel implements Algorithm {
         report.fillRoles(selectedAgent, agentNeighbours);
 
         OperationsBatch operationsBatch = new OperationsBatch();
-        opinionsReceived = new ArrayList<>();
         for (Vertex<Integer> neighbour : agentNeighbours) {
             BooleanProperty opinion = ((MyVertex<Integer>) neighbour).getNextOpinion(selectedAgent);
-            opinionsReceived.add(opinion.getValue());
+            selectedAgent.receiveOpinion(opinion);
             operationsBatch.add(new SendOperation(neighbour, selectedAgent, opinion));
         }
         report.addBatch(operationsBatch);
@@ -86,7 +84,7 @@ public class QVoterModel implements Algorithm {
         report.fillRoles(selectedAgent, null);
 
         if (shouldAcceptNeighboursOpinion()) {
-            selectedAgent.setIsSupporting(opinionsReceived.get(0));
+            selectedAgent.setIsSupporting(selectedAgent.getMajorityVote());
         }
         OperationsBatch operationsBatch = new OperationsBatch();
         operationsBatch.add(new ChooseOperation(selectedAgent, selectedAgent.getIsSupporting()));
@@ -94,11 +92,12 @@ public class QVoterModel implements Algorithm {
         report.addBatch(operationsBatch);
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
+        selectedAgent.clearKnowledge();
         return report;
     }
 
     private boolean shouldAcceptNeighboursOpinion() {
-        return opinionsReceived.stream().distinct().count() <= 1 || checkProbability();
+        return selectedAgent.getKnowledge().stream().distinct().count() <= 1 || checkProbability();
     }
 
     @Override
