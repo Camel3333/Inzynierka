@@ -7,7 +7,7 @@
 <DialogPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.controller.GenerateGraphController"
-            prefWidth="250" prefHeight="350">
+            prefWidth="300" prefHeight="350">
 
     <content>
         <VBox spacing="5">

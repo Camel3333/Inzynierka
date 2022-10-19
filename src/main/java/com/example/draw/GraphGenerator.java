@@ -1,7 +1,6 @@
 package com.example.draw;
 
 import com.brunomnsilva.smartgraph.graph.Graph;
-import com.example.controller.GraphController;
 import com.example.model.MyGraph;
 import org.springframework.stereotype.Component;
 
@@ -10,17 +9,14 @@ import java.util.Map;
 @Component
 public class GraphGenerator {
 
-    public void generateGraph(GraphController graphController, DefinedGraph definedGraph, Map<String, Integer> settings){
-        Graph<Integer, Integer> generatedGraph;
-        switch (definedGraph) {
-            case FULL -> generatedGraph = getFullGraph(settings);
-            case TREE -> generatedGraph = getTreeGraph(settings);
-            case CYCLE -> generatedGraph = getCycleGraph(settings);
-            case PLANAR -> generatedGraph = getPlanarGraph(settings);
-            case BIPARTITE -> generatedGraph = getBipartiteGraph(settings);
-            default -> throw new IllegalStateException("Unexpected value: " + definedGraph);
-        }
-        graphController.setModelGraph((MyGraph<Integer, Integer>) generatedGraph);
+    public Graph<Integer, Integer> generateGraph(DefinedGraph definedGraph, Map<String, Integer> settings){
+        return switch (definedGraph) {
+            case FULL -> getFullGraph(settings);
+            case TREE -> getTreeGraph(settings);
+            case CYCLE -> getCycleGraph(settings);
+            case PLANAR -> getPlanarGraph(settings);
+            case BIPARTITE -> getBipartiteGraph(settings);
+        };
     }
 
     private Graph<Integer, Integer> getFullGraph(Map<String, Integer> settings) {

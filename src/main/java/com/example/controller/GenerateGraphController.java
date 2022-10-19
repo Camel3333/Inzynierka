@@ -1,8 +1,10 @@
 package com.example.controller;
 
+import com.brunomnsilva.smartgraph.graph.Graph;
 import com.example.controller.graphGeneratorSettings.*;
 import com.example.draw.DefinedGraph;
 import com.example.draw.GraphGenerator;
+import com.example.model.MyGraph;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -49,8 +51,8 @@ public class GenerateGraphController {
 
     public void generateGraph(GraphController graphController) {
         if (selectedGraphSettings.isValid()) {
-            graphGenerator.generateGraph(graphController, selectedDefinedGraph,
-                    selectedGraphSettings.getSettings());
+            Graph<Integer, Integer> generatedGraph = graphGenerator.generateGraph(selectedDefinedGraph, selectedGraphSettings.getSettings());
+            graphController.setModelGraph((MyGraph<Integer, Integer>) generatedGraph);
         }
     }
 
@@ -84,13 +86,13 @@ public class GenerateGraphController {
     private void setGraphSettings(DefinedGraph definedGraph) {
         setSelectedDefinedGraph(definedGraph);
 
-        switch (selectedDefinedGraph) {
-            case FULL -> selectedGraphSettings = fullGraphSettingsController;
-            case TREE -> selectedGraphSettings = treeGraphSettingsController;
-            case CYCLE -> selectedGraphSettings = cycleGraphSettingsController;
-            case PLANAR -> selectedGraphSettings = planarGraphSettingsController;
-            case BIPARTITE -> selectedGraphSettings = bipartiteGraphSettingsController;
-        }
+        selectedGraphSettings = switch (selectedDefinedGraph) {
+            case FULL -> fullGraphSettingsController;
+            case TREE -> treeGraphSettingsController;
+            case CYCLE -> cycleGraphSettingsController;
+            case PLANAR -> planarGraphSettingsController;
+            case BIPARTITE -> bipartiteGraphSettingsController;
+        };
 
         fullGraphSettingsController.setVisible(definedGraph);
         treeGraphSettingsController.setVisible(definedGraph);

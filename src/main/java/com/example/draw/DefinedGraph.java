@@ -12,7 +12,7 @@ public enum DefinedGraph {
         return switch (this) {
             case FULL -> "Full graph";
             case CYCLE -> "Cycle graph";
-            case TREE -> "Tre graph";
+            case TREE -> "Tree graph";
             case BIPARTITE -> "Bipartite graph";
             case PLANAR -> "Planar graph";
         };
