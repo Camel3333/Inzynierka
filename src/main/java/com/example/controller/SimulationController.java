@@ -17,20 +17,16 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import lombok.Getter;
+import net.rgielen.fxweaver.core.FxControllerAndView;
+import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +65,9 @@ public class SimulationController {
 
     @Autowired
     private GraphController graphController;
+
+    @Autowired
+    private FxWeaver fxWeaver;
 
     private final BooleanProperty paused = new SimpleBooleanProperty(true);
     private final BooleanProperty started = new SimpleBooleanProperty(false);
@@ -237,22 +236,12 @@ public class SimulationController {
     }
 
     public void openResultDialog() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FXMLLoader fxmlLoader = new FXMLLoader();
-                    fxmlLoader.setLocation(getClass().getResource("/view/simulationResultView.fxml"));
-                    Scene scene = new Scene(fxmlLoader.load());
-                    ((SimulationResultController) fxmlLoader.getController()).setMessage(graphController.getGraph().checkConsensus());
-                    Stage stage = new Stage();
-                    stage.setTitle("Result");
-                    stage.setScene(scene);
-                    stage.show();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-            }
+        Platform.runLater(() -> {
+            Dialog<ButtonType> simulationResultDialog = new Dialog<>();
+            FxControllerAndView<SimulationResultController, DialogPane> controllerAndView = fxWeaver.load(SimulationResultController.class);
+            controllerAndView.getController().setMessage(graphController.getGraph().checkConsensus());
+            simulationResultDialog.setDialogPane(controllerAndView.getView().orElseThrow(() -> new RuntimeException("Can't load dialog view, when there is no present")));
+            simulationResultDialog.showAndWait();
         });
     }
 
