@@ -33,9 +33,9 @@ public class KingInformationEngine implements InformationEngine {
                 .stream()
                 .filter(entry -> entry.getValue() == VertexRole.KING)
                 .findFirst();
-        kingEntry.ifPresent(entry -> {
-            propertiesToSend.put("king", String.valueOf(entry.getKey().element()));
-        });
+        kingEntry.ifPresentOrElse(
+                entry -> propertiesToSend.put("king", String.valueOf(entry.getKey().element())),
+                () -> propertiesToSend.put("king", "-"));
         return propertiesToSend;
     }
 

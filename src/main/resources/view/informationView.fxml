@@ -24,7 +24,7 @@
             <Text text="&#10;"/> <!--creates newline-->
 
             <Text text="step description: " id="key"/>
-            <TextArea fx:id="stepDescription" editable="false" wrapText="true" prefWidth="250"/>
+            <TextArea fx:id="stepDescription" editable="false" wrapText="true" prefWidth="250" prefRowCount="6"/>
         </TextFlow>
         <TextFlow fx:id="properties" prefWidth="250"/>
     </VBox>

@@ -36,15 +36,9 @@ public class QVoterInformationEngine implements InformationEngine {
                 .map(Map.Entry::getKey)
                 .map(Vertex::element)
                 .findFirst();
-        List<Integer> neighbours = stepReport.getRoles().entrySet()
-                .stream()
-                .filter(entry -> entry.getValue() == VertexRole.NEIGHBOUR)
-                .map(Map.Entry::getKey)
-                .map(Vertex::element)
-                .toList();
         voterId.ifPresent(voter -> {
             propertiesToSend.put("voter", String.valueOf(voter));
-            propertiesToSend.put("neighbours", neighbours.toString());
+            propertiesToSend.put("neighbours", "Vertices with green stroke");
         });
         return propertiesToSend;
     }
@@ -58,6 +52,6 @@ public class QVoterInformationEngine implements InformationEngine {
     }
 
     private String generateDescriptionForChoose() {
-        return "At choose step voter makes decision. Decision is based on the majority of received opinions. If there is a draw, voter uses probability to either choose on of the decisions or stick to his opinion.";
+        return "At choose step voter makes decision. Decision is based on the majority of received opinions. If there is a draw, voter uses probability to either choose one of the decisions or sticks to his opinion.";
     }
 }

@@ -65,13 +65,11 @@ public class InformationController implements InformationPrinter {
     @Override
     public void renderView() {
         parent.setVisible(true);
-        parent.setManaged(true);
     }
 
     @Override
     public void clearView() {
         parent.setVisible(false);
-        parent.setManaged(false);
     }
 
     @FXML

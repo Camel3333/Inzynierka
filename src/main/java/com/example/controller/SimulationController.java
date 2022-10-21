@@ -89,6 +89,10 @@ public class SimulationController {
         parent.setManaged(false);
     }
 
+    public void clearInformation() {
+        informationController.clearView();
+    }
+
     public void setSettingsValidation(GraphController graphController) {
         lamportSettingsController.adjustSettingsConditions(graphController.getGraph());
         kingSettingsController.adjustSettingsConditions(graphController.getGraph());
