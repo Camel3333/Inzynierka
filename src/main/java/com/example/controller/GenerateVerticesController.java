@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@FxmlView("/view/generateTraitorsView.fxml")
-public class GenerateTraitorsController {
+@FxmlView("/view/generateVerticesView.fxml")
+public class GenerateVerticesController {
     @FXML
     private Slider distributionSlider;
 

@@ -78,6 +78,7 @@ public class DrawMenuController {
             redoItem.setDisable(true);
         }
         generateTraitorsItem.setDisable(!enabled);
+        generateAttackersItem.setDisable(!enabled);
         generateGraphItem.setDisable(!enabled);
     }
 
@@ -92,7 +93,7 @@ public class DrawMenuController {
     private void openGenerateDistributionDialog(String type) {
         Dialog<ButtonType> generateTraitorsDialog = new Dialog<>();
         // load dialog pane
-        FxControllerAndView<GenerateTraitorsController, DialogPane> controllerAndView = fxWeaver.load(GenerateTraitorsController.class);
+        FxControllerAndView<GenerateVerticesController, DialogPane> controllerAndView = fxWeaver.load(GenerateVerticesController.class);
         generateTraitorsDialog.setDialogPane(controllerAndView.getView().orElseThrow(() -> new RuntimeException("Can't load dialog view, when there is no present")));
 
         Optional<ButtonType> result = generateTraitorsDialog.showAndWait();
