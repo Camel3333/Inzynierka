@@ -1,6 +1,7 @@
 package com.example.controller;
 
 
+import com.brunomnsilva.smartgraph.graph.Graph;
 import com.example.ApplicationState;
 import com.example.algorithm.AlgorithmType;
 import com.example.draw.CreationHelper;
@@ -30,6 +31,7 @@ public class AppController {
     private MainMenuController menuController;
 
     @FXML
+    @Getter
     private SimulationController simulationController;
 
     @FXML
@@ -42,14 +44,12 @@ public class AppController {
 
     private CreationHelper drawingHelper = new CreationHelper();
 
-    private MyGraph<Integer, Integer> graph = new MyGraph<>();
-
     public BorderPane getRoot() {
         return root;
     }
 
     public void initGraph() {
-        graphController.setModelGraph(graph);
+        graphController.setModelGraph(new MyGraph<>());
 //        initDrawingHelper();
         applicationStateProperty.addListener(menuController);
         setApplicationState(ApplicationState.DRAWING);
@@ -75,6 +75,7 @@ public class AppController {
                 simulationController.stop();
                 initDrawingHelper();
                 simulationController.hide();
+                graphController.clearVerticesTooltips();
             }
             case SIMULATING -> {
                 initSimulationController();
@@ -86,9 +87,5 @@ public class AppController {
 
     public ApplicationState getApplicationState() {
         return applicationStateProperty.get();
-    }
-
-    public SimulationController getSimulationController() {
-        return simulationController;
     }
 }

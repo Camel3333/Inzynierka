@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import com.example.settings.IntegerSettingTextField?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:id="parent"
+          fx:controller="com.example.controller.settings.LamportSettingsController">
+
+    <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Depth" fx:id="depthLabel"/>
+    <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="depth"/>
+</GridPane>

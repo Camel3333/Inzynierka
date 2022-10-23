@@ -13,12 +13,6 @@
     <MenuBar>
         <menus>
             <fx:include source="fileMenuView.fxml" fx:id="fileMenu"/>
-            <Menu text="Edit" fx:id="editMenu">
-                <items>
-                    <MenuItem text="Undo"></MenuItem>
-                    <MenuItem text="Redo"></MenuItem>
-                </items>
-            </Menu>
             <fx:include source="drawMenuView.fxml" fx:id="drawMenu"/>
             <fx:include source="simulationMenuView.fxml" fx:id="simulationMenu"/>
         </menus>

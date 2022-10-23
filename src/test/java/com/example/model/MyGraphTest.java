@@ -297,7 +297,7 @@ public class MyGraphTest {
     }
 
     @Test
-    public void consensusReachedWhenGraphEmpty(){
+    public void consensusReachedWhenGraphEmptyTest(){
         // Given
 
         // When
@@ -307,7 +307,7 @@ public class MyGraphTest {
     }
 
     @Test
-    public void consensusReachedWhenAllTraitor(){
+    public void consensusReachedWhenAllTraitorsTest(){
         // Given
         var v1 = (MyVertex<Integer>) graph.insertVertex(1);
         var v2 = (MyVertex<Integer>) graph.insertVertex(2);
@@ -324,7 +324,7 @@ public class MyGraphTest {
     }
 
     @Test
-    public void consensusReachedWhenTraitorsDisagree(){
+    public void consensusReachedWhenTraitorsDisagreeTest(){
         // Given
         var v1 = (MyVertex<Integer>) graph.insertVertex(1);
         var v2 = (MyVertex<Integer>) graph.insertVertex(2);
@@ -347,7 +347,7 @@ public class MyGraphTest {
     }
 
     @Test
-    public void consensusNotReachedWhenLoyalGeneralsDisagree(){
+    public void consensusNotReachedWhenLoyalGeneralsDisagreeTest(){
         // Given
         var v1 = (MyVertex<Integer>) graph.insertVertex(1);
         var v2 = (MyVertex<Integer>) graph.insertVertex(2);
@@ -361,6 +361,87 @@ public class MyGraphTest {
 
         // Then
         assertFalse(graph.checkConsensus());
+    }
+
+    @Test
+    public void longestPathInEmptyGraphTest(){
+        // Given
+
+        // When
+
+        // Then
+        assertEquals(graph.getLongestPath(), 0);
+    }
+
+    @Test
+    public void longestPathInGraphWithCircleTest(){
+        // Given
+        var v1 = (MyVertex<Integer>) graph.insertVertex(1);
+        var v2 = (MyVertex<Integer>) graph.insertVertex(2);
+        var v3 = (MyVertex<Integer>) graph.insertVertex(3);
+
+        // When
+        var e1 = graph.insertEdge(v1, v2, 1);
+        var e2 = graph.insertEdge(v2, v3, 2);
+        var e3 = graph.insertEdge(v3, v1, 3);
+
+        // Then
+        assertEquals(graph.getLongestPath(), 2);
+        assertEquals(graph.getLongestPathFor(v1), 2);
+        assertEquals(graph.getLongestPathFor(v2), 2);
+        assertEquals(graph.getLongestPathFor(v3), 2);
+
+    }
+
+    @Test
+    public void longestPathTest(){
+        // Given
+        var v1 = (MyVertex<Integer>) graph.insertVertex(1);
+        var v2 = (MyVertex<Integer>) graph.insertVertex(2);
+        var v3 = (MyVertex<Integer>) graph.insertVertex(3);
+        var v4 = (MyVertex<Integer>) graph.insertVertex(4);
+        var v5 = (MyVertex<Integer>) graph.insertVertex(5);
+
+        // When
+        var e1 = graph.insertEdge(v1, v2, 1);
+        var e2 = graph.insertEdge(v2, v3, 2);
+        var e3 = graph.insertEdge(v3, v4, 3);
+        var e4 = graph.insertEdge(v2, v5, 4);
+
+        // Then
+        assertEquals(graph.getLongestPath(), 3);
+        assertEquals(graph.getLongestPathFor(v1), 3);
+        assertEquals(graph.getLongestPathFor(v2), 2);
+        assertEquals(graph.getLongestPathFor(v3), 2);
+        assertEquals(graph.getLongestPathFor(v4), 3);
+    }
+
+    @Test
+    public void minDegreeInEmptyGraphTest(){
+        // Given
+
+        // When
+
+        // Then
+        assertEquals(graph.getMinDegree(), 0);
+    }
+
+    @Test
+    public void minDegreeTest(){
+        // Given
+        var v1 = (MyVertex<Integer>) graph.insertVertex(1);
+        var v2 = (MyVertex<Integer>) graph.insertVertex(2);
+        var v3 = (MyVertex<Integer>) graph.insertVertex(3);
+        var v4 = (MyVertex<Integer>) graph.insertVertex(4);
+
+        // When
+        var e1 = graph.insertEdge(v1, v2, 1);
+        var e2 = graph.insertEdge(v2, v3, 2);
+        var e3 = graph.insertEdge(v3, v1, 3);
+        var e4 = graph.insertEdge(v1, v4, 4);
+
+        // Then
+        assertEquals(graph.getMinDegree(), 1);
     }
 
 }
