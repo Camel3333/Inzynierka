@@ -119,9 +119,10 @@ public class SimulationController {
 
     private void initWarning() {
         MyGraph<Integer, Integer> graph = graphController.getGraph();
-        if (graph != null) warning.setVisible(
+        if (graph != null && algorithmsBox.getValue() != AlgorithmType.QVOTER) warning.setVisible(
                 ! graph.isComplete()
         );
+        else if (algorithmsBox.getValue() == AlgorithmType.QVOTER) warning.setVisible(false);
     }
 
     @FXML
@@ -147,6 +148,10 @@ public class SimulationController {
                         bindStartButtonWithAlgorithmSettings(newValue);
                     }
                 }));
+
+        algorithmsBox.getSelectionModel().selectedIndexProperty().addListener(
+                (index) -> initWarning()
+        );
 
         nextStepDisabledProperty.setValue(true);
         liveDisabledProperty.setValue(true);
