@@ -18,4 +18,9 @@ public class SendOperation implements Operation{
     public OperationType getType() {
         return OperationType.SEND;
     }
+
+    @Override
+    public String getDescription() {
+        return "Vertex " + from.element().toString() + " sends message " + (sentOpinion.get() ? "for" : "against") + " attack to " + to.element().toString();
+    }
 }

@@ -1,11 +1,15 @@
 package com.example.controller;
 
-import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.example.algorithm.AlgorithmType;
+import com.example.algorithm.operations.Operation;
+import com.example.algorithm.report.OperationsBatch;
 import com.example.algorithm.ProbabilityType;
 import com.example.algorithm.report.StepReport;
 import com.example.model.MyGraph;
-import com.example.settings.*;
+import com.example.controller.settings.AlgorithmSettingsController;
+import com.example.controller.settings.KingSettingsController;
+import com.example.controller.settings.LamportSettingsController;
+import com.example.controller.settings.QVoterSettingsController;
 import com.example.simulation.SimpleSimulation;
 import com.example.simulation.Simulation;
 import javafx.application.Platform;
@@ -13,64 +17,43 @@ import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import lombok.Getter;
-import lombok.Setter;
+import net.rgielen.fxweaver.core.FxControllerAndView;
+import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @FxmlView("/view/simulationOptionsView.fxml")
 public class SimulationController {
     @FXML
-    public Label depthLabel;
-    @FXML
-    public Label phaseLabel;
-    @FXML
-    public Label qLabel;
-    @FXML
-    public Label timeLabel;
-    @FXML
-    public Label probabilityLabel;
-    @FXML
     public TextFlow warning;
     @FXML
     private VBox parent;
     @FXML
-    private IntegerSettingTextField depth;
+    private LamportSettingsController lamportSettingsController;
     @FXML
-    private IntegerSettingTextField phase;
+    private KingSettingsController kingSettingsController;
     @FXML
-    private IntegerSettingTextField q;
-    @FXML
-    private IntegerSettingTextField time;
-    @FXML
-    private SettingComboBox<ProbabilityType> probabilityBox;
-
+    private QVoterSettingsController qVoterSettingsController;
     @FXML
     private ComboBox<AlgorithmType> algorithmsBox;
     @FXML
     private Slider animationSpeedSlider;
-
-    private final AlgorithmSettings algorithmSettings = new AlgorithmSettings();
-
-    private final Map<AlgorithmType, List<Node>> options = new HashMap<>();
 
     @Getter
     private final BooleanProperty startDisabledProperty = new SimpleBooleanProperty();
@@ -84,20 +67,28 @@ public class SimulationController {
     private final BooleanProperty pauseDisabledProperty = new SimpleBooleanProperty();
 
     private Service<?> activeService;
-
-    @Setter
     private Simulation simulation;
 
     @Autowired
     private StatisticsController statisticsController;
 
     @Autowired
+    private DocumentationController documentationController;
+
+    @Autowired
+    private LoggerController loggerController;
+
+    @Autowired
     private GraphController graphController;
+
+    @Autowired
+    private FxWeaver fxWeaver;
 
     private final BooleanProperty paused = new SimpleBooleanProperty(true);
     private final BooleanProperty started = new SimpleBooleanProperty(false);
     private final BooleanProperty idle = new SimpleBooleanProperty(true);
     private final BooleanProperty isFinished = new SimpleBooleanProperty(false);
+    private final BooleanProperty areAlgorithmSettingsValid = new SimpleBooleanProperty(true);
 
     public void show() {
         parent.setVisible(true);
@@ -110,37 +101,20 @@ public class SimulationController {
         parent.setManaged(false);
     }
 
-    private void setDefaultSettings() {
-        algorithmSettings.getSettings().put("depth",
-                new AlgorithmSetting<>("depth", 1, Integer.class, (value) -> value > 0));
-        algorithmSettings.getSettings().put("phase",
-                new AlgorithmSetting<>("phase", 1, Integer.class, (value) -> value > 0));
-        algorithmSettings.getSettings().put("q",
-                new AlgorithmSetting<>("q", 1, Integer.class, (value) -> value > 0));
-        algorithmSettings.getSettings().put("time",
-                new AlgorithmSetting<>("time", 1, Integer.class, (value) -> value > 0));
-        algorithmSettings.getSettings().put("probability",
-                new AlgorithmSetting<>("probability", ProbabilityType.LINEAR, ProbabilityType.class, (value) -> true));
+    public void setSettingsValidation(GraphController graphController) {
+        lamportSettingsController.adjustSettingsConditions(graphController.getGraph());
+        kingSettingsController.adjustSettingsConditions(graphController.getGraph());
+        qVoterSettingsController.adjustSettingsConditions(graphController.getGraph());
     }
 
-    public void setSettingsValidation(GraphController graphController) {
-        if(graphController.getGraph().numVertices() == 0) {
-            algorithmSettings.getSettings().get("depth").setValidateArgument((value) -> false);
-            algorithmSettings.getSettings().get("q").setValidateArgument((value) -> false);
-            algorithmSettings.getSettings().get("phase").setValidateArgument((value) -> false);
-            algorithmSettings.getSettings().get("time").setValidateArgument((value) -> false);
-        }
-        else {
-            Vertex<Integer> commander = graphController.getGraph().vertices().stream().toList().get(0);
-            int maxDepth = graphController.getGraph().getLongestPathFor(commander);
-            algorithmSettings.getSettings().get("depth").setValidateArgument((value) ->  (Integer) value > 0 && (Integer) value <= maxDepth);
-
-            int minDegree = graphController.getGraph().getMinDegree();
-            algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value > 0 && (Integer) value <= minDegree);
-
-            algorithmSettings.getSettings().get("phase").setValidateArgument((value) -> (Integer) value > 0);
-            algorithmSettings.getSettings().get("time").setValidateArgument((value) -> (Integer) value > 0);
-        }
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
+        animationSpeedSlider.valueProperty().addListener(
+                observable -> Platform.runLater(
+                        () -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()
+                        )
+                )
+        );
     }
 
     private void initWarning() {
@@ -152,10 +126,6 @@ public class SimulationController {
 
     @FXML
     public void initialize() {
-        setDefaultSettings();
-        options.put(AlgorithmType.LAMPORT, List.of(depth, depthLabel));
-        options.put(AlgorithmType.KING, List.of(phase, phaseLabel));
-        options.put(AlgorithmType.QVOTER, List.of(q, qLabel, time, timeLabel, probabilityBox, probabilityLabel));
         hideAlgorithmSettings();
         algorithmsBox.setCellFactory(param -> new ListCell<>() {
             @Override
@@ -172,17 +142,11 @@ public class SimulationController {
         algorithmsBox.getSelectionModel().selectedItemProperty()
                 .addListener(((observable, oldValue, newValue) -> {
                     if (newValue != null) {
+                        hideAlgorithmSettings();
                         showAlgorithmSettings(newValue);
+                        bindStartButtonWithAlgorithmSettings(newValue);
                     }
                 }));
-
-        depth.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("depth"));
-        phase.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("phase"));
-        q.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("q"));
-        time.setContainedSetting((Setting<Integer>) algorithmSettings.getSettings().get("time"));
-        probabilityBox.setContainedSetting((Setting<ProbabilityType>) algorithmSettings.getSettings().get("probability"));
-
-        initializeProbabilityBox();
 
         nextStepDisabledProperty.setValue(true);
         liveDisabledProperty.setValue(true);
@@ -209,24 +173,30 @@ public class SimulationController {
                 !(!paused.get() && started.get() && !isFinished.get()), dependencies));
     }
 
-    private void initializeProbabilityBox() {
-        probabilityBox.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(ProbabilityType probabilityType, boolean empty) {
-                super.updateItem(probabilityType, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(probabilityType.toString());
-                }
+    private AlgorithmSettingsController getAlgorithmController(AlgorithmType algorithmType) {
+        switch (algorithmType) {
+            case LAMPORT -> {
+                return lamportSettingsController;
             }
-        });
+            case KING -> {
+                return kingSettingsController;
+            }
+            case QVOTER -> {
+                return qVoterSettingsController;
+            }
+        }
+        return null;
+    }
 
-        probabilityBox.setItems(FXCollections.observableArrayList(List.of(ProbabilityType.LINEAR, ProbabilityType.BOLTZMANN)));
-        probabilityBox.getSelectionModel().select(0);
+    private void bindStartButtonWithAlgorithmSettings(AlgorithmType algorithmType) {
+        areAlgorithmSettingsValid.bind(getAlgorithmController(algorithmType).getAreSettingsValidProperty());
     }
 
     private void setSimulationFlagsToNotStartedState() {
+        paused.unbind();
+        started.unbind();
+        idle.unbind();
+        isFinished.unbind();
         paused.set(true);
         started.set(false);
         idle.set(true);
@@ -234,108 +204,72 @@ public class SimulationController {
     }
 
     private void showAlgorithmSettings(AlgorithmType algorithmType) {
-        hideAlgorithmSettings();
-        options.get(algorithmType).forEach(node -> {
-            node.setVisible(true);
-            node.setManaged(true);
-        });
+        setSettingsManagedAndVisible(algorithmType, true);
     }
 
     private void hideAlgorithmSettings() {
-        options.values().stream()
-                .flatMap(Collection::stream)
-                .forEach(node -> {
-                    node.setVisible(false);
-                    node.setManaged(false);
-                });
+        hideAlgorithmSettings(AlgorithmType.LAMPORT);
+        hideAlgorithmSettings(AlgorithmType.KING);
+        hideAlgorithmSettings(AlgorithmType.QVOTER);
+    }
+
+    private void hideAlgorithmSettings(AlgorithmType algorithmType) {
+        setSettingsManagedAndVisible(algorithmType, false);
+    }
+
+    private void setSettingsManagedAndVisible(AlgorithmType algorithmType, boolean enable) {
+        AlgorithmSettingsController algorithmSettingsController = getAlgorithmController(algorithmType);
+        Node settingsParent = algorithmSettingsController.getParent();
+        settingsParent.setManaged(enable);
+        settingsParent.setVisible(enable);
     }
 
     public void setAvailableAlgorithms(ObservableList<AlgorithmType> algorithmTypes) {
         algorithmsBox.setItems(algorithmTypes);
         algorithmsBox.getSelectionModel().select(0);
 
-        List<Observable> inputDependencies = options.values()
-                .stream()
-                .flatMap(List::stream)
-                .filter(node -> node instanceof SettingNode<?>)
-                .map(node -> (SettingNode<?>) node)
-                .map(settingNode -> (BooleanProperty) (settingNode.getIsValidProperty()))
-                .collect(Collectors.toList());
-
-        inputDependencies.add(algorithmsBox.getSelectionModel().selectedItemProperty());
-        inputDependencies.add(started);
-        inputDependencies.add(isFinished);
-        inputDependencies.add(idle);
-
+        List<Observable> inputDependencies = List.of(started, isFinished, idle, areAlgorithmSettingsValid);
         Observable[] dependencies = inputDependencies.toArray(new Observable[0]);
-
-        List<Node> algorithmNodes = options.get(algorithmsBox.getSelectionModel().selectedItemProperty().get());
 
         startDisabledProperty.unbind();
         startDisabledProperty.bind(Bindings.createBooleanBinding(() -> {
-                    if (simulation.isGraphEmpty()) {
+                    if (simulation.isGraphEmpty() || started.get() || !areAlgorithmSettingsValid.get() || !idle.get()) {
                         return true;
-                    }
-                    if (isFinished.get() && idle.get()) {
-                        return false;
-                    }
-                    if (started.get()) {
-                        return true;
-                    }
-                    List<SettingNode<?>> settingNodes = (algorithmNodes
-                            .stream()
-                            .filter(node -> node instanceof SettingNode<?>)
-                            .map(node -> (SettingNode<?>) node)
-                            .collect(Collectors.toList()));
-                    for (SettingNode<?> settingNode : settingNodes) {
-                        if (!settingNode.getIsValidProperty().get()) {
-                            return true;
-                        }
                     }
                     return false;
                 }, dependencies
         ));
-
-        animationSpeedSlider.valueProperty().addListener(
-                observable -> Platform.runLater(
-                        () -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()
-                        )
-                )
-        );
     }
 
     public void initSimulation() {
         statisticsController.clear();
+        simulation.clearData();
         simulation.allowAnimations(true);
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
-        simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), algorithmSettings);
+        simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), getAlgorithmController(selectedAlgorithm).getAlgorithmSettings());
         ((SimpleSimulation) simulation).loadEnvironment();
         isFinished.bind(((SimpleSimulation) simulation).getIsFinishedProperty());
+        loggerController.addItem("[Start] Simulation started with " + selectedAlgorithm + " algorithm.");
         started.set(true);
     }
 
     private void processStep() {
         StepReport report = simulation.step();
+        for (OperationsBatch operationBatch : report.getOperationsBatches()) {
+            loggerController.addItem("");
+            for (Operation operation : operationBatch.getOperations()) loggerController.addItem("[Event] " + operation.getDescription());
+        }
         statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
+        graphController.updateVerticesTooltips();
     }
 
     public void openResultDialog() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FXMLLoader fxmlLoader = new FXMLLoader();
-                    fxmlLoader.setLocation(getClass().getResource("/view/simulationResultView.fxml"));
-                    Scene scene = new Scene(fxmlLoader.load());
-                    ((SimulationResultController)fxmlLoader.getController()).setMessage(graphController.getGraph().checkConsensus());
-                    Stage stage = new Stage();
-                    stage.setTitle("Result");
-                    stage.setScene(scene);
-                    stage.show();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-            }
+        Platform.runLater(() -> {
+            Dialog<ButtonType> simulationResultDialog = new Dialog<>();
+            FxControllerAndView<SimulationResultController, DialogPane> controllerAndView = fxWeaver.load(SimulationResultController.class);
+            controllerAndView.getController().setMessage(graphController.getGraph().checkConsensus());
+            simulationResultDialog.setDialogPane(controllerAndView.getView().orElseThrow(() -> new RuntimeException("Can't load dialog view, when there is no present")));
+            simulationResultDialog.showAndWait();
         });
     }
 
@@ -344,8 +278,7 @@ public class SimulationController {
             processStep();
 
             if (isFinished.get()) {
-                System.out.println("Finished");
-                openResultDialog();
+                onFinish();
             }
         }
     }
@@ -358,8 +291,7 @@ public class SimulationController {
                 return;
             }
         }
-        System.out.println("Finished");
-        openResultDialog();
+        onFinish();
     }
 
     private void instantFinishTask() {
@@ -367,7 +299,13 @@ public class SimulationController {
         while (!isFinished.get()) {
             processStep();
         }
-        System.out.println("Finished");
+        onFinish();
+    }
+
+    public void onFinish() {
+        loggerController.addItem("");
+        loggerController.addItem("[Finished] Simulation finished");
+        setSimulationFlagsToNotStartedState();
         openResultDialog();
     }
 
@@ -401,6 +339,12 @@ public class SimulationController {
         if (simulation != null)
             simulation.stop();
         setSimulationFlagsToNotStartedState();
+    }
+
+    public void openDocumentation(ActionEvent actionEvent) throws IOException {
+        documentationController.openDocumentation(
+                algorithmsBox.getValue().ordinal() + 1
+        );
     }
 
     public class SimulationLiveService extends Service<Boolean> {

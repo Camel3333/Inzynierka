@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.controller.MainMenuController"
@@ -13,12 +10,6 @@
     <MenuBar>
         <menus>
             <fx:include source="fileMenuView.fxml" fx:id="fileMenu"/>
-            <Menu text="Edit" fx:id="editMenu">
-                <items>
-                    <MenuItem text="Undo"></MenuItem>
-                    <MenuItem text="Redo"></MenuItem>
-                </items>
-            </Menu>
             <fx:include source="drawMenuView.fxml" fx:id="drawMenu"/>
             <fx:include source="simulationMenuView.fxml" fx:id="simulationMenu"/>
         </menus>
