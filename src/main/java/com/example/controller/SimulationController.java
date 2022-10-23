@@ -329,9 +329,7 @@ public class SimulationController {
             processStep();
 
             if (isFinished.get()) {
-                loggerController.addItem("[Finished] Simulation finished");
-                System.out.println("Finished");
-                openResultDialog();
+                onFinished();
             }
         }
     }
@@ -344,9 +342,7 @@ public class SimulationController {
                 return;
             }
         }
-        loggerController.addItem("[Finished] Simulation finished");
-        System.out.println("Finished");
-        openResultDialog();
+        onFinished();
     }
 
     private void instantFinishTask() {
@@ -354,6 +350,11 @@ public class SimulationController {
         while (!isFinished.get()) {
             processStep();
         }
+        onFinished();
+    }
+
+    private void onFinished() {
+        loggerController.addItem("");
         loggerController.addItem("[Finished] Simulation finished");
         System.out.println("Finished");
         openResultDialog();
