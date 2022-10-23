@@ -2,26 +2,26 @@ package com.example.controller;
 
 import com.example.draw.CreationHelper;
 import com.example.draw.DrawMode;
-import com.example.draw.TraitorsGenerator;
-import com.example.model.MyGraph;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import lombok.Setter;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.MenuItem;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.security.auth.callback.ConfirmationCallback;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
 @FxmlView("/view/drawMenuView.fxml")
 public class DrawMenuController {
+
     @FXML
     private MenuItem vertexItem;
     @FXML
@@ -36,6 +36,8 @@ public class DrawMenuController {
     private MenuItem redoItem;
     @FXML
     private MenuItem generateTraitorsItem;
+    @FXML
+    private MenuItem generateAttackersItem;
     @FXML
     private MenuItem generateGraphItem;
 
@@ -58,6 +60,7 @@ public class DrawMenuController {
         undoItem.setOnAction(e -> undo());
         redoItem.setOnAction(e -> redo());
         generateTraitorsItem.setOnAction(e -> openGenerateTraitorsDialog());
+        generateAttackersItem.setOnAction(e -> openGenerateAttackersDialog());
         generateGraphItem.setOnAction(e -> openGenerateGraphDialog());
     }
 
@@ -75,6 +78,7 @@ public class DrawMenuController {
             redoItem.setDisable(true);
         }
         generateTraitorsItem.setDisable(!enabled);
+        generateAttackersItem.setDisable(!enabled);
         generateGraphItem.setDisable(!enabled);
     }
 
@@ -86,16 +90,31 @@ public class DrawMenuController {
         drawHelper.getCommandRegistry().redo();
     }
 
-    private void openGenerateTraitorsDialog(){
+    private void openGenerateDistributionDialog(String type) {
         Dialog<ButtonType> generateTraitorsDialog = new Dialog<>();
         // load dialog pane
-        FxControllerAndView<GenerateTraitorsController, DialogPane> controllerAndView = fxWeaver.load(GenerateTraitorsController.class);
+        FxControllerAndView<GenerateVerticesController, DialogPane> controllerAndView = fxWeaver.load(GenerateVerticesController.class);
         generateTraitorsDialog.setDialogPane(controllerAndView.getView().orElseThrow(() -> new RuntimeException("Can't load dialog view, when there is no present")));
 
         Optional<ButtonType> result = generateTraitorsDialog.showAndWait();
+
         if (result.get() == ButtonType.OK){
-            controllerAndView.getController().generateTraitors((MyGraph<Integer, Integer>) drawHelper.getGraphController().getGraph());
+
+            if (Objects.equals(type, "traitor")) {
+                controllerAndView.getController().generateTraitors(drawHelper.getGraphController().getGraph());
+            }
+            else {
+                controllerAndView.getController().generateAttackers(drawHelper.getGraphController().getGraph());
+            }
         }
+    }
+
+    private void openGenerateTraitorsDialog(){
+        openGenerateDistributionDialog("traitor");
+    }
+
+    private void openGenerateAttackersDialog(){
+        openGenerateDistributionDialog("attack");
     }
 
     private void openGenerateGraphDialog(){

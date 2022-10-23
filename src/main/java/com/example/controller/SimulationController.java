@@ -5,6 +5,7 @@ import com.example.algorithm.operations.Operation;
 import com.example.algorithm.report.OperationsBatch;
 import com.example.algorithm.ProbabilityType;
 import com.example.algorithm.report.StepReport;
+import com.example.model.MyGraph;
 import com.example.controller.settings.AlgorithmSettingsController;
 import com.example.controller.settings.KingSettingsController;
 import com.example.controller.settings.LamportSettingsController;
@@ -24,6 +25,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
 import lombok.Getter;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -37,6 +40,8 @@ import java.util.List;
 @Component
 @FxmlView("/view/simulationOptionsView.fxml")
 public class SimulationController {
+    @FXML
+    public TextFlow warning;
     @FXML
     private VBox parent;
     @FXML
@@ -88,6 +93,7 @@ public class SimulationController {
     public void show() {
         parent.setVisible(true);
         parent.setManaged(true);
+        initWarning();
     }
 
     public void hide() {
@@ -109,6 +115,14 @@ public class SimulationController {
                         )
                 )
         );
+    }
+
+    private void initWarning() {
+        MyGraph<Integer, Integer> graph = graphController.getGraph();
+        if (graph != null && algorithmsBox.getValue() != AlgorithmType.QVOTER) warning.setVisible(
+                ! graph.isComplete()
+        );
+        else if (algorithmsBox.getValue() == AlgorithmType.QVOTER) warning.setVisible(false);
     }
 
     @FXML
@@ -134,6 +148,10 @@ public class SimulationController {
                         bindStartButtonWithAlgorithmSettings(newValue);
                     }
                 }));
+
+        algorithmsBox.getSelectionModel().selectedIndexProperty().addListener(
+                (index) -> initWarning()
+        );
 
         nextStepDisabledProperty.setValue(true);
         liveDisabledProperty.setValue(true);
