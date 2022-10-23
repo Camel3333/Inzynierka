@@ -1,6 +1,9 @@
 package com.example.controller;
 
 import com.example.algorithm.AlgorithmType;
+import com.example.algorithm.operations.Operation;
+import com.example.algorithm.report.OperationsBatch;
+import com.example.algorithm.ProbabilityType;
 import com.example.algorithm.report.StepReport;
 import com.example.controller.settings.AlgorithmSettingsController;
 import com.example.controller.settings.KingSettingsController;
@@ -16,6 +19,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -26,7 +30,7 @@ import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +66,12 @@ public class SimulationController {
 
     @Autowired
     private StatisticsController statisticsController;
+
+    @Autowired
+    private DocumentationController documentationController;
+
+    @Autowired
+    private LoggerController loggerController;
 
     @Autowired
     private GraphController graphController;
@@ -226,11 +236,16 @@ public class SimulationController {
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), getAlgorithmController(selectedAlgorithm).getAlgorithmSettings());
         ((SimpleSimulation) simulation).loadEnvironment();
         isFinished.bind(((SimpleSimulation) simulation).getIsFinishedProperty());
+        loggerController.addItem("[Start] Simulation started with " + selectedAlgorithm + " algorithm.");
         started.set(true);
     }
 
     private void processStep() {
         StepReport report = simulation.step();
+        for (OperationsBatch operationBatch : report.getOperationsBatches()) {
+            loggerController.addItem("");
+            for (Operation operation : operationBatch.getOperations()) loggerController.addItem("[Event] " + operation.getDescription());
+        }
         statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
         graphController.updateVerticesTooltips();
     }
@@ -275,6 +290,8 @@ public class SimulationController {
     }
 
     public void onFinish() {
+        loggerController.addItem("");
+        loggerController.addItem("[Finished] Simulation finished");
         setSimulationFlagsToNotStartedState();
         openResultDialog();
     }
@@ -309,6 +326,12 @@ public class SimulationController {
         if (simulation != null)
             simulation.stop();
         setSimulationFlagsToNotStartedState();
+    }
+
+    public void openDocumentation(ActionEvent actionEvent) throws IOException {
+        documentationController.openDocumentation(
+                algorithmsBox.getValue().ordinal() + 1
+        );
     }
 
     public class SimulationLiveService extends Service<Boolean> {

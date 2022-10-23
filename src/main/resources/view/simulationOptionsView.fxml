@@ -3,14 +3,28 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.controller.SimulationController"
       fx:id="parent"
       style="-fx-background-color: #f4f4f4; -fx-padding: 15px">
 
-    <ComboBox fx:id="algorithmsBox"/>
+    <HBox>
+        <ComboBox fx:id="algorithmsBox"/>
+        <ToggleButton fx:id="documentationButton" onAction="#openDocumentation" style="-fx-margin: 10px;">
+            <graphic>
+                <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@/view/images/circle-info-solid.png"/>
+                </ImageView>
+            </graphic>
+        </ToggleButton>
+    </HBox>
+
     <VBox>
         <fx:include fx:id="lamportSettings" source="settings/lamportSettingsView.fxml"/>
         <fx:include fx:id="kingSettings" source="settings/kingSettingsView.fxml"/>
