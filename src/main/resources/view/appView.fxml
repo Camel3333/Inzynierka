@@ -4,33 +4,40 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="root" style="-fx-background-color: #f4fffb" minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.controller.AppController">
+<BorderPane fx:id="root" style="-fx-background-color: #f4fffb" minHeight="600.0" minWidth="800.0"
+            xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.controller.AppController">
     <center>
-        <fx:include fx:id="graph" source="graphView.fxml" />
+        <fx:include fx:id="graph" source="graphView.fxml"/>
     </center>
 
     <right>
-        <fx:include fx:id="simulation" source="simulationOptionsView.fxml" />
+        <fx:include fx:id="simulation" source="simulationOptionsView.fxml"/>
     </right>
 
     <top>
-        <fx:include fx:id="menu" source="mainMenuView.fxml" />
+        <fx:include fx:id="menu" source="mainMenuView.fxml"/>
     </top>
-   <bottom>
-      <Accordion BorderPane.alignment="CENTER">
-        <panes>
-          <TitledPane animated="false" text="Statystyki">
-            <content>
-              <fx:include fx:id="stats" source="statisticsView.fxml" />
-            </content>
-          </TitledPane>
-          <TitledPane animated="false" text="Legend">
-            <content>
-              <fx:include fx:id="legend" source="legendView.fxml" />
-            </content>
-          </TitledPane>
-        </panes>
-      </Accordion>
-   </bottom>
+    <bottom>
+        <Accordion BorderPane.alignment="CENTER">
+            <panes>
+                <TitledPane animated="false" text="Statystyki">
+                    <content>
+                        <fx:include fx:id="stats" source="statisticsView.fxml"/>
+                    </content>
+                </TitledPane>
+                <TitledPane animated="false" text="Legend">
+                    <content>
+                        <fx:include fx:id="legend" source="legendView.fxml"/>
+                    </content>
+                </TitledPane>
+                <TitledPane animated="false" text="Logger">
+                    <content>
+                        <fx:include fx:id="logger" source="loggerView.fxml"/>
+                    </content>
+                </TitledPane>
+            </panes>
+        </Accordion>
+    </bottom>
 
 </BorderPane>

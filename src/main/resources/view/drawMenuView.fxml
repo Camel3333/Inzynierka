@@ -15,6 +15,7 @@
         <MenuItem text="Undo" fx:id = "undoItem"/>
         <MenuItem text="Redo" fx:id = "redoItem"/>
         <MenuItem text="Generate traitors" fx:id = "generateTraitorsItem"/>
+        <MenuItem text="Generate attackers" fx:id="generateAttackersItem"/>
         <MenuItem text="Generate graph" fx:id = "generateGraphItem"/>
     </items>
 </Menu>

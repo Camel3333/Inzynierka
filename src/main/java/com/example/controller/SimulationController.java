@@ -1,12 +1,15 @@
 package com.example.controller;
 
 import com.example.algorithm.AlgorithmType;
+import com.example.algorithm.operations.Operation;
+import com.example.algorithm.report.OperationsBatch;
 import com.example.algorithm.report.StepReport;
-import com.example.information.InformationEngineFactory;
 import com.example.controller.settings.AlgorithmSettingsController;
 import com.example.controller.settings.KingSettingsController;
 import com.example.controller.settings.LamportSettingsController;
 import com.example.controller.settings.QVoterSettingsController;
+import com.example.information.InformationEngineFactory;
+import com.example.model.MyGraph;
 import com.example.simulation.SimpleSimulation;
 import com.example.simulation.Simulation;
 import javafx.application.Platform;
@@ -17,16 +20,15 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import javafx.scene.text.TextFlow;
 import lombok.Getter;
+import net.rgielen.fxweaver.core.FxControllerAndView;
+import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,6 +40,8 @@ import java.util.List;
 @Component
 @FxmlView("/view/simulationOptionsView.fxml")
 public class SimulationController {
+    @FXML
+    public TextFlow warning;
     @FXML
     private VBox parent;
     @FXML
@@ -71,7 +75,16 @@ public class SimulationController {
     private StatisticsController statisticsController;
 
     @Autowired
+    private DocumentationController documentationController;
+
+    @Autowired
+    private LoggerController loggerController;
+
+    @Autowired
     private GraphController graphController;
+
+    @Autowired
+    private FxWeaver fxWeaver;
 
     private final BooleanProperty paused = new SimpleBooleanProperty(true);
     private final BooleanProperty started = new SimpleBooleanProperty(false);
@@ -82,6 +95,7 @@ public class SimulationController {
     public void show() {
         parent.setVisible(true);
         parent.setManaged(true);
+        initWarning();
     }
 
     public void hide() {
@@ -109,6 +123,14 @@ public class SimulationController {
         );
     }
 
+    private void initWarning() {
+        MyGraph<Integer, Integer> graph = graphController.getGraph();
+        if (graph != null && algorithmsBox.getValue() != AlgorithmType.QVOTER) warning.setVisible(
+                !graph.isComplete()
+        );
+        else if (algorithmsBox.getValue() == AlgorithmType.QVOTER) warning.setVisible(false);
+    }
+
     @FXML
     public void initialize() {
         hideAlgorithmSettings();
@@ -132,6 +154,10 @@ public class SimulationController {
                         bindStartButtonWithAlgorithmSettings(newValue);
                     }
                 }));
+
+        algorithmsBox.getSelectionModel().selectedIndexProperty().addListener(
+                (index) -> initWarning()
+        );
 
         nextStepDisabledProperty.setValue(true);
         liveDisabledProperty.setValue(true);
@@ -236,32 +262,28 @@ public class SimulationController {
         simulation.setInformationEngine(InformationEngineFactory.createForAlgorithm(selectedAlgorithm, informationController));
         ((SimpleSimulation) simulation).loadEnvironment();
         isFinished.bind(((SimpleSimulation) simulation).getIsFinishedProperty());
+        loggerController.addItem("[Start] Simulation started with " + selectedAlgorithm + " algorithm.");
         started.set(true);
     }
 
     private void processStep() {
         StepReport report = simulation.step();
+        for (OperationsBatch operationBatch : report.getOperationsBatches()) {
+            loggerController.addItem("");
+            for (Operation operation : operationBatch.getOperations())
+                loggerController.addItem("[Event] " + operation.getDescription());
+        }
         statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
         graphController.updateVerticesTooltips();
     }
 
     public void openResultDialog() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FXMLLoader fxmlLoader = new FXMLLoader();
-                    fxmlLoader.setLocation(getClass().getResource("/view/simulationResultView.fxml"));
-                    Scene scene = new Scene(fxmlLoader.load());
-                    ((SimulationResultController) fxmlLoader.getController()).setMessage(graphController.getGraph().checkConsensus());
-                    Stage stage = new Stage();
-                    stage.setTitle("Result");
-                    stage.setScene(scene);
-                    stage.show();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-            }
+        Platform.runLater(() -> {
+            Dialog<ButtonType> simulationResultDialog = new Dialog<>();
+            FxControllerAndView<SimulationResultController, DialogPane> controllerAndView = fxWeaver.load(SimulationResultController.class);
+            controllerAndView.getController().setMessage(graphController.getGraph().checkConsensus());
+            simulationResultDialog.setDialogPane(controllerAndView.getView().orElseThrow(() -> new RuntimeException("Can't load dialog view, when there is no present")));
+            simulationResultDialog.showAndWait();
         });
     }
 
@@ -295,6 +317,8 @@ public class SimulationController {
     }
 
     public void onFinish() {
+        loggerController.addItem("");
+        loggerController.addItem("[Finished] Simulation finished");
         setSimulationFlagsToNotStartedState();
         openResultDialog();
     }
@@ -329,6 +353,12 @@ public class SimulationController {
         if (simulation != null)
             simulation.stop();
         setSimulationFlagsToNotStartedState();
+    }
+
+    public void openDocumentation(ActionEvent actionEvent) throws IOException {
+        documentationController.openDocumentation(
+                algorithmsBox.getValue().ordinal() + 1
+        );
     }
 
     public class SimulationLiveService extends Service<Boolean> {
