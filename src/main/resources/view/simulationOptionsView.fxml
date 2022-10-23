@@ -25,5 +25,5 @@
                 minorTickCount="0"
                 snapToTicks="true"/>
     </VBox>
-    <fx:include fx:id="information" source="informationView.fxml"/>
+    <fx:include fx:id="information" source="informationView.fxml" VBox.vgrow="ALWAYS"/>
 </VBox>

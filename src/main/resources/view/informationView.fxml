@@ -8,7 +8,7 @@
 <ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:id="parent"
-            prefWidth="260"
+            prefWidth="270"
             fx:controller="com.example.controller.InformationController">
 
     <VBox>
