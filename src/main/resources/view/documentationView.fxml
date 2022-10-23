@@ -15,6 +15,6 @@
         </ListView>
     </AnchorPane>
     <AnchorPane prefHeight="400.0">
-        <fx:include fx:id="page" source="documentationPages/helpLamport.fxml" />
+        <AnchorPane fx:id="page"/>
     </AnchorPane>
 </HBox>

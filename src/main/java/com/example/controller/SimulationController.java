@@ -90,6 +90,9 @@ public class SimulationController {
     private StatisticsController statisticsController;
 
     @Autowired
+    private DocumentationController documentationController;
+
+    @Autowired
     private LoggerController loggerController;
 
     @Autowired
@@ -99,8 +102,6 @@ public class SimulationController {
     private BooleanProperty started = new SimpleBooleanProperty(false);
     private BooleanProperty idle = new SimpleBooleanProperty(true);
     private BooleanProperty isFinished = new SimpleBooleanProperty(false);
-
-    private Stage documentationStage = null;
 
     public void show() {
         parent.setVisible(true);
@@ -391,24 +392,9 @@ public class SimulationController {
     }
 
     public void openDocumentation(ActionEvent actionEvent) throws IOException {
-        if (documentationStage == null) {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/view/documentationView.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
-            stage.setResizable(false);
-            stage.setTitle("Documentation");
-            stage.setScene(scene);
-            stage.show();
-            documentationStage = stage;
-        }
-        else {
-            if (!documentationStage.isShowing()) documentationStage.show();
-            if (documentationStage.isIconified()) documentationStage.setIconified(false);
-            documentationStage.toFront();
-        }
-
-
+        documentationController.openDocumentation(
+                algorithmsBox.getValue().ordinal() + 1
+        );
     }
 
     public class SimulationLiveService extends Service<Boolean> {
