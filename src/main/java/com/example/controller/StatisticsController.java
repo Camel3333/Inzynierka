@@ -1,13 +1,18 @@
 package com.example.controller;
 
+import com.example.util.StatisticsConverter;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
+import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
+import java.io.File;
+import java.io.IOException;
 
 @Component
 @FxmlView("/view/statisticsView.fxml")
@@ -18,6 +23,16 @@ public class StatisticsController {
     private int nextX = 1;
     private final XYChart.Series<Number, Number> supporting = new XYChart.Series<>();
     private final XYChart.Series<Number, Number> notSupporting = new XYChart.Series<>();
+
+    private void exportStats() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Statistics");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv"));
+        File file = fileChooser.showSaveDialog(this.exportButton.getScene().getWindow());
+        if (file != null) {
+            StatisticsConverter.exportStats(file, supporting, notSupporting);
+        }
+    }
 
     @FXML
     public void initialize() {
