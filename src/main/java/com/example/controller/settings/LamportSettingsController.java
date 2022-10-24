@@ -49,11 +49,11 @@ public class LamportSettingsController implements AlgorithmSettingsController {
     public void adjustSettingsConditions(MyGraph<Integer, Integer> graph) {
         Vertex<Integer> commander = graph.vertices().stream().toList().get(0);
         int maxDepth = graph.getLongestPathFor(commander);
-        algorithmSettings.getSettings().get("depth").setValidateArgument((value) -> (Integer) value > 0 && (Integer) value <= maxDepth);
+        algorithmSettings.getSettings().get("depth").setValidateArgument((value) -> (Integer) value >= 0 && (Integer) value <= maxDepth);
     }
 
     private void setDefaultSettings() {
-        AlgorithmSetting<Integer> depthSetting = new AlgorithmSetting<>("depth", 1, Integer.class, (value) -> value > 0);
+        AlgorithmSetting<Integer> depthSetting = new AlgorithmSetting<>("depth", 1, Integer.class, (value) -> value >= 0);
         algorithmSettings.getSettings().put("depth", depthSetting);
         depth.setContainedSetting(depthSetting);
     }

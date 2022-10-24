@@ -75,6 +75,7 @@ public class AppController {
                 simulationController.stop();
                 initDrawingHelper();
                 simulationController.hide();
+                simulationController.clearInformation();
                 graphController.clearVerticesTooltips();
             }
             case SIMULATING -> {

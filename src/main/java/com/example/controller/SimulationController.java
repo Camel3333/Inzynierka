@@ -3,13 +3,13 @@ package com.example.controller;
 import com.example.algorithm.AlgorithmType;
 import com.example.algorithm.operations.Operation;
 import com.example.algorithm.report.OperationsBatch;
-import com.example.algorithm.ProbabilityType;
 import com.example.algorithm.report.StepReport;
-import com.example.model.MyGraph;
 import com.example.controller.settings.AlgorithmSettingsController;
 import com.example.controller.settings.KingSettingsController;
 import com.example.controller.settings.LamportSettingsController;
 import com.example.controller.settings.QVoterSettingsController;
+import com.example.information.InformationEngineFactory;
+import com.example.model.MyGraph;
 import com.example.simulation.SimpleSimulation;
 import com.example.simulation.Simulation;
 import javafx.application.Platform;
@@ -26,13 +26,13 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
-import javafx.stage.Stage;
 import lombok.Getter;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +54,8 @@ public class SimulationController {
     private ComboBox<AlgorithmType> algorithmsBox;
     @FXML
     private Slider animationSpeedSlider;
+    @FXML
+    private InformationController informationController;
 
     @Getter
     private final BooleanProperty startDisabledProperty = new SimpleBooleanProperty();
@@ -103,6 +105,10 @@ public class SimulationController {
         parent.setManaged(false);
     }
 
+    public void clearInformation() {
+        informationController.clearView();
+    }
+
     public void setSettingsValidation(GraphController graphController) {
         lamportSettingsController.adjustSettingsConditions(graphController.getGraph());
         kingSettingsController.adjustSettingsConditions(graphController.getGraph());
@@ -122,7 +128,7 @@ public class SimulationController {
     private void initWarning() {
         MyGraph<Integer, Integer> graph = graphController.getGraph();
         if (graph != null && algorithmsBox.getValue() != AlgorithmType.QVOTER) warning.setVisible(
-                ! graph.isComplete()
+                !graph.isComplete()
         );
         else if (algorithmsBox.getValue() == AlgorithmType.QVOTER) warning.setVisible(false);
     }
@@ -254,10 +260,12 @@ public class SimulationController {
 
     public void initSimulation() {
         statisticsController.clear();
+        informationController.clearView();
         simulation.clearData();
         simulation.allowAnimations(true);
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), getAlgorithmController(selectedAlgorithm).getAlgorithmSettings());
+        simulation.setInformationEngine(InformationEngineFactory.createForAlgorithm(selectedAlgorithm, informationController));
         ((SimpleSimulation) simulation).loadEnvironment();
         isFinished.bind(((SimpleSimulation) simulation).getIsFinishedProperty());
         loggerController.addItem("[Start] Simulation started with " + selectedAlgorithm + " algorithm.");
@@ -268,7 +276,8 @@ public class SimulationController {
         StepReport report = simulation.step();
         for (OperationsBatch operationBatch : report.getOperationsBatches()) {
             loggerController.addItem("");
-            for (Operation operation : operationBatch.getOperations()) loggerController.addItem("[Event] " + operation.getDescription());
+            for (Operation operation : operationBatch.getOperations())
+                loggerController.addItem("[Event] " + operation.getDescription());
         }
         statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
         graphController.updateVerticesTooltips();

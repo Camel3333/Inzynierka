@@ -29,7 +29,9 @@ public class LamportIterAlgorithm implements Algorithm {
         var record = stack.pop();
         LamportIterStepReport stepReport = new LamportIterStepReport();
 
+        stepReport.fillProperties(record);
         stepReport.fillRoles(record);
+        stepReport.setAlgorithmPhase(record.phase);
         OperationsBatch operationsBatch = new OperationsBatch();
 
         switch (record.phase) {
@@ -50,7 +52,7 @@ public class LamportIterAlgorithm implements Algorithm {
 
                     for (MyVertex<Integer> vertex : record.lieutenants) {
                         List<MyVertex<Integer>> lieutenants = getLieutenants(vertex, record.previous_commanders);
-                        if(!lieutenants.isEmpty()) {
+                        if (!lieutenants.isEmpty()) {
                             stack.push(new StackRecord(vertex, new ArrayList<>(record.previous_commanders), lieutenants, record.m - 1, AlgorithmPhase.SEND));
                         }
                     }
@@ -126,6 +128,11 @@ public class LamportIterAlgorithm implements Algorithm {
                     .stream()
                     .filter(vertex -> !vertex.equals(record.commander) && !record.lieutenants.contains((MyVertex<Integer>) vertex))
                     .forEach(vertex -> getRoles().put(vertex, VertexRole.NONE));
+        }
+
+        public void fillProperties(StackRecord record) {
+            getProperties().put("depth", String.valueOf(record.m));
+            getProperties().put("phase", record.phase.toString());
         }
     }
 

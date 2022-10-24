@@ -44,6 +44,7 @@
                 minorTickCount="0"
                 snapToTicks="true"/>
     </VBox>
+    <fx:include fx:id="information" source="informationView.fxml" VBox.vgrow="ALWAYS"/>
 
     <TextFlow style="-fx-max-width: 150px; -fx-wrap-text: true; -fx-text-overrun: clip; -fx-alignment: bottom" fx:id="warning">
         <Text style="-fx-fill: red" text="Note!&#32;"/>
