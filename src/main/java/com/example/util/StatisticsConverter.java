@@ -1,6 +1,5 @@
 package com.example.util;
 
-import com.brunomnsilva.smartgraph.graph.Graph;
 import javafx.scene.chart.XYChart;
 
 import java.io.BufferedWriter;

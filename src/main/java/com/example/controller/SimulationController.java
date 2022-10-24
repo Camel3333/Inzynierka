@@ -269,6 +269,8 @@ public class SimulationController {
         ((SimpleSimulation) simulation).loadEnvironment();
         isFinished.bind(((SimpleSimulation) simulation).getIsFinishedProperty());
         loggerController.addItem("[Start] Simulation started with " + selectedAlgorithm + " algorithm.");
+        statisticsController.addStats(graphController.getGraph().getSupportingOpinionCount(),
+                graphController.getGraph().getNotSupportingOpinionCount());
         started.set(true);
     }
 

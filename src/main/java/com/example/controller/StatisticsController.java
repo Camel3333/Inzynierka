@@ -18,9 +18,11 @@ import java.io.IOException;
 @FxmlView("/view/statisticsView.fxml")
 public class StatisticsController {
     @FXML
+    private Button exportButton;
+    @FXML
     private LineChart<Number, Number> opinionChart;
 
-    private int nextX = 1;
+    private int nextX = 0;
     private final XYChart.Series<Number, Number> supporting = new XYChart.Series<>();
     private final XYChart.Series<Number, Number> notSupporting = new XYChart.Series<>();
 
@@ -36,9 +38,19 @@ public class StatisticsController {
 
     @FXML
     public void initialize() {
+        exportButton.setOnMouseClicked(
+                event -> {
+                    try {
+                        this.exportStats();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+
         opinionChart.getYAxis().setLabel("Generals");
         opinionChart.getXAxis().setLabel("Step");
-        ((NumberAxis) opinionChart.getYAxis()).setLowerBound(0);
+        ((NumberAxis) opinionChart.getYAxis()).setLowerBound(-1);
         ((NumberAxis) opinionChart.getXAxis()).setLowerBound(0);
         ((NumberAxis) opinionChart.getXAxis()).setUpperBound(10);
         ((NumberAxis) opinionChart.getYAxis()).setUpperBound(10);
@@ -70,12 +82,13 @@ public class StatisticsController {
         notSupporting.setName("For defense");
         opinionChart.getData().add(supporting);
         opinionChart.getData().add(notSupporting);
+        opinionChart.setCreateSymbols(false);
     }
 
     public void addStats(int numSupporting, int numNotSupporting) {
         Platform.runLater(
                 () -> {
-                    ((NumberAxis) opinionChart.getYAxis()).setUpperBound(numSupporting + numNotSupporting);
+                    ((NumberAxis) opinionChart.getYAxis()).setUpperBound(numSupporting + numNotSupporting + 1);
                     supporting.getData().add(new XYChart.Data<>(nextX, numSupporting));
                     notSupporting.getData().add(new XYChart.Data<>(nextX, numNotSupporting));
                     nextX++;
@@ -91,7 +104,7 @@ public class StatisticsController {
         opinionChart.getData().clear();
         opinionChart.getData().add(supporting);
         opinionChart.getData().add(notSupporting);
-        nextX = 1;
+        nextX = 0;
         opinionChart.setAnimated(true);
     }
 }
