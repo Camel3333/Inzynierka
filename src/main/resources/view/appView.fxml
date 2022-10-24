@@ -21,7 +21,7 @@
     <bottom>
         <Accordion BorderPane.alignment="CENTER">
             <panes>
-                <TitledPane animated="false" text="Statystyki">
+                <TitledPane animated="false" text="Statistics">
                     <content>
                         <fx:include fx:id="stats" source="statisticsView.fxml"/>
                     </content>
