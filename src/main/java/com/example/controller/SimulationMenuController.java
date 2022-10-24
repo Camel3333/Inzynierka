@@ -26,7 +26,9 @@ public class SimulationMenuController {
     public MenuItem pauseItem;
     @FXML
     public ToggleButton simulateItem;
-    
+    @FXML
+    public MenuItem stopItem;
+
     private final AppController appController;
 
     @Autowired
@@ -53,6 +55,7 @@ public class SimulationMenuController {
         liveItem.setOnAction(e -> appController.getSimulationController().live());
         instantFinishItem.setOnAction(e -> appController.getSimulationController().instantFinish());
         pauseItem.setOnAction(e -> appController.getSimulationController().pause());
+        stopItem.setOnAction(e -> appController.getSimulationController().stop());
     }
 
     public void bindItems() {
@@ -65,5 +68,6 @@ public class SimulationMenuController {
         liveItem.disableProperty().bind(simulationController.getLiveDisabledProperty().or(isNotSimulation));
         instantFinishItem.disableProperty().bind(simulationController.getInstantFinishDisabledProperty().or(isNotSimulation));
         pauseItem.disableProperty().bind(simulationController.getPauseDisabledProperty().or(isNotSimulation));
+        stopItem.disableProperty().bind(simulationController.getStopDisableProperty().or(isNotSimulation));
     }
 }
