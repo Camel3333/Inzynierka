@@ -5,7 +5,7 @@ import com.example.algorithm.VertexRole;
 import com.example.algorithm.report.StepReport;
 import com.example.animation.AnimationEngine;
 import com.example.controller.GraphController;
-import com.example.model.MyVertex;
+import com.example.information.InformationEngine;
 import com.example.settings.AlgorithmSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -16,6 +16,8 @@ public class SimpleSimulation implements Simulation {
     private Algorithm algorithm;
     private AlgorithmSettings settings;
     private final AnimationEngine animationEngine;
+    @Setter
+    private InformationEngine informationEngine;
     private final BooleanProperty allowAnimations = new SimpleBooleanProperty(true);
 
     @Setter
@@ -51,6 +53,8 @@ public class SimpleSimulation implements Simulation {
             graphController.removeAllVerticesListeners();
             graphController.enableGraphInteractions(false);
             report = algorithm.step();
+            if (informationEngine != null)
+                informationEngine.processReport(report);
             animationEngine.animate(report);
             graphController.addAllVerticesListeners();
             graphController.enableGraphInteractions(true);
@@ -68,16 +72,11 @@ public class SimpleSimulation implements Simulation {
     }
 
     @Override
-    public void stop() {
-        removeSimulationRelatedColoring();
-    }
-
-    @Override
     public void setAnimationsSpeed(double speedMultiplier) {
         animationEngine.setAnimationsSpeed(speedMultiplier);
     }
 
-    private void removeSimulationRelatedColoring() {
+    public void removeSimulationRelatedColoring() {
         graphController.getGraph()
                 .vertices()
                 .forEach(v -> graphController.highlightRole(v, VertexRole.NONE));

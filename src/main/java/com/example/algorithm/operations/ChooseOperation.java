@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public class ChooseOperation implements Operation{
+public class ChooseOperation implements Operation {
     @Getter
     private Vertex<Integer> vertex;
     @Getter
@@ -16,4 +16,10 @@ public class ChooseOperation implements Operation{
     public OperationType getType() {
         return OperationType.CHOOSE;
     }
+
+    @Override
+    public String getDescription() {
+        return "Vertex " + vertex.element().toString() + " decides " + (chosenOpinion.get() ? "for" : "against") + " attack";
+    }
+
 }

@@ -2,6 +2,7 @@ package com.example.simulation;
 
 import com.example.algorithm.Algorithm;
 import com.example.algorithm.report.StepReport;
+import com.example.information.InformationEngine;
 import com.example.settings.AlgorithmSettings;
 
 public interface Simulation {
@@ -11,11 +12,13 @@ public interface Simulation {
 
     StepReport step();
 
-    void stop();
-
     void setAnimationsSpeed(double speedMultiplier);
 
+    void setInformationEngine(InformationEngine informationEngine);
+
     boolean isGraphEmpty();
+
+    void removeSimulationRelatedColoring();
 
     void clearData();
 }

@@ -26,6 +26,10 @@ public class MainMenuController implements ChangeListener<ApplicationState> {
     @FXML
     DrawMenuController drawMenuController;
 
+    // File Menu
+    @FXML
+    FileMenuController fileMenuController;
+
     // Simulation Menu
     @FXML
     SimulationMenuController simulationMenuController;
@@ -50,6 +54,7 @@ public class MainMenuController implements ChangeListener<ApplicationState> {
         switch (newValue){
             case SIMULATING -> {
                 drawMenuController.setEnabled(false);
+                fileMenuController.setImportEnabled(false);
                 graphToolsController.setEnabled(false, ApplicationState.DRAWING);
                 graphToolsController.setEnabled(true, ApplicationState.SIMULATING);
 
@@ -57,6 +62,7 @@ public class MainMenuController implements ChangeListener<ApplicationState> {
             }
             case DRAWING -> {
                 drawMenuController.setEnabled(true);
+                fileMenuController.setImportEnabled(true);
                 graphToolsController.setEnabled(true, ApplicationState.DRAWING);
                 graphToolsController.setEnabled(false, ApplicationState.SIMULATING);
             }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.*?>
+<?import java.net.URL?>
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:id="parent"
+            prefWidth="270"
+            fx:controller="com.example.controller.InformationController">
+
+    <VBox>
+        <stylesheets>
+            <URL value="@/css/information.css"/>
+        </stylesheets>
+        <TextFlow textAlignment="CENTER" prefWidth="250">
+            <Text fx:id="algorithmName" id="algorithm"/>
+        </TextFlow>
+        <TextFlow prefWidth="250">
+            <Text text="algorithm phase: " id="phase"/>
+            <Text fx:id="algorithmPhase"/>
+            <Text text="&#10;"/> <!--creates newline-->
+
+            <Text text="step description: " id="key"/>
+            <TextArea fx:id="stepDescription" editable="false" wrapText="true" prefWidth="250" prefRowCount="6"/>
+        </TextFlow>
+        <TextFlow fx:id="properties" prefWidth="250"/>
+    </VBox>
+</ScrollPane>

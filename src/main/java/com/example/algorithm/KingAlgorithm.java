@@ -38,16 +38,23 @@ public class KingAlgorithm implements Algorithm {
         switch (round) {
             case SEND -> {
                 round = AlgorithmPhase.CHOOSE;
-                return firstRound();
+                StepReport stepReport = firstRound();
+                return addAlgorithmPhaseToReport(stepReport, AlgorithmPhase.SEND);
             }
             case CHOOSE -> {
                 round = AlgorithmPhase.SEND;
-                phase++;
                 checkIsFinished();
-                return secondRound();
+                StepReport stepReport = secondRound();
+                phase++;
+                return addAlgorithmPhaseToReport(stepReport, AlgorithmPhase.CHOOSE);
             }
         }
         return null;
+    }
+
+    private StepReport addAlgorithmPhaseToReport(StepReport stepReport, AlgorithmPhase algorithmPhase) {
+        stepReport.setAlgorithmPhase(algorithmPhase);
+        return stepReport;
     }
 
     @Override
@@ -81,6 +88,7 @@ public class KingAlgorithm implements Algorithm {
         report.addBatch(operationsBatch);
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
+        report.getProperties().put("phase", String.valueOf(phase));
         return report;
     }
 
@@ -102,6 +110,7 @@ public class KingAlgorithm implements Algorithm {
         report.addBatch(secondOperationBatch);
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
+        report.getProperties().put("phase", String.valueOf(phase));
         return report;
     }
 

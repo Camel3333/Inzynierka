@@ -7,70 +7,70 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.text.Font?>
 <FlowPane xmlns="http://javafx.com/javafx"
-            orientation="VERTICAL" vgap="30" hgap="20">
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <ImageView fitWidth="45" fitHeight="45">
-                <Image url="@../legendImages/traitor.png"/>
-            </ImageView>
-            <Label text="Traitor agent">
-                <font>
-                    <Font name="Roboto" size="20.0" />
-                </font>
-            </Label>
-        </HBox>
+          orientation="VERTICAL" vgap="30" hgap="20" prefHeight="250.0">
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <ImageView fitWidth="25" fitHeight="25">
+            <Image url="@../legendImages/traitor.png"/>
+        </ImageView>
+        <Label text="Traitor agent">
+            <font>
+                <Font name="Roboto" size="18.0" />
+            </font>
+        </Label>
+    </HBox>
 
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <ImageView fitWidth="45" fitHeight="45">
-                <Image url="@../legendImages/notTraitor.png"/>
-            </ImageView>
-            <Label text="Not traitor agent">
-                <font>
-                    <Font name="Roboto" size="20.0" />
-                </font>
-            </Label>
-        </HBox>
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <ImageView fitWidth="25" fitHeight="25">
+            <Image url="@../legendImages/notTraitor.png"/>
+        </ImageView>
+        <Label text="Not traitor agent">
+            <font>
+                <Font name="Roboto" size="18.0" />
+            </font>
+        </Label>
+    </HBox>
 
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <ImageView fitWidth="45" fitHeight="45">
-                <Image url="@../legendImages/attackOpinion.png"/>
-            </ImageView>
-            <Label text="Agent with attack opinion">
-                <font>
-                    <Font name="Roboto" size="20.0" />
-                </font>
-            </Label>
-        </HBox>
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <ImageView fitWidth="25" fitHeight="25">
+            <Image url="@../legendImages/attackOpinion.png"/>
+        </ImageView>
+        <Label text="Agent with attack opinion">
+            <font>
+                <Font name="Roboto" size="18.0" />
+            </font>
+        </Label>
+    </HBox>
 
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <ImageView fitWidth="45" fitHeight="45">
-                <Image url="@../legendImages/defendOpinion.png"/>
-            </ImageView>
-            <Label text="Agent with defend opinion">
-                <font>
-                    <Font name="Roboto" size="20.0" />
-                </font>
-            </Label>
-        </HBox>
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <ImageView fitWidth="25" fitHeight="25">
+            <Image url="@../legendImages/defendOpinion.png"/>
+        </ImageView>
+        <Label text="Agent with defend opinion">
+            <font>
+                <Font name="Roboto" size="18.0" />
+            </font>
+        </Label>
+    </HBox>
 
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <ImageView fitWidth="45" fitHeight="45">
-                <Image url="@../icons/sword.png"/>
-            </ImageView>
-            <Label text="Attack opinion">
-                <font>
-                    <Font name="Roboto" size="20.0" />
-                </font>
-            </Label>
-        </HBox>
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <ImageView fitWidth="25" fitHeight="25">
+            <Image url="@../icons/sword.png"/>
+        </ImageView>
+        <Label text="Attack opinion">
+            <font>
+                <Font name="Roboto" size="18.0" />
+            </font>
+        </Label>
+    </HBox>
 
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <ImageView fitWidth="45" fitHeight="45">
-                <Image url="@../icons/shield.png"/>
-            </ImageView>
-            <Label text="Defend opinion">
-                <font>
-                    <Font name="Roboto" size="20.0" />
-                </font>
-            </Label>
-        </HBox>
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <ImageView fitWidth="25" fitHeight="25">
+            <Image url="@../icons/shield.png"/>
+        </ImageView>
+        <Label text="Defend opinion">
+            <font>
+                <Font name="Roboto" size="18.0" />
+            </font>
+        </Label>
+    </HBox>
 </FlowPane>

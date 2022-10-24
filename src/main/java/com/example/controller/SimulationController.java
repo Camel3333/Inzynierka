@@ -1,11 +1,15 @@
 package com.example.controller;
 
 import com.example.algorithm.AlgorithmType;
+import com.example.algorithm.operations.Operation;
+import com.example.algorithm.report.OperationsBatch;
 import com.example.algorithm.report.StepReport;
 import com.example.controller.settings.AlgorithmSettingsController;
 import com.example.controller.settings.KingSettingsController;
 import com.example.controller.settings.LamportSettingsController;
 import com.example.controller.settings.QVoterSettingsController;
+import com.example.information.InformationEngineFactory;
+import com.example.model.MyGraph;
 import com.example.simulation.SimpleSimulation;
 import com.example.simulation.Simulation;
 import javafx.application.Platform;
@@ -16,10 +20,12 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextFlow;
 import lombok.Getter;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -27,12 +33,15 @@ import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @FxmlView("/view/simulationOptionsView.fxml")
 public class SimulationController {
+    @FXML
+    public TextFlow warning;
     @FXML
     private VBox parent;
     @FXML
@@ -45,6 +54,8 @@ public class SimulationController {
     private ComboBox<AlgorithmType> algorithmsBox;
     @FXML
     private Slider animationSpeedSlider;
+    @FXML
+    private InformationController informationController;
 
     @Getter
     private final BooleanProperty startDisabledProperty = new SimpleBooleanProperty();
@@ -56,12 +67,20 @@ public class SimulationController {
     private final BooleanProperty instantFinishDisabledProperty = new SimpleBooleanProperty();
     @Getter
     private final BooleanProperty pauseDisabledProperty = new SimpleBooleanProperty();
+    @Getter
+    private final BooleanProperty stopDisableProperty = new SimpleBooleanProperty();
 
     private Service<?> activeService;
     private Simulation simulation;
 
     @Autowired
     private StatisticsController statisticsController;
+
+    @Autowired
+    private DocumentationController documentationController;
+
+    @Autowired
+    private LoggerController loggerController;
 
     @Autowired
     private GraphController graphController;
@@ -78,11 +97,16 @@ public class SimulationController {
     public void show() {
         parent.setVisible(true);
         parent.setManaged(true);
+        initWarning();
     }
 
     public void hide() {
         parent.setVisible(false);
         parent.setManaged(false);
+    }
+
+    public void clearInformation() {
+        informationController.clearView();
     }
 
     public void setSettingsValidation(GraphController graphController) {
@@ -99,6 +123,14 @@ public class SimulationController {
                         )
                 )
         );
+    }
+
+    private void initWarning() {
+        MyGraph<Integer, Integer> graph = graphController.getGraph();
+        if (graph != null && algorithmsBox.getValue() != AlgorithmType.QVOTER) warning.setVisible(
+                !graph.isComplete()
+        );
+        else if (algorithmsBox.getValue() == AlgorithmType.QVOTER) warning.setVisible(false);
     }
 
     @FXML
@@ -125,10 +157,15 @@ public class SimulationController {
                     }
                 }));
 
+        algorithmsBox.getSelectionModel().selectedIndexProperty().addListener(
+                (index) -> initWarning()
+        );
+
         nextStepDisabledProperty.setValue(true);
         liveDisabledProperty.setValue(true);
         instantFinishDisabledProperty.setValue(true);
         pauseDisabledProperty.setValue(true);
+        stopDisableProperty.setValue(true);
 
         List<Observable> dependenciesList = new ArrayList<>();
         dependenciesList.add(paused);
@@ -148,6 +185,9 @@ public class SimulationController {
 
         pauseDisabledProperty.bind(Bindings.createBooleanBinding(() ->
                 !(!paused.get() && started.get() && !isFinished.get()), dependencies));
+
+        stopDisableProperty.bind(Bindings.createBooleanBinding(() ->
+                !(started.get() && !isFinished.get()), dependencies));
     }
 
     private AlgorithmSettingsController getAlgorithmController(AlgorithmType algorithmType) {
@@ -220,17 +260,25 @@ public class SimulationController {
 
     public void initSimulation() {
         statisticsController.clear();
+        informationController.clearView();
         simulation.clearData();
         simulation.allowAnimations(true);
         AlgorithmType selectedAlgorithm = algorithmsBox.getValue();
         simulation.setEnvironment(selectedAlgorithm.getAlgorithm(), getAlgorithmController(selectedAlgorithm).getAlgorithmSettings());
+        simulation.setInformationEngine(InformationEngineFactory.createForAlgorithm(selectedAlgorithm, informationController));
         ((SimpleSimulation) simulation).loadEnvironment();
         isFinished.bind(((SimpleSimulation) simulation).getIsFinishedProperty());
+        loggerController.addItem("[Start] Simulation started with " + selectedAlgorithm + " algorithm.");
         started.set(true);
     }
 
     private void processStep() {
         StepReport report = simulation.step();
+        for (OperationsBatch operationBatch : report.getOperationsBatches()) {
+            loggerController.addItem("");
+            for (Operation operation : operationBatch.getOperations())
+                loggerController.addItem("[Event] " + operation.getDescription());
+        }
         statisticsController.addStats(report.getNumSupporting(), report.getNumNotSupporting());
         graphController.updateVerticesTooltips();
     }
@@ -267,14 +315,19 @@ public class SimulationController {
     }
 
     private void instantFinishTask() {
-        simulation.allowAnimations(false);
         while (!isFinished.get()) {
             processStep();
+
+            if (paused.get()) {
+                return;
+            }
         }
         onFinish();
     }
 
     public void onFinish() {
+        loggerController.addItem("");
+        loggerController.addItem("[Finished] Simulation finished");
         setSimulationFlagsToNotStartedState();
         openResultDialog();
     }
@@ -307,8 +360,14 @@ public class SimulationController {
         }
         isFinished.unbind();
         if (simulation != null)
-            simulation.stop();
+            simulation.removeSimulationRelatedColoring();
         setSimulationFlagsToNotStartedState();
+    }
+
+    public void openDocumentation(ActionEvent actionEvent) throws IOException {
+        documentationController.openDocumentation(
+                algorithmsBox.getValue().ordinal() + 1
+        );
     }
 
     public class SimulationLiveService extends Service<Boolean> {
@@ -349,7 +408,11 @@ public class SimulationController {
                 @Override
                 protected Boolean call() throws Exception {
                     idle.set(false);
+                    paused.set(false);
+                    simulation.allowAnimations(false);
+                    simulation.removeSimulationRelatedColoring();
                     instantFinishTask();
+                    simulation.allowAnimations(true);
                     idle.set(true);
                     return true;
                 }

@@ -2,6 +2,8 @@ package com.example.controller;
 
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
+import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.*;
 import com.example.algorithm.VertexRole;
 import com.example.draw.MySmartGraphPanel;
@@ -75,9 +77,7 @@ public class GraphController {
 
     private void buildGraphContainers() {
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
-        // TODO: Load properties from file
-        SmartGraphProperties properties = new SmartGraphProperties("edge.arrow = false");
-        graphView = new MySmartGraphPanel<>(graph, properties, strategy);
+        graphView = new MySmartGraphPanel<>(graph, null, strategy);
         setGraphViewBindings();
         container = new SmartGraphDemoContainer(graphView);
     }

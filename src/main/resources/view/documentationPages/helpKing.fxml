@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+<TextFlow prefWidth="300.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+    <Text style="-fx-font-size: 2em" text="King's algorithm&#10;" textAlignment="CENTER">
+        King's algorithm
+    </Text>
+    <TextArea editable="false" prefHeight="200.0" prefWidth="300.0" style="-fx-background-insets: 0px; -fx-text-overrun: ellipsis;" text="king." wrapText="true">
+    </TextArea>
+</TextFlow>
