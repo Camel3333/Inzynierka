@@ -32,18 +32,20 @@ public class LamportIterAlgorithm implements Algorithm {
         stepReport.fillProperties(record);
         stepReport.fillRoles(record);
         stepReport.setAlgorithmPhase(record.phase);
-        OperationsBatch operationsBatch = new OperationsBatch();
+        OperationsBatch firstOperationBatch = new OperationsBatch();
+        OperationsBatch secondOperationBatch = new OperationsBatch();
 
         switch (record.phase) {
             case SEND -> {
                 for (MyVertex<Integer> vertex : record.lieutenants) {
+                    BooleanProperty commanderOpinion = record.commander.getNextOpinion(vertex);
+                    vertex.receiveOpinion(commanderOpinion);
+                    firstOperationBatch.add(new SendOperation(record.commander, vertex, commanderOpinion));
                     if (!verticesWithOpinion.contains(vertex)) {
+                        secondOperationBatch.add(new ChooseOperation(vertex, commanderOpinion));
                         vertex.setIsSupporting(record.commander.getNextOpinion(vertex).getValue());
                         verticesWithOpinion.add(vertex);
                     }
-                    BooleanProperty commanderOpinion = record.commander.getNextOpinion(vertex);
-                    vertex.receiveOpinion(commanderOpinion);
-                    operationsBatch.add(new SendOperation(record.commander, vertex, commanderOpinion));
                 }
 
                 if (record.m > 0) {
@@ -61,11 +63,14 @@ public class LamportIterAlgorithm implements Algorithm {
             case CHOOSE -> {
                 for (MyVertex<Integer> vertex : record.lieutenants) {
                     vertex.chooseMajority();
-                    operationsBatch.add(new ChooseOperation(vertex, vertex.getIsSupporting()));
+                    firstOperationBatch.add(new ChooseOperation(vertex, vertex.getIsSupporting()));
                 }
             }
         }
-        stepReport.addBatch(operationsBatch);
+        stepReport.addBatch(firstOperationBatch);
+        if (!secondOperationBatch.getOperations().isEmpty()) {
+            stepReport.addBatch(secondOperationBatch);
+        }
         stepReport.setNumSupporting(graph.getSupportingOpinionCount());
         stepReport.setNumNotSupporting(graph.getNotSupportingOpinionCount());
         return stepReport;
