@@ -11,9 +11,9 @@
             prefHeight="100.0" prefWidth="250.0">
 
     <content>
-        <VBox style="-fx-alignment: center">
+        <VBox>
             <Text fx:id="simulationText" style="-fx-font-size: 15px"/>
-            <Text fx:id="consensusText" style="-fx-font-size: 12px"/>
+            <Text fx:id="consensusText" style="-fx-font-size: 13px"/>
         </VBox>
     </content>
 

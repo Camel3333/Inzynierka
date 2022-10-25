@@ -9,9 +9,9 @@
             fx:controller="com.example.controller.graphGeneratorSettings.TreeGraphSettingsController">
 
     <VBox spacing="5" fx:id="container">
-        <Label text="Select number of children"/>
-        <IntegerSettingTextField fx:id="children"/>
-        <Slider fx:id="childrenSlider"
+        <Label text="Select number of children" id="label"/>
+        <IntegerSettingTextField fx:id="children" id="field"/>
+        <Slider fx:id="childrenSlider" id="slider"
                 blockIncrement="1.0"
                 cache="true"
                 majorTickUnit="5.0"
@@ -22,9 +22,9 @@
                 showTickMarks="true"
                 snapToTicks="true"
                 value="5.0"/>
-        <Label text="Select height"/>
-        <IntegerSettingTextField fx:id="height"/>
-        <Slider fx:id="heightSlider"
+        <Label text="Select height" id="label"/>
+        <IntegerSettingTextField fx:id="height" id="field"/>
+        <Slider fx:id="heightSlider" id="slider"
                 blockIncrement="1.0"
                 cache="true"
                 majorTickUnit="5.0"

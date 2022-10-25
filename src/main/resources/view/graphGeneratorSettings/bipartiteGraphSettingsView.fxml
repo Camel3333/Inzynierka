@@ -9,9 +9,9 @@
             fx:controller="com.example.controller.graphGeneratorSettings.BipartiteGraphSettingsController">
 
     <VBox spacing="5" fx:id="container">
-        <Label text="Select number of vertices in first set"/>
-        <IntegerSettingTextField fx:id="firstVertices"/>
-        <Slider fx:id="firstVerticesSlider"
+        <Label text="Select number of vertices in first set" id="label"/>
+        <IntegerSettingTextField fx:id="firstVertices" id="field"/>
+        <Slider fx:id="firstVerticesSlider" id="slider"
                 blockIncrement="1.0"
                 cache="true"
                 majorTickUnit="5.0"
@@ -22,9 +22,9 @@
                 showTickMarks="true"
                 snapToTicks="true"
                 value="5.0"/>
-        <Label text="Select number of vertices in second set"/>
-        <IntegerSettingTextField fx:id="secondVertices"/>
-        <Slider fx:id="secondVerticesSlider"
+        <Label text="Select number of vertices in second set" id="label"/>
+        <IntegerSettingTextField fx:id="secondVertices" id="field"/>
+        <Slider fx:id="secondVerticesSlider" id="slider"
                 blockIncrement="1.0"
                 cache="true"
                 majorTickUnit="5.0"

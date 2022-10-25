@@ -4,15 +4,20 @@
 
 <?import javafx.scene.layout.VBox?>
 
+<?import java.net.URL?>
 <DialogPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.controller.GenerateGraphController"
             prefWidth="300" prefHeight="350">
 
+    <stylesheets>
+        <URL value="@/css/generator.css"/>
+    </stylesheets>
+
     <content>
         <VBox spacing="5">
-            <Label text="Select type of graph to be generated"/>
-            <ComboBox fx:id ="graphBox"/>
+            <Label text="Select type of graph to be generated" id="label"/>
+            <ComboBox fx:id="graphBox" id="combo_box"/>
             <fx:include fx:id="fullGraphSettings" source="graphGeneratorSettings/fullGraphSettingsView.fxml"/>
             <fx:include fx:id="cycleGraphSettings" source="graphGeneratorSettings/cycleGraphSettingsView.fxml"/>
             <fx:include fx:id="treeGraphSettings" source="graphGeneratorSettings/treeGraphSettingsView.fxml"/>
@@ -21,8 +26,6 @@
         </VBox>
     </content>
 
-    <buttonTypes>
-        <ButtonType fx:constant="CANCEL"/>
-        <ButtonType fx:constant="OK"/>
-    </buttonTypes>
+    <ButtonType fx:constant="CANCEL"/>
+    <ButtonType fx:constant="OK"/>
 </DialogPane>

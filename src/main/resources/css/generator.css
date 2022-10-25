@@ -1,0 +1,19 @@
+#label {
+    -fx-font: Verdana;
+    -fx-padding: 5 0 0 0;
+}
+
+#slider {
+    -fx-font: Verdana;
+    -fx-padding: 5 0 0 0;
+    -fx-pref-width: 280;
+}
+
+#combo_box {
+    -fx-pref-width: 280;
+}
+
+#field {
+    -fx-font: Verdana;
+    -fx-pref-width: 280;
+}

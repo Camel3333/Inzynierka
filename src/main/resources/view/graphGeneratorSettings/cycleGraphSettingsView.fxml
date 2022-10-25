@@ -9,9 +9,9 @@
             fx:controller="com.example.controller.graphGeneratorSettings.CycleGraphSettingsController">
 
     <VBox spacing="5" fx:id="container">
-        <Label text="Select number of vertices"/>
-        <IntegerSettingTextField fx:id="vertices"/>
-        <Slider fx:id="verticesSlider"
+        <Label text="Select number of vertices" id="label"/>
+        <IntegerSettingTextField fx:id="vertices" id="field"/>
+        <Slider fx:id="verticesSlider" id="slider"
                 blockIncrement="1.0"
                 cache="true"
                 majorTickUnit="5.0"
