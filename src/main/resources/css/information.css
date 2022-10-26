@@ -1,16 +1,16 @@
 #key {
-    -fx-font: Verdana;
+    -fx-font-family: Verdana;
     -fx-font-weight: bold;
 }
 
 #algorithm {
-    -fx-font: Verdana;
+    -fx-font-family: Verdana;
     -fx-font-weight: bold;
     -fx-font-size: 20;
 }
 
 #phase {
-    -fx-font: Verdana;
+    -fx-font-family: Verdana;
     -fx-font-weight: bold;
     -fx-font-size: 13;
 }
