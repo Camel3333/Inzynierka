@@ -117,6 +117,7 @@ public class SimulationController {
 
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
+        simulation.setAnimationsSpeed(animationSpeedSlider.getValue());
         animationSpeedSlider.valueProperty().addListener(
                 observable -> Platform.runLater(
                         () -> simulation.setAnimationsSpeed(animationSpeedSlider.getValue()
