@@ -48,6 +48,6 @@ public class KingInformationEngine implements InformationEngine {
     }
 
     private String generateDescriptionForChoose() {
-        return "At choose step each general is making decision. Decision is based on the majority of received opinions. If number of votes is less than (⌊ n / 2 ⌋ + t), general asks king for his opinion.";
+        return "At choose step each general is making decision. Decision is based on the majority of received opinions. If number of votes is less than (⌊ n / 2 ⌋ + number of phases), general accepts king's opinion.";
     }
 }

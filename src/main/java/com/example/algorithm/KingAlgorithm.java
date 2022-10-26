@@ -78,7 +78,11 @@ public class KingAlgorithm implements Algorithm {
         KingStepReport report = new KingStepReport();
         report.fillRoles(null);
         OperationsBatch operationsBatch = new OperationsBatch();
+        cleanKnowledge();
         for (Vertex<Integer> v : graph.vertices()) {
+            // send opinion to itself, to mention it in knowledge table
+            BooleanProperty vOpinion = ((MyVertex<Integer>) v).isSupportingOpinion();
+            ((MyVertex<Integer>) v).receiveOpinion(vOpinion);
             for (Vertex<Integer> u : graph.vertexNeighbours(v)) {
                 BooleanProperty opinion = ((MyVertex<Integer>) v).getNextOpinion((MyVertex<Integer>) u);
                 ((MyVertex<Integer>) u).receiveOpinion(opinion);
@@ -97,7 +101,7 @@ public class KingAlgorithm implements Algorithm {
         KingStepReport report = new KingStepReport();
         MyVertex<Integer> king = (MyVertex<Integer>) graph.vertices().stream().toList().get(phase % graph.numVertices());
         report.fillRoles(king);
-        int condition = graph.numVertices() / 2 + graph.getTraitorsCount();
+        int condition = graph.numVertices() / 2 + allowedNumberOfTraitors();
         OperationsBatch firstOperationsBatch = new OperationsBatch();
         OperationsBatch secondOperationBatch = new OperationsBatch();
         for (Vertex<Integer> v : graph.vertexNeighbours(king)) {
@@ -112,6 +116,14 @@ public class KingAlgorithm implements Algorithm {
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
         report.getProperties().put("phase", String.valueOf(phase));
         return report;
+    }
+
+    private void cleanKnowledge() {
+        graph.vertices().forEach(vertex -> ((MyVertex<Integer>)vertex).clearKnowledge());
+    }
+
+    private int allowedNumberOfTraitors() {
+        return (int)Math.ceil((double)graph.numVertices()/4.0)-1;
     }
 
     private class KingStepReport extends StepReport {
