@@ -4,10 +4,10 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<TextFlow prefWidth="300.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+<TextFlow prefWidth="300.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <Text style="-fx-font-size: 2em" text="QVoter algorithm&#10;" textAlignment="CENTER">
         Lamport's algorithm
     </Text>
-    <TextArea editable="false" prefHeight="200.0" prefWidth="300.0" style="-fx-background-insets: 0px; -fx-text-overrun: ellipsis;" text="W modelu tym wybierany jest nie jeden, lecz q sąsiadów agenta. Jeżeli wszyscy sąsiedzi są zgodni, czyli posiadają ten sam stan, to agent również podziela ich opinie. W przeciwnym razie może on przyjąć zdanie większości z pewnym prawdopodobieństwem." wrapText="true">
+    <TextArea editable="false" prefHeight="200.0" prefWidth="275.0" style="-fx-background-insets: 0px; -fx-text-overrun: ellipsis;" text="The Q-voter was made for non-complete graphs, where the graph represents a social network. &#10;&#10;In every round, a random node and its q neighbours are chosen. If all q chosen neighbours are in agreement, the node accepts their opinion. If otherwise, it accepts the opinion of majority with a certain probability." wrapText="true">
     </TextArea>
 </TextFlow>
