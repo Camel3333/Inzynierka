@@ -48,13 +48,21 @@ public class SimpleSimulation implements Simulation {
     }
 
     public StepReport step() {
-        StepReport report = algorithm.step();
+        StepReport report;
         if (allowAnimations.get()) {
+            graphController.removeAllVerticesListeners();
             graphController.enableGraphInteractions(false);
+            report = algorithm.step();
             if (informationEngine != null)
                 informationEngine.processReport(report);
             animationEngine.animate(report);
+            graphController.addAllVerticesListeners();
             graphController.enableGraphInteractions(true);
+            // update coloring if something didn't change in animations
+            graphController.getGraph().vertices().forEach(vertex -> graphController.colorVertex(vertex));
+        }
+        else {
+            report = algorithm.step();
         }
         if (algorithm.isFinished()) {
             removeSimulationRelatedColoring();

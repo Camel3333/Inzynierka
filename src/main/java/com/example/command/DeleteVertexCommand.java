@@ -34,6 +34,7 @@ public class DeleteVertexCommand implements Command {
             }
         }
         graphController.getGraph().removeVertex(foundVertex);
+        graphController.onRemoveVertex(foundVertex);
         graphController.update();
     }
 
@@ -47,7 +48,7 @@ public class DeleteVertexCommand implements Command {
         graphController.update();
         graphController.setVertexPosition(vertex, x, y);
         graphController.colorVertex(vertex);
-        graphController.addVertexListeners(vertex);
+        graphController.onAddVertex(vertex);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.*;
 import com.example.algorithm.VertexRole;
 import com.example.draw.MySmartGraphPanel;
+import com.example.listener.VertexListener;
 import com.example.model.MyGraph;
 import com.example.model.MyVertex;
 import com.example.util.DrawMouseEventHandler;
@@ -27,9 +28,7 @@ import org.controlsfx.control.PopOver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Component
 @FxmlView("/view/graphView.fxml")
@@ -49,6 +48,7 @@ public class GraphController {
     @Getter
     private MyGraph<Integer, Integer> graph;
     private List<GraphObserver<Integer, Integer>> observers = new ArrayList<>();
+    private Map<Vertex<Integer>, VertexListener> vertexListeners = new HashMap<>();
 
     public void addObserver(GraphObserver<Integer, Integer> observer) {
         observers.add(observer);
@@ -67,6 +67,7 @@ public class GraphController {
 
         //remove old graph
         graphRoot.getChildren().remove(container);
+        vertexListeners.clear();
         init();
         initGraphView();
 
@@ -127,17 +128,49 @@ public class GraphController {
         });
         graphView.addEventHandler(MouseEvent.ANY, drawMouseEventHandler);
 
+        graph.vertices().forEach(this::onAddVertex);
+    }
+
+    public void onAddVertex(Vertex<Integer> vertex) {
+        addVertexListeners(vertex);
+        setVertexTooltip(vertex);
+    }
+
+    public void onRemoveVertex(Vertex<Integer> vertex) {
+        vertexListeners.remove(vertex);
+    }
+
+    public void addAllVerticesListeners() {
         graph.vertices().forEach(this::addVertexListeners);
     }
 
-    public void addVertexListeners(Vertex<Integer> vertex) {
-        ((MyVertex<Integer>) vertex).getIsTraitor().addListener(changed -> {
-            changeVertexFillStyle(vertex);
-        });
+    public void removeAllVerticesListeners() {
+        graph.vertices().forEach(this::removeVertexListeners);
+    }
 
-        ((MyVertex<Integer>) vertex).isSupportingOpinion().addListener(changed -> {
-            changeVertexStrokeStyle(vertex);
-        });
+    public void addVertexListeners(Vertex<Integer> vertex) {
+        VertexListener vertexListener = vertexListeners.get(vertex);
+        if (vertexListener == null) {
+            vertexListener = new VertexListener((MyVertex<Integer>) vertex, this);
+            vertexListeners.put(vertex, vertexListener);
+        }
+        vertexListener.addTraitorListener();
+        vertexListener.addOpinionListener();
+    }
+
+    public void removeVertexListeners(Vertex<Integer> vertex) {
+        VertexListener vertexListener = vertexListeners.get(vertex);
+        if (vertexListener == null)
+            throw new IllegalStateException("Can't remove vertex listeners if no listeners were set");
+        vertexListener.removeOpinionListener();
+        vertexListener.removeTraitorListener();
+    }
+
+    public VertexListener getVertexListener(Vertex<Integer> vertex) {
+        return vertexListeners.get(vertex);
+    }
+
+    public void setVertexTooltip(Vertex<Integer> vertex) {
         graphView.getChildren().stream()
                 .filter(n -> n instanceof SmartGraphVertexNode)
                 .filter(n -> ((SmartGraphVertexNode<?>) n).getUnderlyingVertex().element() == vertex.element())

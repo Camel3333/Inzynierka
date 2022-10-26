@@ -23,13 +23,14 @@ public class DrawVertexCommand implements Command {
         graphController.update();
         graphController.setVertexPosition(vertex, x, y);
         graphController.colorVertex(vertex);
-        graphController.addVertexListeners(vertex);
+        graphController.onAddVertex(vertex);
     }
 
     @Override
     public void undo() {
         Vertex<Integer> foundVertex = graphController.getGraph().getVertexByKey(vertexIndex);
         graphController.getGraph().removeVertex(foundVertex);
+        graphController.onRemoveVertex(foundVertex);
         graphController.update();
     }
 
