@@ -1,12 +1,10 @@
 package com.example.model;
 
 import com.brunomnsilva.smartgraph.graph.Vertex;
-import javafx.beans.binding.BooleanExpression;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableBooleanValue;
 import lombok.Getter;
 
 import java.util.*;
@@ -20,7 +18,7 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     private BooleanProperty isSupporting;
 
     @Getter
-    private List<BooleanProperty> knowledge = new ArrayList<>();
+    private List<Boolean> knowledge = new ArrayList<>();
 
     @Getter
     private final StringProperty knowledgeInfo = new SimpleStringProperty("");
@@ -59,7 +57,7 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     }
 
     public void updateKnowledgeInfo() {
-        int attackCount = (int) knowledge.stream().filter(ObservableBooleanValue::get).count();
+        int attackCount = (int) knowledge.stream().filter(e -> e).count();
         int retreatAttack = knowledge.size() - attackCount;
         if (knowledge.size() == 0) {
             knowledgeInfo.set("attack: -\nretreat: -");
@@ -86,18 +84,18 @@ public class MyVertex<V> implements Vertex<V>, Agent {
         if(isSupporting == null){
             isSupporting = agentOpinion;
         }
-        knowledge.add(agentOpinion);
+        knowledge.add(agentOpinion.getValue());
     }
 
     public boolean getMajorityVote(){
         return knowledge.stream()
-                .filter(BooleanExpression::getValue)
+                .filter(e -> e)
                 .count() > knowledge.size() / 2;
     }
 
     public int getMajorityVoteCount(){
         return (int) knowledge.stream()
-                .filter(o -> o.getValue() == getMajorityVote())
+                .filter(o -> o == getMajorityVote())
                 .count();
     }
 
