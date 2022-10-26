@@ -4,16 +4,18 @@
 
 <?import javafx.scene.control.Label?>
 <?import org.controlsfx.control.ToggleSwitch?>
-<?import org.controlsfx.control.CheckComboBox?>
+<?import java.net.URL?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.controller.VertexSettingsController"
-      prefHeight="150.0" prefWidth="150.0">
+      fx:controller="com.example.controller.VertexSettingsController" style="-fx-padding: 10">
 
-    <Label text = "Wybierz ustawienia agenta"/>
+    <stylesheets>
+        <URL value="@/css/vertexSettings.css"/>
+    </stylesheets>
 
-    <ToggleSwitch fx:id = "traitorSwitch" text="Zdrajca"/>
-    <ToggleSwitch fx:id = "opinionSwitch" text="Opinia"/>
-<!--    <CheckComboBox fx:id = "opinionsBox" title="Opinie"/>-->
+    <Label text = "Wybierz ustawienia agenta" id="label"/>
+
+    <ToggleSwitch fx:id = "traitorSwitch" text="Zdrajca" id="toggle"/>
+    <ToggleSwitch fx:id = "opinionSwitch" text="Opinia  " id="toggle"/>
 
 </VBox>
