@@ -130,6 +130,7 @@ public class MyGraph<V,E> implements Graph<V,E> {
         checkVertex(v2);
         return edges.stream()
                 .filter(e -> ((MyEdge) e).contains(v1) && ((MyEdge) e).contains(v2))
+                .filter(v1.equals(v2) ? e -> Arrays.stream(((MyEdge) e).vertices()).distinct().count() == 1 : e -> true)
                 .collect(Collectors.toList());
     }
 
