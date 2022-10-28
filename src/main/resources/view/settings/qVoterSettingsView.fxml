@@ -4,15 +4,20 @@
 <?import javafx.scene.control.Label?>
 <?import com.example.settings.IntegerSettingTextField?>
 <?import com.example.settings.SettingComboBox?>
+<?import java.net.URL?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:id="parent"
-          fx:controller="com.example.controller.settings.QVoterSettingsController">
+          fx:controller="com.example.controller.settings.QVoterSettingsController" id="root">
 
-    <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Q" fx:id="qLabel"/>
+    <stylesheets>
+        <URL value="@/css/algorithmSettings.css"/>
+    </stylesheets>
+
+    <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Q" fx:id="qLabel" id="label"/>
     <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="q"/>
-    <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Time" fx:id="timeLabel"/>
+    <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Time" fx:id="timeLabel" id="label"/>
     <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="time"/>
-    <Label GridPane.columnIndex="0" GridPane.rowIndex="2" text="Probability" fx:id="probabilityLabel"/>
+    <Label GridPane.columnIndex="0" GridPane.rowIndex="2" text="Probability" fx:id="probabilityLabel" id="label"/>
     <SettingComboBox GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="probabilityBox"/>
 </GridPane>
