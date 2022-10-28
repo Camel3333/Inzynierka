@@ -6,20 +6,17 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
-<?import com.example.settings.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.controller.SimulationController"
       fx:id="parent"
-      style="-fx-background-color: #f4f4f4; -fx-padding: 15px">
+      style="-fx-background-color: #f4f4f4; -fx-padding: 15px; -fx-spacing: 5px">
 
-    <HBox>
+    <HBox spacing="5">
         <ComboBox fx:id="algorithmsBox"/>
         <ToggleButton fx:id="documentationButton" onAction="#openDocumentation" style="-fx-margin: 10px;">
             <graphic>
@@ -30,7 +27,7 @@
         </ToggleButton>
     </HBox>
 
-    <VBox>
+    <VBox spacing="5">
         <fx:include fx:id="lamportSettings" source="settings/lamportSettingsView.fxml"/>
         <fx:include fx:id="kingSettings" source="settings/kingSettingsView.fxml"/>
         <fx:include fx:id="qVoterSettings" source="settings/qVoterSettingsView.fxml"/>
@@ -46,7 +43,8 @@
     </VBox>
     <fx:include fx:id="information" source="informationView.fxml" VBox.vgrow="ALWAYS"/>
 
-    <TextFlow style="-fx-max-width: 150px; -fx-wrap-text: true; -fx-text-overrun: clip; -fx-alignment: bottom" fx:id="warning">
+    <TextFlow style="-fx-max-width: 150px; -fx-wrap-text: true; -fx-text-overrun: clip; -fx-alignment: bottom"
+              fx:id="warning">
         <Text style="-fx-fill: red" text="Note!&#32;"/>
         <Text style="-fx-fill: gray;">
             Algorithms used in this simulation have no standardized way of dealing with non-complete graphs.

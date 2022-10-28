@@ -77,7 +77,8 @@ public class KingAlgorithm implements Algorithm {
         System.out.println("First round");
         KingStepReport report = new KingStepReport();
         report.fillRoles(null);
-        OperationsBatch operationsBatch = new OperationsBatch();
+        OperationsBatch firstOperationsBatch = new OperationsBatch();
+        OperationsBatch secondOperationBatch = new OperationsBatch();
         cleanKnowledge();
         for (Vertex<Integer> v : graph.vertices()) {
             // send opinion to itself, to mention it in knowledge table
@@ -86,13 +87,19 @@ public class KingAlgorithm implements Algorithm {
             for (Vertex<Integer> u : graph.vertexNeighbours(v)) {
                 BooleanProperty opinion = ((MyVertex<Integer>) v).getNextOpinion((MyVertex<Integer>) u);
                 ((MyVertex<Integer>) u).receiveOpinion(opinion);
-                operationsBatch.add(new SendOperation(v, u, opinion));
+                firstOperationsBatch.add(new SendOperation(v, u, opinion));
             }
         }
-        report.addBatch(operationsBatch);
+        for (Vertex<Integer> v : graph.vertices()) {
+            ((MyVertex<Integer>) v).chooseMajority();
+            secondOperationBatch.add(new ChooseOperation(v, ((MyVertex<Integer>) v).getIsSupporting()));
+        }
+        report.addBatch(firstOperationsBatch);
+        report.addBatch(secondOperationBatch);
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
         report.getProperties().put("phase", String.valueOf(phase));
+        report.getProperties().put("round", String.valueOf(1));
         return report;
     }
 
@@ -115,6 +122,8 @@ public class KingAlgorithm implements Algorithm {
         report.setNumSupporting(graph.getSupportingOpinionCount());
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
         report.getProperties().put("phase", String.valueOf(phase));
+        report.getProperties().put("round", String.valueOf(2));
+        report.getProperties().put("accept king opinion condition", String.valueOf(condition));
         return report;
     }
 

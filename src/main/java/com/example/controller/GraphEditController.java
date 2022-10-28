@@ -72,7 +72,7 @@ public class GraphEditController {
     }
 
     private void initializeAlwaysDisplayedButtons() {
-        simulateButton.setOnAction(e -> simulationMenuController.changeApplicationState());
+        simulateButton.setOnAction(e -> simulationMenuController.simulateItem.fire());
     }
 
     @FXML
@@ -91,7 +91,8 @@ public class GraphEditController {
     public void setSimulationMenuController(SimulationMenuController controller) {
         simulationMenuController = controller;
         simulateButton.selectedProperty().unbind();
-        simulateButton.selectedProperty().bindBidirectional(simulationMenuController.simulateItem.selectedProperty());
+        simulationMenuController.getAppController().getApplicationStateProperty()
+                .addListener(((observable, oldValue, newValue) -> simulateButton.setSelected(newValue == ApplicationState.SIMULATING)));
     }
 
     public void setSimulationController(SimulationController simulationController) {
