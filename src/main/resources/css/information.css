@@ -1,16 +1,22 @@
 #key {
     -fx-font-family: Verdana;
     -fx-font-weight: bold;
+    -fx-font-size: 13;
 }
 
 #algorithm {
-    -fx-font-family: Verdana;
+    -fx-font-family: Helvetica;
     -fx-font-weight: bold;
-    -fx-font-size: 20;
+    -fx-font-size: 32;
+    -fx-fill: Orange;
 }
 
 #phase {
     -fx-font-family: Verdana;
     -fx-font-weight: bold;
-    -fx-font-size: 13;
+    -fx-font-size: 14;
+}
+
+#scrollPane {
+    -fx-background-color: transparent;
 }

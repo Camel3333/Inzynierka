@@ -4,7 +4,7 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="root" style="-fx-background-color: #f4fffb" minHeight="600.0" minWidth="800.0"
+<BorderPane fx:id="root" style="-fx-background-color: #f4fffb" minHeight="700.0" minWidth="1000.0"
             xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.controller.AppController">
     <center>
