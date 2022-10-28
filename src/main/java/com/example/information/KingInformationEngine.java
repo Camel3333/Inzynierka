@@ -29,6 +29,7 @@ public class KingInformationEngine implements InformationEngine {
         Map<String, String> properties = stepReport.getProperties();
         Map<String, String> propertiesToSend = new HashMap<>();
         propertiesToSend.put("phase", properties.get("phase"));
+        propertiesToSend.put("round", properties.get("round"));
         Optional<Map.Entry<Vertex<Integer>, VertexRole>> kingEntry = stepReport.getRoles().entrySet()
                 .stream()
                 .filter(entry -> entry.getValue() == VertexRole.KING)
@@ -40,14 +41,14 @@ public class KingInformationEngine implements InformationEngine {
     }
 
     private String generateDescription(StepReport stepReport) {
-        return stepReport.getAlgorithmPhase() == AlgorithmPhase.SEND ? generateDescriptionForSend() : generateDescriptionForChoose();
+        return stepReport.getAlgorithmPhase() == AlgorithmPhase.SEND ? generateDescriptionForSend(stepReport) : generateDescriptionForChoose(stepReport);
     }
 
-    private String generateDescriptionForSend() {
-        return "At send step all generals send their opinions to other generals.";
+    private String generateDescriptionForSend(StepReport stepReport) {
+        return "At the first round, all generals send their opinions to other generals. After that, each general counts votes for attack and defense, and sets majority as his opinion.";
     }
 
-    private String generateDescriptionForChoose() {
-        return "At choose step each general is making decision. Decision is based on the majority of received opinions. If number of votes is less than (⌊ n / 2 ⌋ + number of phases), general accepts king's opinion.";
+    private String generateDescriptionForChoose(StepReport stepReport) {
+        return "At the second round, king broadcasts his opinion to all generals. If number of votes for majority in previous round was less than "+stepReport.getProperties().get("accept king opinion condition")+", general accepts king's opinion.";
     }
 }
