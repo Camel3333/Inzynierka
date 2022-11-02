@@ -34,7 +34,8 @@ public class DocumentationController {
         String location;
         switch (index) {
             case 0:
-                return;
+                location = "/view/documentationPages/userGuide.fxml";
+                break;
             case 1:
                 location = "/view/documentationPages/helpLamport.fxml";
                 break;

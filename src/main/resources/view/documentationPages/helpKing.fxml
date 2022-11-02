@@ -5,9 +5,9 @@
 <?import javafx.scene.text.TextFlow?>
 
 <TextFlow prefWidth="300.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
-    <Text style="-fx-font-size: 2em" text="King's algorithm&#10;" textAlignment="CENTER">
-        King's algorithm
-    </Text>
-    <TextArea editable="false" prefHeight="350.0" prefWidth="275.0" style="-fx-background-insets: 0px; -fx-text-overrun: ellipsis;" text="In the king’s algorithm every phase is made up of two rounds.&#10;&#10;First round:&#10;1. Every node sends his opinion to every node (including himself).&#10;2. When a node receives an opinion, it saves it in its knowledge table.&#10;&#10;Second round:&#10;1. The kth node becomes a king, where k is the algorithm’s phase.&#10;2. King sends his opinion to other nodes.&#10;3. Every node decides based on its knowledge table:&#10;    1. If the majority opinion has at least n/2+k occurrences, the node takes it as his own (where n is the number of nodes and k is the phase).&#10;    2. If that condition is not met, the node takes on the king’s opinion.&#10;&#10;For this algorithm to work correctly it needs at least 4t+1 generals, to tolerate t traitors. It then needs t+1 phases (where t is the number of traitors)." wrapText="true">
-    </TextArea>
+    <Text style="-fx-font-size: 2em" text="King's algorithm&#10;" textAlignment="CENTER"/>
+    <TextArea editable="false" prefHeight="350.0" prefWidth="275.0"
+              style="-fx-background-insets: 0px; -fx-text-overrun: ellipsis;"
+              text="In the king’s algorithm every phase is made up of two rounds.&#10;&#10;First round:&#10;1. Every node sends his opinion to every node (including himself).&#10;2. When a node receives an opinion, it saves it in its knowledge table.&#10;&#10;Second round:&#10;1. The kth node becomes a king, where k is the algorithm’s phase.&#10;2. King sends his opinion to other nodes.&#10;3. Every node decides based on its knowledge table:&#10;    1. If the majority opinion has at least n/2+k occurrences, the node takes it as his own (where n is the number of nodes and k is the phase).&#10;    2. If that condition is not met, the node takes on the king’s opinion.&#10;&#10;For this algorithm to work correctly it needs at least 4t+1 generals, to tolerate t traitors. It then needs t+1 phases (where t is the number of traitors)."
+              wrapText="true"/>
 </TextFlow>
