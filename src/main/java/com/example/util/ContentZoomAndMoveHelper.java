@@ -37,7 +37,7 @@ public class ContentZoomAndMoveHelper {
 
     private void enablePanAndZoom() {
         container.setOnScroll((event) -> {
-            if (event.getDeltaY() == 0.0){
+            if (event.getDeltaY() == 0.0) {
                 return;
             }
             double direction = event.getDeltaY() > 0.0D ? 1.0D : -1.0D;
@@ -78,6 +78,14 @@ public class ContentZoomAndMoveHelper {
 
     public DoubleProperty scaleFactorProperty() {
         return this.scaleFactorProperty;
+    }
+
+    public void resetLayout() {
+        scaleFactorProperty.setValue(0.0);
+        this.content.setScaleX(1.0);
+        this.content.setScaleY(1.0);
+        content.setTranslateX(0);
+        content.setTranslateY(0);
     }
 
     class DragContext {

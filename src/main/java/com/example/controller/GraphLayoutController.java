@@ -3,6 +3,7 @@ package com.example.controller;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.example.util.ContentZoomAndMoveHelper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
@@ -14,10 +15,12 @@ public class GraphLayoutController {
     private CheckBox automaticLayout;
     @FXML
     private Slider zoom;
+    @FXML
+    private Button resetLayout;
 
     private ContentZoomAndMoveHelper contentZoomAndMoveHelper;
 
-    public void setLayout(SmartGraphPanel<?,?> graphView, Pane container) {
+    public void setLayout(SmartGraphPanel<?, ?> graphView, Pane container) {
         resetAutomaticLayoutCheckbox();
         resetZoomSlider();
         bindAutomaticLayoutCheckbox(graphView);
@@ -35,11 +38,17 @@ public class GraphLayoutController {
         zoom.setValue(0.0);
     }
 
-    private void bindAutomaticLayoutCheckbox(SmartGraphPanel<?,?> graphView) {
+    private void bindAutomaticLayoutCheckbox(SmartGraphPanel<?, ?> graphView) {
         automaticLayout.selectedProperty().bindBidirectional(graphView.automaticLayoutProperty());
     }
 
     private void bindZoomSlider(ContentZoomAndMoveHelper contentZoomAndMoveHelper) {
         zoom.valueProperty().bind(contentZoomAndMoveHelper.scaleFactorProperty());
+    }
+
+    public void reset() {
+        if (contentZoomAndMoveHelper != null) {
+            contentZoomAndMoveHelper.resetLayout();
+        }
     }
 }
