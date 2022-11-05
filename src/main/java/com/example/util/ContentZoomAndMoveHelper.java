@@ -38,7 +38,10 @@ public class ContentZoomAndMoveHelper {
 
     private void enablePanAndZoom() {
         container.setOnScroll((event) -> {
-            double direction = event.getDeltaY() >= 0.0D ? 1.0D : -1.0D;
+            if (event.getDeltaY() == 0.0){
+                return;
+            }
+            double direction = event.getDeltaY() > 0.0D ? 1.0D : -1.0D;
             double currentScale = this.scaleFactorProperty.getValue();
             double computedScale = currentScale + direction * 0.25D;
             computedScale = boundValue(computedScale, 1.0D, 5.0D);
