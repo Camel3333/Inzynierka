@@ -2,7 +2,6 @@ package com.example.util;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
-import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -49,18 +48,7 @@ public class ContentZoomAndMoveHelper {
                 double calculatedScale = computedScale >= 0 ? computedScale + 1 : 1 + computedScale * 0.1;
                 this.content.setScaleX(calculatedScale);
                 this.content.setScaleY(calculatedScale);
-                if (calculatedScale == 0.0D) {
-//                    this.content.setTranslateX(-container.getTranslateX());
-//                    this.content.setTranslateY(-container.getTranslateY());
-                    this.scaleFactorProperty.setValue(computedScale);
-                } else {
-                    this.scaleFactorProperty.setValue(computedScale);
-//                    Bounds bounds = this.content.localToScene(this.content.getBoundsInLocal());
-//                    double f = computedScale / currentScale - 1.0D;
-//                    double dx = event.getX() - (bounds.getWidth() / 2.0D + bounds.getMinX());
-//                    double dy = event.getY() - (bounds.getHeight() / 2.0D + bounds.getMinY());
-//                    this.setContentPivot(f * dx, f * dy);
-                }
+                this.scaleFactorProperty.setValue(computedScale);
             }
 
             event.consume();
