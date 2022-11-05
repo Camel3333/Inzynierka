@@ -59,6 +59,10 @@ public class QVoterSettingsController implements AlgorithmSettingsController {
     public void adjustSettingsConditions(MyGraph<Integer, Integer> graph) {
         int minDegree = graph.getMinDegree();
         algorithmSettings.getSettings().get("q").setValidateArgument((value) -> (Integer) value > 0 && (Integer) value <= minDegree);
+        AlgorithmSetting<Integer> qSetting = (AlgorithmSetting<Integer>) algorithmSettings.getSettings().get("q");
+        qSetting.setValue(minDegree);
+        AlgorithmSetting<Integer> timeSetting = (AlgorithmSetting<Integer>) algorithmSettings.getSettings().get("time");
+        timeSetting.setValue(graph.numVertices());
     }
 
     private void setDefaultSettings() {
