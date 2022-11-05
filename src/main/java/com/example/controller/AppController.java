@@ -1,7 +1,5 @@
 package com.example.controller;
 
-
-import com.brunomnsilva.smartgraph.graph.Graph;
 import com.example.ApplicationState;
 import com.example.algorithm.AlgorithmType;
 import com.example.draw.CreationHelper;

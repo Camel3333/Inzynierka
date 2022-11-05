@@ -40,6 +40,6 @@ public class GraphLayoutController {
     }
 
     private void bindZoomSlider(ContentZoomAndMoveHelper contentZoomAndMoveHelper) {
-        zoom.valueProperty().bindBidirectional(contentZoomAndMoveHelper.scaleFactorProperty());
+        zoom.valueProperty().bind(contentZoomAndMoveHelper.scaleFactorProperty());
     }
 }

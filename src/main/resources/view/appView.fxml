@@ -10,11 +10,11 @@
     <center>
         <AnchorPane style="-fx-background-color: green">
             <fx:include fx:id="graph" source="graphView.fxml" AnchorPane.rightAnchor="100" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="100" AnchorPane.topAnchor="0"/>
-            <HBox AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="100" AnchorPane.topAnchor="0">
+            <HBox AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="100" AnchorPane.topAnchor="0" minHeight="100">
                 <fx:include source="graphRightTabView.fxml" HBox.hgrow="ALWAYS"/>
                 <fx:include fx:id="simulation" source="simulationOptionsView.fxml"/>
             </HBox>
-            <VBox AnchorPane.bottomAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" prefHeight="100">
+            <VBox AnchorPane.bottomAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" minHeight="100">
                 <fx:include source="grapthBottomTabView.fxml" VBox.vgrow="ALWAYS"/>
                 <Accordion>
                     <panes>
