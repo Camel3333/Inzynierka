@@ -15,9 +15,9 @@
     </stylesheets>
 
     <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Q" fx:id="qLabel" id="label"/>
-    <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="q"/>
+    <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="q" GridPane.hgrow="ALWAYS"/>
     <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Time" fx:id="timeLabel" id="label"/>
-    <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="time"/>
+    <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="time" GridPane.hgrow="ALWAYS"/>
     <Label GridPane.columnIndex="0" GridPane.rowIndex="2" text="Probability" fx:id="probabilityLabel" id="label"/>
-    <SettingComboBox GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="probabilityBox"/>
+    <SettingComboBox GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="probabilityBox" maxWidth="Infinity"/>
 </GridPane>

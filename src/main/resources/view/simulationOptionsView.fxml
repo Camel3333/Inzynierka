@@ -17,7 +17,7 @@
       style="-fx-background-color: #f4f4f4; -fx-padding: 15px; -fx-spacing: 5px" maxWidth="300">
 
     <HBox spacing="5">
-        <ComboBox fx:id="algorithmsBox"/>
+        <ComboBox fx:id="algorithmsBox" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
         <ToggleButton fx:id="documentationButton" onAction="#openDocumentation" style="-fx-margin: 10px;">
             <graphic>
                 <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
