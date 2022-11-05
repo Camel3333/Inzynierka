@@ -9,7 +9,7 @@
 
     <center>
         <AnchorPane>
-            <fx:include fx:id="graph" source="graphView.fxml" AnchorPane.rightAnchor="100" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="100" AnchorPane.topAnchor="0"/>
+            <fx:include fx:id="graph" source="graphView.fxml" AnchorPane.rightAnchor="80" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="100" AnchorPane.topAnchor="0"/>
             <HBox AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="100" AnchorPane.topAnchor="0" minWidth="80">
                 <fx:include source="graphRightTabView.fxml" HBox.hgrow="ALWAYS" minWidth="80" alignment="TOP_CENTER"/>
                 <fx:include fx:id="simulation" source="simulationOptionsView.fxml"/>
