@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
@@ -40,8 +39,11 @@ public class GraphController {
     @Autowired
     private FxWeaver fxWeaver;
 
+    @Autowired
+    private GraphLayoutController graphLayoutController;
+
     private int vertexIdCounter = 0;
-    private SmartGraphDemoContainer container;
+//    private ContentResizerPane container;
     @Getter
     private MySmartGraphPanel<Integer, Integer> graphView;
 
@@ -66,7 +68,7 @@ public class GraphController {
         this.graph = graph;
 
         //remove old graph
-        graphRoot.getChildren().remove(container);
+        graphRoot.getChildren().remove(graphView);
         vertexListeners.clear();
         init();
         initGraphView();
@@ -78,8 +80,9 @@ public class GraphController {
     private void buildGraphContainers() {
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
         graphView = new MySmartGraphPanel<>(graph, null, strategy);
+        graphLayoutController.setGraph(graphView);
         setGraphViewBindings();
-        container = new SmartGraphDemoContainer(graphView);
+//        container = new ContentResizerPane(graphView);
     }
 
     public void setVertexStyle(int id, String style) {
@@ -270,9 +273,9 @@ public class GraphController {
 
     private void init() {
         buildGraphContainers();
-        container.prefWidthProperty().bind(graphRoot.widthProperty());
-        container.prefHeightProperty().bind(graphRoot.heightProperty());
-        graphRoot.getChildren().add(container);
+        graphView.prefWidthProperty().bind(graphRoot.widthProperty());
+        graphView.prefHeightProperty().bind(graphRoot.heightProperty());
+        graphRoot.getChildren().add(graphView);
     }
 
     public int getNextVertexId() {
