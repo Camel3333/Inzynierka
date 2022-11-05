@@ -5,6 +5,7 @@ import com.example.util.ContentZoomAndMoveHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.Pane;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,11 +17,11 @@ public class GraphLayoutController {
 
     private ContentZoomAndMoveHelper contentZoomAndMoveHelper;
 
-    public void setGraph(SmartGraphPanel<?,?> graphView) {
+    public void setLayout(SmartGraphPanel<?,?> graphView, Pane container) {
         resetAutomaticLayoutCheckbox();
         resetZoomSlider();
         bindAutomaticLayoutCheckbox(graphView);
-        contentZoomAndMoveHelper = new ContentZoomAndMoveHelper(graphView);
+        contentZoomAndMoveHelper = new ContentZoomAndMoveHelper(graphView, container);
         bindZoomSlider(contentZoomAndMoveHelper);
     }
 

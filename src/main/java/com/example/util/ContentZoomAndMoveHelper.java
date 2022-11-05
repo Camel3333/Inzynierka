@@ -5,16 +5,19 @@ import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 
 public class ContentZoomAndMoveHelper {
     private final DoubleProperty scaleFactorProperty = new ReadOnlyDoubleWrapper(1.0D);
     private final Node content;
+    private final Pane container;
 
-    public ContentZoomAndMoveHelper(Node content) {
-        if (content == null) {
-            throw new IllegalArgumentException("Content cannot be null.");
+    public ContentZoomAndMoveHelper(Node content, Pane container) {
+        if (content == null || container == null) {
+            throw new IllegalArgumentException("Content and container cannot be null.");
         } else {
             this.content = content;
+            this.container = container;
             content.toFront();
             this.enablePanAndZoom();
         }
@@ -34,7 +37,7 @@ public class ContentZoomAndMoveHelper {
     }
 
     private void enablePanAndZoom() {
-        content.setOnScroll((event) -> {
+        container.setOnScroll((event) -> {
             double direction = event.getDeltaY() >= 0.0D ? 1.0D : -1.0D;
             double currentScale = this.scaleFactorProperty.getValue();
             double computedScale = currentScale + direction * 0.25D;
@@ -43,8 +46,8 @@ public class ContentZoomAndMoveHelper {
                 this.content.setScaleX(computedScale);
                 this.content.setScaleY(computedScale);
                 if (computedScale == 1.0D) {
-                    this.content.setTranslateX(-content.getTranslateX());
-                    this.content.setTranslateY(-content.getTranslateY());
+                    this.content.setTranslateX(-container.getTranslateX());
+                    this.content.setTranslateY(-container.getTranslateY());
                 } else {
                     this.scaleFactorProperty.setValue(computedScale);
                     Bounds bounds = this.content.localToScene(this.content.getBoundsInLocal());
@@ -58,9 +61,9 @@ public class ContentZoomAndMoveHelper {
             event.consume();
         });
         DragContext sceneDragContext = new DragContext();
-        content.setOnMousePressed((event) -> {
+        container.setOnMousePressed((event) -> {
             if (event.isSecondaryButtonDown()) {
-                content.getScene().setCursor(Cursor.MOVE);
+                container.getScene().setCursor(Cursor.MOVE);
                 sceneDragContext.mouseAnchorX = event.getX();
                 sceneDragContext.mouseAnchorY = event.getY();
                 sceneDragContext.translateAnchorX = this.content.getTranslateX();
@@ -68,10 +71,10 @@ public class ContentZoomAndMoveHelper {
             }
 
         });
-        content.setOnMouseReleased((event) -> {
-            content.getScene().setCursor(Cursor.DEFAULT);
+        container.setOnMouseReleased((event) -> {
+            container.getScene().setCursor(Cursor.DEFAULT);
         });
-        content.setOnMouseDragged((event) -> {
+        container.setOnMouseDragged((event) -> {
             if (event.isSecondaryButtonDown()) {
                 this.content.setTranslateX(sceneDragContext.translateAnchorX + event.getX() - sceneDragContext.mouseAnchorX);
                 this.content.setTranslateY(sceneDragContext.translateAnchorY + event.getY() - sceneDragContext.mouseAnchorY);

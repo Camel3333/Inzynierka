@@ -18,7 +18,9 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import lombok.Getter;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -43,7 +45,7 @@ public class GraphController {
     private GraphLayoutController graphLayoutController;
 
     private int vertexIdCounter = 0;
-//    private ContentResizerPane container;
+    private Pane container;
     @Getter
     private MySmartGraphPanel<Integer, Integer> graphView;
 
@@ -68,7 +70,7 @@ public class GraphController {
         this.graph = graph;
 
         //remove old graph
-        graphRoot.getChildren().remove(graphView);
+        graphRoot.getChildren().remove(container);
         vertexListeners.clear();
         init();
         initGraphView();
@@ -80,9 +82,9 @@ public class GraphController {
     private void buildGraphContainers() {
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
         graphView = new MySmartGraphPanel<>(graph, null, strategy);
-        graphLayoutController.setGraph(graphView);
         setGraphViewBindings();
-//        container = new ContentResizerPane(graphView);
+        container = new BorderPane(graphView);
+        graphLayoutController.setLayout(graphView, container);
     }
 
     public void setVertexStyle(int id, String style) {
@@ -273,9 +275,9 @@ public class GraphController {
 
     private void init() {
         buildGraphContainers();
-        graphView.prefWidthProperty().bind(graphRoot.widthProperty());
-        graphView.prefHeightProperty().bind(graphRoot.heightProperty());
-        graphRoot.getChildren().add(graphView);
+        container.prefWidthProperty().bind(graphRoot.widthProperty());
+        container.prefHeightProperty().bind(graphRoot.heightProperty());
+        graphRoot.getChildren().add(container);
     }
 
     public int getNextVertexId() {
