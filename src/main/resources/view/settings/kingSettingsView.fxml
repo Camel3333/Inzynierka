@@ -14,5 +14,5 @@
     </stylesheets>
 
     <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Phase" fx:id="phaseLabel" id="label"/>
-    <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="phase"/>
+    <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="phase" GridPane.hgrow="ALWAYS"/>
 </GridPane>

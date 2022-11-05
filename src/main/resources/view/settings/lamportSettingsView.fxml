@@ -14,5 +14,5 @@
     </stylesheets>
 
     <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Depth" fx:id="depthLabel" id="label"/>
-    <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="depth"/>
+    <IntegerSettingTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="depth" GridPane.hgrow="ALWAYS"/>
 </GridPane>
