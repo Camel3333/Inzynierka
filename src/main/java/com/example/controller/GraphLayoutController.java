@@ -32,7 +32,7 @@ public class GraphLayoutController {
 
     private void resetZoomSlider() {
         zoom.valueProperty().unbind();
-        zoom.setValue(1.0);
+        zoom.setValue(0.0);
     }
 
     private void bindAutomaticLayoutCheckbox(SmartGraphPanel<?,?> graphView) {

@@ -8,7 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
 public class ContentZoomAndMoveHelper {
-    private final DoubleProperty scaleFactorProperty = new ReadOnlyDoubleWrapper(1.0D);
+    private final DoubleProperty scaleFactorProperty = new ReadOnlyDoubleWrapper(0.0D);
     private final Node content;
     private final Pane container;
 
@@ -43,21 +43,23 @@ public class ContentZoomAndMoveHelper {
             }
             double direction = event.getDeltaY() > 0.0D ? 1.0D : -1.0D;
             double currentScale = this.scaleFactorProperty.getValue();
-            double computedScale = currentScale + direction * 0.25D;
-            computedScale = boundValue(computedScale, 1.0D, 5.0D);
+            double computedScale = currentScale + direction;
+            computedScale = boundValue(computedScale, -5.0D, 5.0D);
             if (currentScale != computedScale) {
-                this.content.setScaleX(computedScale);
-                this.content.setScaleY(computedScale);
-                if (computedScale == 1.0D) {
-                    this.content.setTranslateX(-container.getTranslateX());
-                    this.content.setTranslateY(-container.getTranslateY());
+                double calculatedScale = computedScale >= 0 ? computedScale + 1 : 1 + computedScale * 0.1;
+                this.content.setScaleX(calculatedScale);
+                this.content.setScaleY(calculatedScale);
+                if (calculatedScale == 0.0D) {
+//                    this.content.setTranslateX(-container.getTranslateX());
+//                    this.content.setTranslateY(-container.getTranslateY());
+                    this.scaleFactorProperty.setValue(computedScale);
                 } else {
                     this.scaleFactorProperty.setValue(computedScale);
-                    Bounds bounds = this.content.localToScene(this.content.getBoundsInLocal());
-                    double f = computedScale / currentScale - 1.0D;
-                    double dx = event.getX() - (bounds.getWidth() / 2.0D + bounds.getMinX());
-                    double dy = event.getY() - (bounds.getHeight() / 2.0D + bounds.getMinY());
-                    this.setContentPivot(f * dx, f * dy);
+//                    Bounds bounds = this.content.localToScene(this.content.getBoundsInLocal());
+//                    double f = computedScale / currentScale - 1.0D;
+//                    double dx = event.getX() - (bounds.getWidth() / 2.0D + bounds.getMinX());
+//                    double dy = event.getY() - (bounds.getHeight() / 2.0D + bounds.getMinY());
+//                    this.setContentPivot(f * dx, f * dy);
                 }
             }
 

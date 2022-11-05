@@ -14,12 +14,12 @@
 
     <Slider fx:id="zoom"
             showTickLabels="true"
-            min="1.0"
+            min="-5.0"
             max="5.0"
             value="1.0"
             orientation="VERTICAL"
             showTickMarks="true"
-            majorTickUnit="0.25"
+            majorTickUnit="1.0"
             minorTickCount="1"
             blockIncrement="0.125"
             snapToTicks="true"/>
