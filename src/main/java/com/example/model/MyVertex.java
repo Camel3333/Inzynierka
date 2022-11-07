@@ -1,13 +1,15 @@
 package com.example.model;
 
 import com.brunomnsilva.smartgraph.graph.Vertex;
+import com.example.controller.settings.TraitorSettings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyVertex<V> implements Vertex<V>, Agent {
     private V id;
@@ -72,12 +74,16 @@ public class MyVertex<V> implements Vertex<V>, Agent {
     }
 
     public BooleanProperty getNextOpinion(MyVertex<V> vertex){
-        if(isTraitor.getValue() && (int) vertex.element() % 2 == 0){
-            return new SimpleBooleanProperty(!isSupporting.getValue());
+        boolean traitorSettings = TraitorSettings.isTraitorsAlwaysLie();
+        if (traitorSettings) {
+            boolean result = isTraitor.getValue() ? !isSupporting.getValue() : isSupporting.getValue();
+            return new SimpleBooleanProperty(result);
         }
-        else{
-            return new SimpleBooleanProperty(isSupporting.getValue());
+        else {
+            boolean result = (isTraitor.getValue() && (int) vertex.element() % 2 == 0) ? !isSupporting.getValue() : isSupporting.getValue();
+            return new SimpleBooleanProperty(result);
         }
+
     }
 
     public void receiveOpinion(BooleanProperty agentOpinion){
