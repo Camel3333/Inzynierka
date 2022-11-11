@@ -12,6 +12,6 @@
         <Insets left="5"/>
     </padding>
 
-    <Button text="Reset layout" fx:id="resetLayout" onAction="#reset"/>
+    <Button text="Reset camera" fx:id="resetLayout" onAction="#reset"/>
     <CheckBox text="Automatic layout" fx:id="automaticLayout"/>
 </HBox>
