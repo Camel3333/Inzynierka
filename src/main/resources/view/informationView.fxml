@@ -10,24 +10,26 @@
             fx:id="parent"
             prefWidth="300"
             fx:controller="com.example.controller.InformationController"
-            id = "scrollPane">
+            id = "scrollPane" fitToWidth="true" fitToHeight="true">
 
     <stylesheets>
         <URL value="@/css/information.css"/>
     </stylesheets>
 
     <VBox spacing="5">
-        <TextFlow textAlignment="CENTER" prefWidth="270" lineSpacing="5">
+        <TextFlow textAlignment="CENTER" lineSpacing="5">
             <Text fx:id="algorithmName" id="algorithm"/>
         </TextFlow>
-        <TextFlow prefWidth="270" lineSpacing="5">
-            <Text text="algorithm phase: " id="phase"/>
-            <Text fx:id="algorithmPhase"/>
-            <Text text="&#10;"/> <!--creates newline-->
+        <VBox>
+            <TextFlow lineSpacing="5">
+                <Text text="algorithm phase: " id="phase"/>
+                <Text fx:id="algorithmPhase"/>
+                <Text text="&#10;"/> <!--creates newline-->
 
-            <Text text="step description: " id="key"/>
-            <TextArea fx:id="stepDescription" editable="false" wrapText="true" prefWidth="270" prefRowCount="6"/>
-        </TextFlow>
+                <Text text="step description: " id="key"/>
+            </TextFlow>
+            <TextArea fx:id="stepDescription" editable="false" wrapText="true" prefRowCount="6"/>
+        </VBox>
         <TextFlow fx:id="properties" prefWidth="250" lineSpacing="5"/>
     </VBox>
 </ScrollPane>

@@ -32,6 +32,8 @@ public class StageInitializer implements ApplicationListener<ByzantineGeneralsAp
     private void configureStage(Stage primaryStage, BorderPane root) {
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
+        primaryStage.setMaximized(true);
         primaryStage.setTitle("Byzantine Generals");
     }
 }
