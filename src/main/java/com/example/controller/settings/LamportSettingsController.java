@@ -51,7 +51,7 @@ public class LamportSettingsController implements AlgorithmSettingsController {
         int maxDepth = graph.getLongestPathFor(commander);
         algorithmSettings.getSettings().get("depth").setValidateArgument((value) -> (Integer) value >= 0 && (Integer) value <= maxDepth);
         AlgorithmSetting<Integer> depthSetting = (AlgorithmSetting<Integer>) algorithmSettings.getSettings().get("depth");
-        depthSetting.setValue(maxDepth);
+        depthSetting.setValue(Math.min(graph.getTraitorsCount(), maxDepth));
     }
 
     private void setDefaultSettings() {
