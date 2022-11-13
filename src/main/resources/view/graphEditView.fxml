@@ -19,4 +19,5 @@
     <Button text="Stop" fx:id="stopButton"/>
     <Button text="Undo" fx:id = "undoButton"/>
     <Button text="Redo" fx:id = "redoButton"/>
+    <Button fx:id="traitorSettings"/>
 </HBox>

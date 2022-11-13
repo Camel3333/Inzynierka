@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.ApplicationState;
+import com.example.controller.settings.TraitorSettings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
@@ -28,6 +29,8 @@ public class SimulationMenuController {
     public MenuItem simulateItem;
     @FXML
     public MenuItem stopItem;
+    @FXML
+    public MenuItem traitorSettings;
 
     @Getter
     private final AppController appController;
@@ -57,6 +60,12 @@ public class SimulationMenuController {
         instantFinishItem.setOnAction(e -> appController.getSimulationController().instantFinish());
         pauseItem.setOnAction(e -> appController.getSimulationController().pause());
         stopItem.setOnAction(e -> appController.getSimulationController().stop());
+
+        traitorSettings.setOnAction(e -> {
+            TraitorSettings.setTraitorsAlwaysLie(!TraitorSettings.isTraitorsAlwaysLie());
+            traitorSettings.setText(TraitorSettings.isTraitorsAlwaysLie() ? "✓ Traitors always lie" : "✓ Traitors lie randomly");
+        });
+        traitorSettings.setText(TraitorSettings.isTraitorsAlwaysLie() ? "✓ Traitors always lie" : "✓ Traitors lie randomly");
     }
 
     public void bindItems() {
@@ -70,5 +79,7 @@ public class SimulationMenuController {
         instantFinishItem.disableProperty().bind(simulationController.getInstantFinishDisabledProperty().or(isNotSimulation));
         pauseItem.disableProperty().bind(simulationController.getPauseDisabledProperty().or(isNotSimulation));
         stopItem.disableProperty().bind(simulationController.getStopDisableProperty().or(isNotSimulation));
+
+        traitorSettings.disableProperty().bind(simulationController.getStartDisabledProperty());
     }
 }

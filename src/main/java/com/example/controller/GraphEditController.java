@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.ApplicationState;
+import com.example.controller.settings.TraitorSettings;
 import com.example.draw.DrawMode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -44,6 +45,8 @@ public class GraphEditController {
     private Button pauseButton;
     @FXML
     public Button stopButton;
+    @FXML
+    public Button traitorSettings;
 
     private DrawMenuController drawMenuController;
     private SimulationMenuController simulationMenuController;
@@ -67,8 +70,14 @@ public class GraphEditController {
         instantFinishButton.setOnAction(e -> simulationMenuController.instantFinishItem.fire());
         pauseButton.setOnAction(e -> simulationMenuController.pauseItem.fire());
         stopButton.setOnAction(e -> simulationMenuController.stopItem.fire());
+        traitorSettings.setOnAction(e ->
+        {
+            simulationMenuController.traitorSettings.fire();
+            traitorSettings.setText(TraitorSettings.isTraitorsAlwaysLie() ? "✓ Traitors always lie" : "✓ Traitors lie randomly");
+        });
+        traitorSettings.setText(TraitorSettings.isTraitorsAlwaysLie() ? "✓ Traitors always lie" : "✓ Traitors lie randomly");
         buttons.put(ApplicationState.SIMULATING,
-                List.of(startButton, nextStepButton, liveButton, instantFinishButton, pauseButton, stopButton));
+                List.of(traitorSettings, startButton, nextStepButton, liveButton, instantFinishButton, pauseButton, stopButton));
     }
 
     private void initializeAlwaysDisplayedButtons() {
@@ -114,5 +123,6 @@ public class GraphEditController {
         instantFinishButton.disableProperty().bind(simulationController.getInstantFinishDisabledProperty());
         pauseButton.disableProperty().bind(simulationController.getPauseDisabledProperty());
         stopButton.disableProperty().bind(simulationController.getStopDisableProperty());
+        traitorSettings.disableProperty().bind(simulationController.getStartDisabledProperty());
     }
 }
