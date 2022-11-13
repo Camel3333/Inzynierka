@@ -46,7 +46,8 @@ public class KingSettingsController implements AlgorithmSettingsController {
 
     @Override
     public void adjustSettingsConditions(MyGraph<Integer, Integer> graph) {
-        // intentionally do nothing - settings do not depend on graph
+        AlgorithmSetting<Integer> phaseSetting = (AlgorithmSetting<Integer>) algorithmSettings.getSettings().get("phase");
+        phaseSetting.setValue((int) Math.ceil((double)graph.numVertices() / 4.0) - 1);
     }
 
     private void setDefaultSettings() {
