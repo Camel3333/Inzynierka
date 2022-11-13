@@ -8,8 +8,8 @@ import com.example.algorithm.report.StepReport;
 import com.example.information.printer.InformationPrinter;
 import lombok.AllArgsConstructor;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,6 +30,7 @@ public class QVoterInformationEngine implements InformationEngine {
         Map<String, String> properties = stepReport.getProperties();
         Map<String, String> propertiesToSend = new HashMap<>();
         propertiesToSend.put("time", properties.get("time"));
+        propertiesToSend.put("tiebreaker probability", generateProbability(Double.parseDouble(properties.get("probability"))));
         Optional<Integer> voterId = stepReport.getRoles().entrySet()
                 .stream()
                 .filter(entry -> entry.getValue() == VertexRole.VOTER)
@@ -53,5 +54,10 @@ public class QVoterInformationEngine implements InformationEngine {
 
     private String generateDescriptionForChoose() {
         return "At choose step voter makes decision. Decision is based on the majority of received opinions. If there is a draw, voter uses probability to either choose one of the decisions or sticks to his opinion.";
+    }
+
+    private String generateProbability(double probability) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        return decimalFormat.format(probability);
     }
 }
