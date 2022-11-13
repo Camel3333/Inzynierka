@@ -53,7 +53,7 @@ public class QVoterInformationEngine implements InformationEngine {
     }
 
     private String generateDescriptionForChoose() {
-        return "At choose step voter makes decision. Decision is based on the majority of received opinions. If there is a draw, voter uses probability to either choose one of the decisions or sticks to his opinion.";
+        return "At choose step voter makes decision. If all neighbours share the same opinion, voter accepts it. Otherwise he uses tiebreaker probability to either accept majority opinion or stick to his opinion.";
     }
 
     private String generateProbability(double probability) {
