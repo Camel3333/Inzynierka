@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
@@ -19,7 +18,9 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import lombok.Getter;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -40,8 +41,11 @@ public class GraphController {
     @Autowired
     private FxWeaver fxWeaver;
 
+    @Autowired
+    private GraphLayoutController graphLayoutController;
+
     private int vertexIdCounter = 0;
-    private SmartGraphDemoContainer container;
+    private Pane container;
     @Getter
     private MySmartGraphPanel<Integer, Integer> graphView;
 
@@ -79,7 +83,8 @@ public class GraphController {
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
         graphView = new MySmartGraphPanel<>(graph, null, strategy);
         setGraphViewBindings();
-        container = new SmartGraphDemoContainer(graphView);
+        container = new BorderPane(graphView);
+        graphLayoutController.setLayout(graphView, container);
     }
 
     public void setVertexStyle(int id, String style) {

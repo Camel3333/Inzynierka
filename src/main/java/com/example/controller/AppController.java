@@ -1,7 +1,5 @@
 package com.example.controller;
 
-
-import com.brunomnsilva.smartgraph.graph.Graph;
 import com.example.ApplicationState;
 import com.example.algorithm.AlgorithmType;
 import com.example.draw.CreationHelper;
@@ -11,6 +9,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +20,8 @@ import org.springframework.stereotype.Component;
 @FxmlView("/view/appView.fxml")
 public class AppController {
 
+    @FXML
+    private CheckBox automaticLayout;
     @FXML
     private BorderPane root;
 

@@ -14,7 +14,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.controller.SimulationController"
       fx:id="parent"
-      style="-fx-background-color: #f4f4f4; -fx-padding: 15px; -fx-spacing: 5px">
+      style="-fx-background-color: #f4f4f4; -fx-padding: 15px; -fx-spacing: 5px" maxWidth="300">
 
     <HBox spacing="5">
         <ComboBox fx:id="algorithmsBox" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>

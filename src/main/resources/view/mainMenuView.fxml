@@ -5,7 +5,7 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.controller.MainMenuController"
-      style="-fx-background-color: #eaeaea">
+      style="-fx-background-color: #e3e3e3">
 
     <MenuBar>
         <menus>
