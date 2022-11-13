@@ -80,6 +80,6 @@ public class SimulationMenuController {
         pauseItem.disableProperty().bind(simulationController.getPauseDisabledProperty().or(isNotSimulation));
         stopItem.disableProperty().bind(simulationController.getStopDisableProperty().or(isNotSimulation));
 
-        traitorSettings.disableProperty().bind(simulationController.getStartDisabledProperty().or(isNotSimulation.not()));
+        traitorSettings.disableProperty().bind(simulationController.getStartDisabledProperty());
     }
 }
