@@ -2,6 +2,7 @@ package com.example.util;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
+import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -23,8 +24,8 @@ public class ContentZoomAndMoveHelper {
     }
 
     public void setContentPivot(double x, double y) {
-        this.content.setTranslateX(this.content.getTranslateX() - x);
-        this.content.setTranslateY(this.content.getTranslateY() - y);
+        this.content.setTranslateX(x);
+        this.content.setTranslateY(y);
     }
 
     public static double boundValue(double value, double min, double max) {
@@ -33,6 +34,10 @@ public class ContentZoomAndMoveHelper {
         } else {
             return Double.compare(value, max) > 0 ? max : value;
         }
+    }
+
+    private double mapToNormalScale(double scale) {
+        return scale >= 0 ? scale + 1 : 1 + scale * 0.1;
     }
 
     private void enablePanAndZoom() {
@@ -45,10 +50,22 @@ public class ContentZoomAndMoveHelper {
             double computedScale = currentScale + direction;
             computedScale = boundValue(computedScale, -5.0D, 5.0D);
             if (currentScale != computedScale) {
-                double calculatedScale = computedScale >= 0 ? computedScale + 1 : 1 + computedScale * 0.1;
+                double calculatedScale = mapToNormalScale(computedScale);
                 this.content.setScaleX(calculatedScale);
                 this.content.setScaleY(calculatedScale);
                 this.scaleFactorProperty.setValue(computedScale);
+
+                if (calculatedScale == 1.0D) {
+                    this.content.setTranslateX(-container.getTranslateX());
+                    this.content.setTranslateY(-container.getTranslateY());
+                } else {
+//                    Bounds bounds = this.content.localToScene(this.content.getBoundsInLocal());
+                    Bounds bounds = content.getLayoutBounds();
+                    double f = 1 - (calculatedScale);
+                    double dx = event.getX() - bounds.getWidth() / 2.0D;
+                    double dy = event.getY() - bounds.getHeight() / 2.0D;
+                    this.setContentPivot(f * dx, f * dy);
+                }
             }
 
             event.consume();
