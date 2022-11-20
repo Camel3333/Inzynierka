@@ -28,6 +28,7 @@ public class AnimationRunner {
             semaphore.acquire();
         } catch (InterruptedException e) {
             animation.jumpTo(animation.getTotalDuration().subtract(Duration.millis(1)));
+            throw new AnimationInterruptedException();
         }
     }
 }
