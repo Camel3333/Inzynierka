@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MyVertexTest {
 
     @Test
-    public void receiveOpinionTest(){
+    public void receiveOpinionTest() {
         // Given
         var v1 = new MyVertex<>(1);
 
@@ -17,12 +17,12 @@ public class MyVertexTest {
         v1.receiveOpinion(new SimpleBooleanProperty(false));
 
         // Then
-        assertEquals(v1.getKnowledge().get(0).getValue(), true);
-        assertEquals(v1.getKnowledge().get(1).getValue(), false);
+        assertEquals(v1.getKnowledge().get(0), true);
+        assertEquals(v1.getKnowledge().get(1), false);
     }
 
     @Test
-    public void getNextOpinionTest(){
+    public void getNextOpinionTest() {
         // Given
         var v1 = new MyVertex<>(1);
         var v2 = new MyVertex<>(2);
@@ -41,7 +41,7 @@ public class MyVertexTest {
     }
 
     @Test
-    public void getNextOpinionFromTraitorTest(){
+    public void getNextOpinionFromTraitorTest() {
         // Given
         var v1 = new MyVertex<>(1);
         var v2 = new MyVertex<>(2);
@@ -60,7 +60,7 @@ public class MyVertexTest {
     }
 
     @Test
-    public void getMajorityVoteTest(){
+    public void getMajorityVoteTest() {
         // Given
         var v1 = new MyVertex<>(1);
 
@@ -75,7 +75,7 @@ public class MyVertexTest {
     }
 
     @Test
-    public void getMajorityVoteWithEmptyKnowledgeTest(){
+    public void getMajorityVoteWithEmptyKnowledgeTest() {
         // Given
         var v1 = new MyVertex<>(1);
 
@@ -86,7 +86,7 @@ public class MyVertexTest {
     }
 
     @Test
-    public void getMajorityVoteCountTest(){
+    public void getMajorityVoteCountTest() {
         // Given
         var v1 = new MyVertex<>(1);
 
@@ -101,7 +101,7 @@ public class MyVertexTest {
     }
 
     @Test
-    public void getMajorityVoteCountWithEmptyKnowledgeTest(){
+    public void getMajorityVoteCountWithEmptyKnowledgeTest() {
         // Given
         var v1 = new MyVertex<>(1);
 
@@ -112,7 +112,7 @@ public class MyVertexTest {
     }
 
     @Test
-    public void chooseMajorityTest(){
+    public void chooseMajorityTest() {
         // Given
         var v1 = new MyVertex<>(1);
 
@@ -129,7 +129,7 @@ public class MyVertexTest {
     }
 
     @Test
-    public void chooseMajorityWithEmptyKnowledgeTest(){
+    public void chooseMajorityWithEmptyKnowledgeTest() {
         // Given
         var v1 = new MyVertex<>(1);
 
@@ -142,7 +142,7 @@ public class MyVertexTest {
     }
 
     @Test
-    public void chooseMajorityWithTieBreakerTest(){
+    public void chooseMajorityWithTieBreakerTest() {
         var v1 = new MyVertex<>(1);
 
         // When
@@ -157,7 +157,7 @@ public class MyVertexTest {
     }
 
     @Test
-    public void chooseMajorityWithTieBreakerAndTieTest(){
+    public void chooseMajorityWithTieBreakerAndTieTest() {
         var v1 = new MyVertex<>(1);
 
         // When

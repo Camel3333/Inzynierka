@@ -78,6 +78,7 @@ public class QVoterModel implements Algorithm {
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
         report.setAlgorithmPhase(AlgorithmPhase.SEND);
         report.getProperties().put("time", String.valueOf(time));
+        report.getProperties().put("probability", String.valueOf(getProbability()));
         return report;
     }
 
@@ -97,6 +98,7 @@ public class QVoterModel implements Algorithm {
         report.setNumNotSupporting(graph.getNotSupportingOpinionCount());
         report.setAlgorithmPhase(AlgorithmPhase.CHOOSE);
         report.getProperties().put("time", String.valueOf(time));
+        report.getProperties().put("probability", String.valueOf(getProbability()));
         selectedAgent.clearKnowledge();
         return report;
     }
@@ -133,15 +135,19 @@ public class QVoterModel implements Algorithm {
     }
 
     private boolean checkProbability() {
+        return new Random().nextDouble() <= getProbability();
+    }
+
+    private double getProbability() {
         switch (probabilityType) {
             case LINEAR -> {
-                return new Random().nextInt(maxTime) <= time;
+                return time / (double) maxTime;
             }
             case BOLTZMANN -> {
-                return new Random().nextDouble() <= Math.sqrt(time / (double) maxTime);
+                return Math.sqrt(time / (double) maxTime);
             }
         }
-        return false;
+        throw new IllegalArgumentException("Probability for " + probabilityType + " is not defined");
     }
 
     private class QVoterStepReport extends StepReport {
