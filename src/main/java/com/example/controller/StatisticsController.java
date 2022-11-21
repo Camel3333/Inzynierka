@@ -24,7 +24,6 @@ public class StatisticsController {
 
     private int nextX = 0;
     private final XYChart.Series<Number, Number> supporting = new XYChart.Series<>();
-    private final XYChart.Series<Number, Number> notSupporting = new XYChart.Series<>();
 
     private void exportStats() throws IOException {
         FileChooser fileChooser = new FileChooser();
@@ -32,7 +31,7 @@ public class StatisticsController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv"));
         File file = fileChooser.showSaveDialog(this.exportButton.getScene().getWindow());
         if (file != null) {
-            StatisticsConverter.exportStats(file, supporting, notSupporting);
+            StatisticsConverter.exportStats(file, supporting);
         }
     }
 
@@ -48,17 +47,17 @@ public class StatisticsController {
                 }
         );
 
-        opinionChart.getYAxis().setLabel("Generals");
+        opinionChart.getYAxis().setLabel("Generals for attack [%]");
         opinionChart.getXAxis().setLabel("Step");
-        ((NumberAxis) opinionChart.getYAxis()).setLowerBound(-1);
+        ((NumberAxis) opinionChart.getYAxis()).setLowerBound(0);
         ((NumberAxis) opinionChart.getXAxis()).setLowerBound(0);
         ((NumberAxis) opinionChart.getXAxis()).setUpperBound(10);
-        ((NumberAxis) opinionChart.getYAxis()).setUpperBound(10);
+        ((NumberAxis) opinionChart.getYAxis()).setUpperBound(100);
 
         ((NumberAxis) opinionChart.getYAxis()).setMinorTickLength(0);
         ((NumberAxis) opinionChart.getXAxis()).setMinorTickLength(0);
 
-        ((NumberAxis) opinionChart.getYAxis()).setTickUnit(1);
+        ((NumberAxis) opinionChart.getYAxis()).setTickUnit(10);
 
         opinionChart.getYAxis().setAutoRanging(false);
         opinionChart.getXAxis().setAutoRanging(true);
@@ -78,19 +77,18 @@ public class StatisticsController {
         ((NumberAxis) opinionChart.getYAxis()).setTickLabelFormatter(onlyIntegers);
         ((NumberAxis) opinionChart.getXAxis()).setTickLabelFormatter(onlyIntegers);
 
-        supporting.setName("For attack");
-        notSupporting.setName("For defense");
+        supporting.setName("For attack [%]");
         opinionChart.getData().add(supporting);
-        opinionChart.getData().add(notSupporting);
         opinionChart.setCreateSymbols(false);
     }
 
     public void addStats(int numSupporting, int numNotSupporting) {
         Platform.runLater(
                 () -> {
-                    ((NumberAxis) opinionChart.getYAxis()).setUpperBound(numSupporting + numNotSupporting + 1);
-                    supporting.getData().add(new XYChart.Data<>(nextX, numSupporting));
-                    notSupporting.getData().add(new XYChart.Data<>(nextX, numNotSupporting));
+                    ((NumberAxis) opinionChart.getYAxis()).setUpperBound(100);
+                    supporting.getData().add(new XYChart.Data<>(nextX,
+                            (Double.valueOf(numSupporting) /
+                                    (Double.valueOf(numNotSupporting) + Double.valueOf(numSupporting))) * 100));
                     nextX++;
                 }
         );
@@ -100,10 +98,8 @@ public class StatisticsController {
     public void clear() {
         opinionChart.setAnimated(false);
         supporting.getData().clear();
-        notSupporting.getData().clear();
         opinionChart.getData().clear();
         opinionChart.getData().add(supporting);
-        opinionChart.getData().add(notSupporting);
         nextX = 0;
         opinionChart.setAnimated(true);
     }
