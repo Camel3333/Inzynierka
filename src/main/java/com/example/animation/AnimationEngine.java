@@ -41,7 +41,13 @@ public class AnimationEngine {
 
     public void animate(StepReport report) {
         highlightRoles(report.getRoles());
-        report.getOperationsBatches().forEach(this::animateBatch);
+        for (OperationsBatch batch : report.getOperationsBatches()) {
+            try {
+                animateBatch(batch);
+            } catch (AnimationInterruptedException e) {
+                break;
+            }
+        }
     }
 
     private void animateBatch(OperationsBatch batch) {
