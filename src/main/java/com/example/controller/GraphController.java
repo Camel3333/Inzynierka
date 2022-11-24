@@ -2,8 +2,9 @@ package com.example.controller;
 
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphVertexNode;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
-import com.brunomnsilva.smartgraph.graphview.*;
 import com.example.algorithm.VertexRole;
 import com.example.draw.MySmartGraphPanel;
 import com.example.listener.VertexListener;
@@ -20,15 +21,17 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import lombok.Getter;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.controlsfx.control.PopOver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 
 @Component
@@ -81,7 +84,14 @@ public class GraphController {
 
     private void buildGraphContainers() {
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
-        graphView = new MySmartGraphPanel<>(graph, null, strategy);
+        try {
+            URI smartGraphCSS = new ClassPathResource("css/smartgraph.css").getURI();
+            ClassPathResource smartGraphPropertiesResource = new ClassPathResource("properties/smartgraph.properties");
+            SmartGraphProperties smartGraphProperties = new SmartGraphProperties(smartGraphPropertiesResource.getInputStream());
+            graphView = new MySmartGraphPanel<>(graph, smartGraphProperties, strategy, smartGraphCSS);
+        } catch (IOException e) {
+            graphView = new MySmartGraphPanel<>(graph, null, strategy);
+        }
         setGraphViewBindings();
         container = new BorderPane(graphView);
         graphLayoutController.setLayout(graphView, container);
