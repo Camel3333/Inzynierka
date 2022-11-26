@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.controller.GraphLayoutController" spacing="5">
+      fx:controller="com.example.controller.GraphLayoutController" spacing="5" style="-fx-background-color: #f4f4f4">
 
     <padding>
         <Insets left="5"/>
