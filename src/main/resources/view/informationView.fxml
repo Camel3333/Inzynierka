@@ -16,13 +16,14 @@
         <URL value="@/css/information.css"/>
     </stylesheets>
 
-    <VBox spacing="5">
-        <TextFlow textAlignment="CENTER" lineSpacing="5">
-            <Text fx:id="algorithmName" id="algorithm"/>
+    <VBox spacing="5" id="border">
+        <TextFlow lineSpacing="5">
+            <Text text="algorithm: " id="key"/>
+            <Text fx:id="algorithmName"/>
         </TextFlow>
         <VBox>
             <TextFlow lineSpacing="5">
-                <Text text="algorithm phase: " id="phase"/>
+                <Text text="algorithm phase: " id="key"/>
                 <Text fx:id="algorithmPhase"/>
                 <Text text="&#10;"/> <!--creates newline-->
 
