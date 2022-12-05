@@ -4,13 +4,6 @@
     -fx-font-size: 13;
 }
 
-#algorithm {
-    -fx-font-family: Helvetica;
-    -fx-font-weight: bold;
-    -fx-font-size: 32;
-    -fx-fill: Orange;
-}
-
 #phase {
     -fx-font-family: Verdana;
     -fx-font-weight: bold;
@@ -19,4 +12,10 @@
 
 #scrollPane {
     -fx-background-color: transparent;
+}
+
+#border {
+    -fx-border-style: solid none none none;
+    -fx-border-color: #c4c4c4;
+    -fx-padding: 20 0 0 0;
 }
