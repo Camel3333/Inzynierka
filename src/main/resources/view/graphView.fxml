@@ -3,8 +3,8 @@
 
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.controller.GraphController"
-      fx:id="graphRoot" style="-fx-background-color: #ececec">
-</VBox>
+<Pane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.controller.GraphController"
+            fx:id="graphRoot">
+</Pane>
