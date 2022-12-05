@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+<TextFlow prefWidth="300.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+    <Text style="-fx-font-size: 2em" text="Simulation&#10;" textAlignment="CENTER"/>
+    <TextArea editable="false" prefHeight="200.0" prefWidth="275.0"
+              style="-fx-background-insets: 0px; -fx-text-overrun: ellipsis;"
+              text="Select any of the available algorithms, the algorithm's parameters and the animation speed. Then click Start button. You can see the animation play step-by-step, live or jump to the finish.&#10;&#10;Information about the run is saved in the Statistics and Logger tabs at the bottom."
+              wrapText="true"/>
+</TextFlow>

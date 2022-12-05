@@ -1,0 +1,8 @@
+#root {
+    -fx-vgap: 5;
+    -fx-hgap: 5;
+}
+
+#label {
+    -fx-font-family: Verdana;
+}
