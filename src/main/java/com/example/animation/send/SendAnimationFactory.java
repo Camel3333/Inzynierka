@@ -14,7 +14,7 @@ import org.springframework.core.io.ClassPathResource;
 
 public class SendAnimationFactory {
     private final String defaultAttackImageURL = new ClassPathResource("icons/sword.png").getPath();
-    private final String defaultDefenseImageURL = new ClassPathResource("icons/sword.png").getPath();
+    private final String defaultDefenseImageURL = new ClassPathResource("icons/shield.png").getPath();
     @Setter
     private Image attackImage = new Image(defaultAttackImageURL, 30, 30, false, false);
     @Setter
