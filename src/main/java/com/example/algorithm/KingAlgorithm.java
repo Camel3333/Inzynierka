@@ -14,7 +14,7 @@ import lombok.Getter;
 
 
 public class KingAlgorithm implements Algorithm {
-    private int phase = 0;
+    private int phase = 1;
     private int numberOfPhases;
     private MyGraph<Integer, Integer> graph;
     private AlgorithmPhase round = AlgorithmPhase.SEND;
@@ -106,7 +106,7 @@ public class KingAlgorithm implements Algorithm {
     public StepReport secondRound() {
         System.out.println("Second round");
         KingStepReport report = new KingStepReport();
-        MyVertex<Integer> king = (MyVertex<Integer>) graph.vertices().stream().toList().get(phase % graph.numVertices());
+        MyVertex<Integer> king = (MyVertex<Integer>) graph.vertices().stream().toList().get((phase-1) % graph.numVertices());
         report.fillRoles(king);
         int condition = graph.numVertices() / 2 + allowedNumberOfTraitors();
         OperationsBatch firstOperationsBatch = new OperationsBatch();

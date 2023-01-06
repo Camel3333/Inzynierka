@@ -20,19 +20,24 @@ public class KingAlgorithmTest {
     }
 
     @Test
-    public void completeGraphWithFourVerticesAndOneTraitorTest(){
+    public void completeGraphWithFiveVerticesAndOneTraitorTest(){
         // Given
         var v1 = (MyVertex<Integer>) graph.insertVertex(1);
         var v2 = (MyVertex<Integer>) graph.insertVertex(2);
         var v3 = (MyVertex<Integer>) graph.insertVertex(3);
         var v4 = (MyVertex<Integer>) graph.insertVertex(4);
+        var v5 = (MyVertex<Integer>) graph.insertVertex(5);
 
-        var e1 = graph.insertEdge(v1, v2, 1);
-        var e2 = graph.insertEdge(v2, v3, 2);
-        var e3 = graph.insertEdge(v3, v4, 3);
-        var e4 = graph.insertEdge(v4, v1, 4);
-        var e5 = graph.insertEdge(v1, v3, 5);
-        var e6 = graph.insertEdge(v2, v4, 6);
+        graph.insertEdge(v1, v2, 1);
+        graph.insertEdge(v1, v3, 2);
+        graph.insertEdge(v1, v4, 3);
+        graph.insertEdge(v1, v5, 4);
+        graph.insertEdge(v2, v3, 5);
+        graph.insertEdge(v2, v4, 6);
+        graph.insertEdge(v2, v5, 7);
+        graph.insertEdge(v3, v4, 8);
+        graph.insertEdge(v3, v5, 9);
+        graph.insertEdge(v4, v5, 10);
 
         var settings = new AlgorithmSettings();
 
@@ -47,7 +52,7 @@ public class KingAlgorithmTest {
         v3.setIsSupporting(true);
         v4.setIsSupporting(false);
 
-        settings.getSettings().put("phase", new AlgorithmSetting("phase", 1, Integer.class, object -> true));
+        settings.getSettings().put("phase", new AlgorithmSetting("phase", 2, Integer.class, object -> true));
 
         algorithm.loadEnvironment(graph, settings);
         while(!algorithm.isFinished()){
